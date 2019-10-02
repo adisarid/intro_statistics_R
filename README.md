@@ -1,6 +1,8 @@
+![](https://raw.githubusercontent.com/adisarid/intro_statistics_R/bcdb6af4058308ebe999d0a477d6a1bb9030ffa2/misc/tau_engineering_logo.png)
+
 # Introduction to Statistics and Data Analysis with R
 
-This is the repository for the course of **introduction to statistics and data analysis**, taught in Tel-Aviv university. The course is taught in the Engineering faculty in the "Sciences for High Tech" track.
+This is the repository for the course of **introduction to statistics and data analysis**, taught in Tel-Aviv university (0560.1823). The course is taught in the Engineering faculty in the "Sciences for High Tech" track.
 
 In this repository you will find all the required materials including lecture notes, references, class code, exercises, and more.
 
@@ -23,14 +25,14 @@ Instructor: Mr. Afek Adler.
 
 The course will be given in Hebrew, but all the supporting materials will be provided in English.
 
-Garding will be based on homework and a final test (exact split to be announced).
+Garding will be based on homework (30%) and a final test (70%).
 
 ## Prerequisites
 
 The prerequisites for this course are:
 
-   * Introduction to Probability. 
-   * Mathematical Methods 1.
+   * Introduction to Probability (0560.2801 or equivalent). 
+   * Mathematical Methods 1 (0560.2802 or equivalent).
    
 This course is mainly designed for undergraduates with prior knowledge in probability and basic knowledge in math (a bit of Algebra and a bit if Infi), doing a BA/BSc with a "Sciences for High-Tech" track. However, it would also fit graduate students which want to strengthen their knowledge in statistics and data analysis (or learn the very basics of R).
 
@@ -46,10 +48,44 @@ We will use publicly available "open data sets" (e.g., from [Kaggle](https://kag
 
    * Overview - from design to implementation: how a statistical research is conducted, from the design phases, through data collection and presentation.
    * Statistical inference and parameter estimation (e.g., average, standard deviation, percentiles).
-   * 
+   * Hypothesis testing:
+      * Confidence intervals, unpaird tests, paird tests. Student's t-test, z test, a-parameteric tests.
+	  * Goodness of fit (Chi-square, Kolmogorov-Smirnov).
+   * The problem with p-value and significance testing in the age of big data.
+   * Analysis of Variance (One-way and Two-way ANOVA).
+   * Planning experiments (multiple-comparisons, contrasts).
+   * Linear regression
+   * Correlation
+   * Logistic regression
 
 ## Software Prerequisites
 
 You will need to install [R](https://www.r-project.org) and [RStudio](https://rstudio.com/products/rstudio/download/). RStudio is not mandatory to run R, but it provides a very environment for writing R code. Both software are available for free (for RStudio download the *RStudio Desktop Open Source License* version).
 
 ## Reading Materials
+
+OpenIntro statistics is an introduction to statistics with R, it doesn't contain everything we will learn, but provides a good intro to some topics. Downloadable for free [here](https://leanpub.com/openintro-statistics/) (click on the "download sample" and the entire book downloads as a pdf file).
+
+   * Diez, D. M., Barr, C. D., & Cetinkaya-Rundel, M. (2012). OpenIntro statistics (pp. 174-175). OpenIntro.
+
+R4DS (R for Data Science) is a highly recommended book for learning R, and specifically *tidyverse* which is a collection of useful packages for data science. The book is mostly "technical", i.e., it does not provide much theoretical details. This book is also available in an online format [here](https://r4ds.had.co.nz/).
+
+   * Wickham, H., & Grolemund, G. (2016). R for data science: import, tidy, transform, visualize, and model data. " O'Reilly Media, Inc.".
+
+Additional textbooks:
+
+   * Hines W. & D. Montgomery: Probability and Statistics in Engineering and Management Sciences. Wiley, 2008
+   * Johnson, N.L. & Leone, F.C.: Statistics and Experimental Design Vol. 1.2, Wiley, 2nd ed., 1997.
+   * Draper N. & H. Smith: Applied Regression Analysis, 3rd  ed. Wiley, 1998.
+   * Gibbons J.D.: Nonparametic Statistical Inference, Springer, 2011.
+
+## How this Repository is Arranged
+
+This repository is arranged with subfolders as follows:
+
+```
+├── datasets (contains datasets we will use)
+├── exercises (exercise notes)
+├── home_work (home work exercises)
+├── lectures (lecture notes)
+```
