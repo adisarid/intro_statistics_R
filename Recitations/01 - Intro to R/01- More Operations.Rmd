@@ -1,0 +1,79 @@
+---
+title: "01 Matrices dataframes and more"
+author: "Afek Adler"
+date: "r Sys.Date()"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Random Numbers
+Random Numbers allow us to simulate situations easily
+Setting seed allow us to reproduce the results of an experiment
+
+``` {r Seed}
+rnorm(5)
+rnorm(5)
+set.seed(5)
+rnorm(5)
+set.seed(5)
+rnorm(5)
+```
+
+
+``` {r Random vectors}
+rand_vec = rpois(n = 50, lambda = 10)
+mean(rand_vec)
+median(rand_vec)
+length(rand_vec)
+
+```
+``` {r Random matrices}
+r <- 1000 #rows
+c <- 3 # columns
+rand_mat = matrix(runif(r*c), r, c)
+class(rand_mat)
+dim(rand_mat)
+dim(t(rand_mat))
+rand_mat[5,2]
+# rand_mat[5,10] error
+```
+
+
+``` {r head,tail, and sample}
+head(rand_mat,2)
+```
+
+
+``` {r dataframes}
+cols <- c('a','b','c')
+df <- as.data.frame(rand_mat)
+names(df) <- cols
+head(df,2)
+```
+
+
+``` {r read write csv}
+write_csv(df, "example_file.csv")
+new_file <- read_csv("example_file.csv") 
+```
+``` {r}
+sapply(df, class)
+sapply(new_file, class)
+```
+
+``` {r}
+df$new_col = (df$a> 0.5)*1
+sapply(df, class)
+df$new_col = as.factor(df$new_col)
+sapply(df, class)
+```
+``` {r}
+x <-rnorm(100)
+y <-rnorm(100)
+plot(x, y, xlab="This is the x-axis", ylab="This is the y-axis",main="Plot of X vs Y")
+```
+
+[normal distribution deriviation - recommended](https://www.youtube.com/watch?v=cTyPuZ9-JZ0&t=1887s)

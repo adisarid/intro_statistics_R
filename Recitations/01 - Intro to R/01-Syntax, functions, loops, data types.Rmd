@@ -1,0 +1,240 @@
+---
+title: "01-Syntax, base, functions, loops and data types"
+author: "Adi Sarid / adi@sarid-ins.co.il"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Goals of this exercise
+
+Familiarize yourself with the basics of R. This exercise encompasses:
+
+   1. Setting variables
+   2. Various data types, 
+   3. Working with vectors, data.frames
+   4. Installing and loading packages
+   5. Building functions and base-R iterations
+
+
+
+## Setting variables
+
+A variables can be defined using the arrow notation (which we have already seen in the previous lesson `<-`). You can also do the same with `=` but its less common and should not be used (apart from a specific case, in function arguments, which we will discuss later).
+
+```{r setting new variables}
+a <- 1
+b <- 2
+c = 3 # just to show that this works
+
+a
+b
+c
+a*b
+b*c
+
+```
+
+Try to run the following code in the console. What is the problem with it, can you fix the code?
+
+```
+d <- c(a + b)
+```
+
+Do not mix the assignment operator `=` (which I told you not to use), with the test equality operator `==`.
+
+```{r test equality}
+
+a == 1
+b == a
+b > a
+
+```
+
+Also note the use of logicals:
+Please explain what each of the following operators do: `& | ! !=`, you can use the following (and modify it in any way):
+
+```
+# TRUE FALSE and the likes
+TRUE & FALSE
+TRUE | FALSE
+TRUE & TRUE
+!TRUE
+FALSE != TRUE
+FALSE == FALSE
+```
+
+Try the following code. Bonus points if you can explain what's wrong with it (and why that is).
+
+```{r two is not two}
+
+sqrt2 <- sqrt(2)
+sqrt2
+2 == sqrt2^2
+
+```
+
+## Data types
+
+R has a number of "basic" data types:
+
+   * Integer
+   * Numeric (double)
+   * Date (posix)
+   * Factors
+   * Logicals
+
+You can use `c()`, `rbind()`, `cbind()` to piece values together into vectors or more complex structures.
+Run the following code.
+
+```{r}
+integer_example <- 10L
+integer_example
+numeric_example <- pi # pi is a reserved word...
+numeric_example
+character_examples <- "hello world"
+character_examples
+date_example <- as.Date("2018-10-01")
+date_example
+factor_example <- as.factor(c("big", "big", "small", "medium", "small", "big", "bigger"))
+factor_example
+summary(factor_example)
+logical_example <- c(TRUE, TRUE, FALSE, TRUE)
+logical_example
+```
+
+
+***
+
+Using the `c()` command try to piece together the `logical_example` with the `factor_example`, i.e. (replace the `???` with something else):
+
+```
+c(logical_example, ???)
+```
+What happend to the factor vector? does the resulting vector make sense?
+
+Do the same with the `date_example` and the `factor_example`. What happend now? What precautions would you take when working with factors?
+
+***
+
+## data frames
+
+Data frames are a more complex structure which contains mixed data. R comes bundled with a number of "classical" data frames. Try the following:
+
+```
+mtcars
+iris
+?mtcars
+?iris
+```
+
+What types are the variables (columns) in each of these data sets? (double/factor/date/logical/integer/character)
+
+## Packages
+
+An R package is a bundle of functions which share a common goal or vision. So far, we've been using base-r. The `tidyverse` packages is a package of packages. We will be working a lot with it. Let's try to load `tidyverse`.
+
+```
+library(tidyverse)
+```
+
+Did that work? if you got an error message you might need to install it. The following code will download and install the tidyverse. Be warned, this takes long.
+
+```
+install.packages("tidyverse")
+```
+
+Now if you installed the package, try to load it again `library(tidyverse)`. To use a function after you loaded a packages you can call `function_name(arg1 = ..., arg2 = ..., ...)`. Use `glimpse` to verify your answers for the previous questions (what types are the variables in mtcars and iris):
+
+```{r tidyverse}
+library(tidyverse)
+
+glimpse(iris)
+glimpse(mtcars)
+
+```
+
+Use the function `count` to answer:
+
+How many flower-types are there in `iris`?
+How many cylinder values are there in `mtcars`?
+
+```
+count(iris, Species)
+count(???, cyl)
+
+```
+
+Later on, we will learn some more convinient ways to answer such questions.
+
+
+## Functions and iterations - intermediate exercise
+
+We will discuss some base-R iterations, however, **in real situations you should do all in your power to avoid base-r loops!**.
+
+In the following exercise you will build a function which computes the Fibonacci series (0, 1, 1, 2, 3, 5, 8, 13, 21,...), and a loop which does the same. You will compare their runtime using `bench::mark()`.
+
+WARNING:
+This might feel like a **relatively complex** exercise if you're not fluent in programming, and it's not directly related to data analysis. The reasone I am giving you this exercise is that it is a great exercise to reherse elements we were discussing, in one single exercise.
+   
+   1. Functions and the concept of recursion (a function calling itself)
+   2. Base-r loops
+   3. Conditionals (`if...else if...else`).
+
+First, if you don't know what the Fibonacci series is, go to [wikipedia, Fibonacci number](https://en.wikipedia.org/wiki/Fibonacci_number) and read about it (just the intro, should suffice).
+
+Complete the following function so that a call to the function will generate the n^th^ Fibonnacci number. Replace the `???`.
+Rows which start with the hash sign `#` are comments and will be ignored.
+
+Also, if you never heard the term "recursion" up until today, you might want to start with the second function `fib_loop`, and then think about the first one `fibonnaci`.
+
+``` {r} 
+fibonnacci <- function(n){
+  if (n == 0) {
+    # starting condition for F_0 
+    return(0)
+  } else if (n == 1) {
+    # starting condition for F_1
+    return(1)
+  } else {
+    # use recursion to calculate the number
+    return(fibonnacci(n-1)+fibonnacci(n-2))
+  }
+}
+
+fibonnacci(30)
+
+```
+
+An alternative way to compute the Fibonnacci is via loops. Complete the following code:
+
+``` {r}
+fib_loop <- function(n){
+len <- n
+fibvals <- numeric(len)
+fibvals[1] <- 1
+fibvals[2] <- 1
+for (i in 3:len) { 
+   fibvals[i] <- fibvals[i-1]+fibvals[i-2]
+} 
+return( tail(fibvals,1))
+}
+fib_loop(30)
+
+```
+
+Check that your are getting consistent results. Now, compare the two functions using:
+
+```
+install.packages(bench) # if it is not installed
+bench::mark(fibonnacci(30), fib_loop(30))
+```
+
+Which method is quicker?
+
+Note the use of `::`, I didn't mention this earlier, but instead of loading the package entirely `library(bench)` we're just calling the function `mark` from packages`bench` directly, using the double `::`.

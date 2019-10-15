@@ -1,0 +1,149 @@
+---
+title: "02 - Maximum Likelihood Estimators"
+author: "Afek Adler"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Today we are going to go over MLE (Maximum Likelihood Estimation):
+
+1. Motivation example: solving MLE with the expectation maximization algorithm for GMM
+2. Simple examples with the the binomial distribution/poisson/uniform/noraml from wiki
+
+
+#### From Wikipedia
+
+In statistics, maximum likelihood estimation (MLE) is a method of estimating the parameters of a probability distribution by maximizing a likelihood function, so that under the assumed statistical model the observed data is most probable. The point in the parameter space that maximizes the likelihood function is called the maximum likelihood estimate. The logic of maximum likelihood is both intuitive and flexible, and as such the method has become a dominant means of statistical inference.
+
+If the likelihood function is differentiable, the derivative test for determining maxima can be applied. In some cases, the first-order conditions of the likelihood function can be solved explicitly; for instance, the ordinary least squares estimator maximizes the likelihood of the linear regression model. Under most circumstances, however, numerical methods will be necessary to find the maximum of the likelihood function. 
+
+### MLE for Human Hight
+Assume that we are given data of human hights but we don't know their gender.
+
+
+``` {r}
+photo_path = 'https://ourworldindata.org/uploads/2019/06/distribution-1.png'
+destination_path = 'heights.jpg'
+download.file(photo_path,destination_path, mode = 'wb')
+```
+
+```{r pressure, echo=FALSE, fig.cap="Distribution of hights by Gender", out.width = '75%'}
+knitr::include_graphics(destination_path)
+```
+Let's generate a sample:
+```{r  sample generation}
+set.seed(42)
+n_samples = 500
+male_avg_h = 178.4
+male_std_h = 7.6
+female_avg_h = 154  # 164.7 
+female_std_h = 7.1
+male_h = rnorm(n_samples, male_avg_h, male_std_h)
+female_h = rnorm(n_samples, female_avg_h, female_std_h)
+all_h = c(male_h,female_h)
+# Kernel Density Plot
+d <- density(all_h)
+plot(d, main = "Human Height (CM)" )
+polygon(d, col="red", border="blue") 
+```
+
+
+
+Let's assume we know only the heights vector and we know that we have both genders in our sample but we don't given a specific height we don't know whether 
+it's a he or a she.
+We believe that:
+
+* Each sample was drown from a specific gaussian
+* The probability to belong to a specific gaussian is $\phi_{j}$
+* Given a gaussian the likelihood or the  probabilty to get a specific point is
+
+$$
+p(male_h = x) = p(phi_j = male)*
+\mathcal{N}\left(\mu_h , \sigma_h^{2}\right)
+\\
+p(female_h = x) = p(phi_j = female)*
+\mathcal{N}\left(\mu_f , \sigma_f^{2}\right)$$
+and
+$$ \sum_{j} \phi_j = 1$$
+Our goal is to find those parameters - if we find them than we can predict the gender by bayes theoram;
+So we are facing with a MLE problem! (given the data -> find the most likely parameters)
+
+We can't solve the MLE directly, but there is an optimization approach called expectation minimization which solves this problem heuristicly:
+There exist a lower bound on the log likelihood of the data and it's possible to optimize it iteratively, those improving the likelihood. But we are not guaranteed a global maxima.
+
+
+Resources : 
+
+* [most detailed explanaitns](http://cs229.stanford.edu/notes/cs229-notes8.pdf)
+* [example in 2d](http://www.ee.bgu.ac.il/~haimp/ml/lectures/lec2/lec2.pdf)
+* [video](https://www.youtube.com/watch?v=Rkl30Fr2S38)
+
+
+Q: 
+
+* What happens if there are more females? 
+* What happens if we care more about false positives/false negatives?
+
+A : \
+
+** Wait For Intro to Machine Learning Course! **
+
+### Simple Example
+with the binomial distribution
+
+\begin{equation}
+L(p)=f_{D}(\mathrm{H}=49 | p)=\left(\begin{array}{c}{80} \\ {49}\end{array}\right) p^{49}(1-p)^{31}\end{equation}
+\begin{equation}
+0=\frac{\partial}{\partial p}\left(\left(\begin{array}{c}{80} \\ {49}\end{array}\right) p^{49}(1-p)^{31}\right)
+\end{equation}
+\begin{equation}
+0=49 p^{48}(1-p)^{31}-31 p^{49}(1-p)^{30}
+\end{equation}
+\begin{equation}
+=p^{48}(1-p)^{30}[49(1-p)-31 p]
+\end{equation}
+\begin{equation}
+=p^{48}(1-p)^{30}[49-80 p]
+\end{equation}
+
+It's clear that the maximum is at p = 49/80.
+
+### Best Pracitces for data Data handling with R
+
+* ***mutate***() adds new variables that are functions of existing variables.
+* ***select*** () picks variables based on their names. 
+* ***filter*** () picks cases based on their values.
+* ***summarise*** () reduces multiple values down to a single summary.
+* ***arrange*** () changes the ordering of the rows.
+
+```{r, message=FALSE}
+library(dplyr) 
+```
+
+```{r}
+# ?mtcars
+mtcars %>% head(2)
+```
+
+
+```{r}
+projected_fields <- c('mpg','cyl','disp')
+mtcars %>%
+filter(mpg > 2 & cyl > 6) %>%
+select(projected_fields)
+```
+
+Additional resources:
+
++ [dplyr](https://dplyr.tidyverse.org/)
++ [dplyr cheat sheet](https://github.com/rstudio/cheatsheets/blob/master/data-transformation.pdf)
+
+
+
+
+
+
