@@ -74,7 +74,8 @@ R4DS (R for Data Science) is a highly recommended book for learning R, and speci
 
 Additional textbooks:
 
-   * Hines W. & D. Montgomery: Probability and Statistics in Engineering and Management Sciences. Wiley, 2008
+   * Runger G. & D. Montgomery: Applied Statistics and Probability for Engineers. Wiley, 7th ed., 2018.
+   * Hines W. & D. Montgomery: Probability and Statistics in Engineering and Management Sciences. Wiley, 2008.
    * Johnson, N.L. & Leone, F.C.: Statistics and Experimental Design Vol. 1.2, Wiley, 2nd ed., 1997.
    * Draper N. & H. Smith: Applied Regression Analysis, 3rd  ed. Wiley, 1998.
    * Gibbons J.D.: Nonparametic Statistical Inference, Springer, 2011.
