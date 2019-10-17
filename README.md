@@ -51,12 +51,12 @@ We will use publicly available "open data sets" (e.g., from [Kaggle](https://kag
    * Hypothesis testing:
       * Confidence intervals, unpaird tests, paird tests. Student's t-test, z test, a-parameteric tests.
 	  * Goodness of fit (Chi-square, Kolmogorov-Smirnov).
-   * The problem with p-value and significance testing in the age of big data.
+   * The problem with p-value and significance testing in the age of big data. False discovery rate (FDR).
    * Analysis of Variance (One-way and Two-way ANOVA).
-   * Planning experiments (multiple-comparisons, contrasts).
-   * Linear regression
-   * Correlation
-   * Logistic regression
+   * Planning experiments (multiple-comparisons), sample size calculations, power calculations.
+   * Linear regression.
+   * Correlation.
+   * Logistic regression.
 
 ## Software Prerequisites
 
