@@ -76,4 +76,4 @@ y <-rnorm(100)
 plot(x, y, xlab="This is the x-axis", ylab="This is the y-axis",main="Plot of X vs Y")
 ```
 
-[normal distribution deriviation - recommended](https://www.youtube.com/watch?v=cTyPuZ9-JZ0&t=1887s)
+[normal distribution deriviation - recommended](https://www.youtube.com/watch?v=cTyPuZ9-JZ0)

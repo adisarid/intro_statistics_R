@@ -40,11 +40,20 @@ b*c
 
 ```
 
-Try to run the following code in the console. What is the problem with it, can you fix the code?
-
+Try to run the following code in the console, and think about questions which follow.
 ```
 d <- c(a + b)
+d2 <- a + b
+d3 <- c*(a + b)
 ```
+
+What does the first line do? 
+What is the difference between the first line and the second line? (there is a difference even though the result is the same)
+What does the third line do?
+Why shouldn't you use `c` as a variable name?
+
+(hint: type `help("c")` in the console)
+
 
 Do not mix the assignment operator `=` (which I told you not to use), with the test equality operator `==`.
 

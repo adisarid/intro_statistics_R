@@ -11,8 +11,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Today we are going to go over MLE (Maximum Likelihood Estimation):
 
-1. Motivation example: solving MLE with the expectation maximization algorithm for GMM
-2. Simple examples with the the binomial distribution/poisson/uniform/noraml from wiki
+   1. Motivation example: solving MLE with the expectation maximization algorithm for GMM
+   2. Simple examples with the the binomial distribution/poisson/uniform/noraml from wiki
 
 
 #### From Wikipedia
@@ -22,31 +22,48 @@ In statistics, maximum likelihood estimation (MLE) is a method of estimating the
 If the likelihood function is differentiable, the derivative test for determining maxima can be applied. In some cases, the first-order conditions of the likelihood function can be solved explicitly; for instance, the ordinary least squares estimator maximizes the likelihood of the linear regression model. Under most circumstances, however, numerical methods will be necessary to find the maximum of the likelihood function. 
 
 ### MLE for Human Hight
-Assume that we are given data of human hights but we don't know their gender.
+
+Assume that we are given data of human height but we don't know their gender.
 
 
 ``` {r}
-photo_path = 'https://ourworldindata.org/uploads/2019/06/distribution-1.png'
-destination_path = 'heights.jpg'
+photo_path <- 'https://ourworldindata.org/uploads/2019/06/distribution-1.png'
+destination_path <- 'heights.jpg'
 download.file(photo_path,destination_path, mode = 'wb')
 ```
 
-```{r pressure, echo=FALSE, fig.cap="Distribution of hights by Gender", out.width = '75%'}
+```{r human height, echo=FALSE, fig.cap="Distribution of height by Gender", out.width = '75%'}
 knitr::include_graphics(destination_path)
 ```
+
 Let's generate a sample:
+
 ```{r  sample generation}
 set.seed(42)
 n_samples = 500
+
 male_avg_h = 178.4
 male_std_h = 7.6
+
 female_avg_h = 154  # 164.7 
 female_std_h = 7.1
-male_h = rnorm(n_samples, male_avg_h, male_std_h)
-female_h = rnorm(n_samples, female_avg_h, female_std_h)
-all_h = c(male_h,female_h)
+
+male_h <- rnorm(n_samples, male_avg_h, male_std_h)
+female_h <- rnorm(n_samples, female_avg_h, female_std_h)
+
+# a plot using ggplot
+library(tidyverse)
+all_h <- tibble(h = c(male_h,female_h))
+
+ggplot(all_h, aes(h)) + 
+  geom_density(fill = "red", color = "blue") + 
+  ggtitle("Human Height [cm]") +
+  labs(caption = "n=1000")
+
+# this can also be generated via base R plots, but we highly recommend the use of ggplot2 for producing plots
 # Kernel Density Plot
-d <- density(all_h)
+d <- density(all_h$h)
+
 plot(d, main = "Human Height (CM)" )
 polygon(d, col="red", border="blue") 
 ```
@@ -59,17 +76,20 @@ We believe that:
 
 * Each sample was drown from a specific gaussian
 * The probability to belong to a specific gaussian is $\phi_{j}$
-* Given a gaussian the likelihood or the  probabilty to get a specific point is
+* Given a gaussian distribution, the likelihood or the probability to get a specific point is
 
-$$
-p(male_h = x) = p(phi_j = male)*
+\[
+p(male_h = x) = p(\phi_j = male)*
 \mathcal{N}\left(\mu_h , \sigma_h^{2}\right)
 \\
-p(female_h = x) = p(phi_j = female)*
-\mathcal{N}\left(\mu_f , \sigma_f^{2}\right)$$
+p(female_h = x) = p(\phi_j = female)*
+\mathcal{N}\left(\mu_f , \sigma_f^{2}\right)
+\]
 and
-$$ \sum_{j} \phi_j = 1$$
-Our goal is to find those parameters - if we find them than we can predict the gender by bayes theoram;
+
+\[\sum_{j} \phi_j = 1\]
+
+Our goal is to find those parameters - if we find them than we can predict the gender by bayes theorem;
 So we are facing with a MLE problem! (given the data -> find the most likely parameters)
 
 We can't solve the MLE directly, but there is an optimization approach called expectation minimization which solves this problem heuristicly:
@@ -78,7 +98,7 @@ There exist a lower bound on the log likelihood of the data and it's possible to
 
 Resources : 
 
-* [most detailed explanaitns](http://cs229.stanford.edu/notes/cs229-notes8.pdf)
+* [most detailed explanations](http://cs229.stanford.edu/notes/cs229-notes8.pdf)
 * [example in 2d](http://www.ee.bgu.ac.il/~haimp/ml/lectures/lec2/lec2.pdf)
 * [video](https://www.youtube.com/watch?v=Rkl30Fr2S38)
 
@@ -114,11 +134,11 @@ It's clear that the maximum is at p = 49/80.
 
 ### Best Pracitces for data Data handling with R
 
-* ***mutate***() adds new variables that are functions of existing variables.
-* ***select*** () picks variables based on their names. 
-* ***filter*** () picks cases based on their values.
-* ***summarise*** () reduces multiple values down to a single summary.
-* ***arrange*** () changes the ordering of the rows.
+* `mutate()` adds new variables that are functions of existing variables.
+* `select()` picks variables based on their names. 
+* `filter()` picks cases based on their values.
+* `summarize()` reduces multiple values down to a single summary.
+* `arrange()` sorts the rows.
 
 ```{r, message=FALSE}
 library(dplyr) 
@@ -133,8 +153,8 @@ mtcars %>% head(2)
 ```{r}
 projected_fields <- c('mpg','cyl','disp')
 mtcars %>%
-filter(mpg > 2 & cyl > 6) %>%
-select(projected_fields)
+  filter(mpg > 2 & cyl > 6) %>%
+  select(projected_fields)
 ```
 
 Additional resources:
