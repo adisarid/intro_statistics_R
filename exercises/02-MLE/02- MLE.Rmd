@@ -94,9 +94,14 @@ Suppose we know the genders in our sample, finding the parameters is than trivia
 \[ \hat{\sigma}_{Male} = SigmaMaleHeight \]
 
 
-If we see a height and we want to know whether its a Female or Male, we can do it in a probabalistic manner:
+If we see a height and we want to know whether its a Female or Male, we can do it in a probabalistic manner, given that we know the parameters of the model:
 \[ p(Z= z|X = x) = p(X = x ,Z= z )/p(X=x)\]
 This is called soft clustering.
+and if we would have to guess a class (gender), than we would guess:
+\[ Z_i = argmax_z p(Z= z|X = x_i)\]
+This is called Hard clustering.
+So if we know the parameters we "know" Z and if we know Z we know the parameters.
+
 
 **But we don't know them..** MLE to the rescue!
 Let's define the likelihood of one sample:
