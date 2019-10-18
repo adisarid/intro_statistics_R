@@ -70,30 +70,51 @@ polygon(d, col="red", border="blue")
 
 
 
-Let's assume we know only the heights vector and we know that we have both genders in our sample but we don't given a specific height we don't know whether 
-it's a he or a she.
-We believe that:
+Let's assume we know only the heights vector but we don't know the genders at all.
+We call the gender a hidden variable because we never observe it.
+let's consider a model to generate this vector:
 
-* Each sample was drown from a specific gaussian
-* The probability to belong to a specific gaussian is $\phi_{j}$
-* Given a gaussian distribution, the likelihood or the probability to get a specific point is
+For each sample:
 
-\[
-p(male_h = x) = p(\phi_j = male)*
-\mathcal{N}\left(\mu_h , \sigma_h^{2}\right)
-\\
-p(female_h = x) = p(\phi_j = female)*
-\mathcal{N}\left(\mu_f , \sigma_f^{2}\right)
-\]
-and
+  1. Sample a gender: \[ Z \in \{Female,Male\} \]
+NOTE : in our example z is derived from a Bernoulli distribution but the general case is Categorical distribution.
+for simplicity lets note: 
+ \[ p(Z = Male) = p ,p(Z = Female) = 1-p\]
+  2. After we know a gender we need to sample a height - let's assume: 
+\[ p(X|Z) = \mathcal{N}\left(\mu_z , \sigma_z^{2}\right)\]
 
-\[\sum_{j} \phi_j = 1\]
+NOTE : it means that there are parameters that describe the height of Males and different parametrs that describe the height Females but their both from normal distribution.
 
-Our goal is to find those parameters - if we find them than we can predict the gender by bayes theorem;
-So we are facing with a MLE problem! (given the data -> find the most likely parameters)
+Therefore we can deduce:
+\[ p(X = x ,Z= z ) = p(Z=z)* p(X = x|Z= z) \]
 
-We can't solve the MLE directly, but there is an optimization approach called expectation minimization which solves this problem heuristicly:
-There exist a lower bound on the log likelihood of the data and it's possible to optimize it iteratively, those improving the likelihood. But we are not guaranteed a global maxima.
+Suppose we know the genders in our sample, finding the parameters is than trivial:
+\[ \hat{p} = NumberOfMalesInSample/SampleSize \]
+\[ \hat{\mu}_{Male} = AvgMaleHeight \]
+\[ \hat{\sigma}_{Male} = SigmaMaleHeight \]
+
+
+If we see a height and we want to know whether its a Female or Male, we can do it in a probabalistic manner, given that we know the parameters of the model:
+\[ p(Z= z|X = x) = p(X = x ,Z= z )/p(X=x)\]
+This is called soft clustering.
+and if we would have to guess a class (gender), than we would guess:
+\[ Z_i = argmax_z p(Z= z|X = x_i)\]
+This is called Hard clustering.
+So if we know the parameters we "know" Z and if we know Z we know the parameters.
+
+
+**But we don't know them..** MLE to the rescue!
+Let's define the likelihood of one sample:
+\[ p(X = x) = p(Z=Male)* p(X = x|Z=Male) + p(Z=Female)* p(X = x|Z=Fenale)\]
+And the complete Data liklihood:
+\[\prod_{i}^{n}  p(X = x_i) = \prod_{i}^{n} (p(Z=Male)* p(X = x_i|Z=Male) + p(Z=Female)* p(X = x_i|Z=Fenale))\]
+But you will find that this term is impossible to optimize analytically. 
+Luckily, there are ways to solve this problem (heuristically):
+  
+  1. Expectaion maximization algorithm - There exist a lower bound on the log likelihood of the data and it's possible to optimize it iteratively, those improving the likelihood. But we are not guaranteed a global maxima.
+  2. Gradient descent (with a a constrain on each sigma being positive semi definite).
+  
+We will not cover this terms in this course but you will meet the gradient descent algorithm in the future.
 
 
 Resources : 
@@ -113,7 +134,7 @@ A : \
 ** Wait For Intro to Machine Learning Course! **
 
 ### Simple Example
-with the binomial distribution
+With the binomial distribution
 
 \begin{equation}
 L(p)=f_{D}(\mathrm{H}=49 | p)=\left(\begin{array}{c}{80} \\ {49}\end{array}\right) p^{49}(1-p)^{31}\end{equation}
