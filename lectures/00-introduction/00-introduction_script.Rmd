@@ -1,0 +1,215 @@
+---
+title: "Introduction - visualizing and summarizing data"
+author: "Adi Sarid"
+date: "2019-10-19"
+output: html_document
+---
+  
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+
+## The power lifting data set
+
+We're going to demonstrate with power lifting data.
+This data set comes from tidytuesday (2019-10-08), see the documentation here:
+https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-10-08
+
+
+```{r read the data}
+ipf_lifts <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-10-08/ipf_lifts.csv")
+
+glimpse(ipf_lifts)
+```
+
+## Scatter plot
+
+A scatter plot allows us to examine the relationship between two continuous variables (i.e., numeric). For example, the following scatter plot will tell us the relationship between squats and bench presses (two types of exercises, which work on the legs -- quadriceps and the hands -- triceps respectively). We're going to sample observations (because all 40k observations will be too much for the chart).
+
+```{r scatter plot sqauat bench age}
+set.seed(0) # used to get consistent results
+
+# sample a subset of the file
+sampled_ipf_lifts <- ipf_lifts %>% 
+  filter(!is.na(best3squat_kg) & !is.na(best3bench_kg)) %>% 
+  sample_n(1500)
+
+# plot squat versus bench press
+ggplot(sampled_ipf_lifts,
+       aes(x = best3squat_kg, y = best3bench_kg)) + 
+  geom_point(alpha = 0.3) + 
+  theme_bw()
+
+ggplot(sampled_ipf_lifts,
+       aes(x = age, y = best3bench_kg)) + 
+  geom_point(alpha = 0.3) + 
+  theme_bw()
+
+```
+
+Think about what these scatter plots teach us?
+
+   * What is the relationship between benchpresses weight and squats weight?
+   * What is the meaning of the point with a negative squat weight measurement?
+   * What do outlier points look like here?
+   * Is there a relationship between benchpresses weight and age?
+
+Later on, we will learn how to extract the linear relationship between such variables (the equation), when there is such a relationship. This will be dealt with in the linear regression chapter of our course.
+
+## Single variable: distribution, mean, meadian, standard deviation
+
+Now we discuss how to express the properties of a single, continuous, variable.
+
+### Histogram and Shape
+
+The distribution of a variable can be described with a histogram or with a density plot. The both are related (basically show the same thing).
+
+```{r histogram and density}
+
+ggplot(ipf_lifts, aes(x = age)) + 
+  geom_histogram() + 
+  theme_bw()
+  
+ggplot(ipf_lifts, aes(x = age, y = stat(density))) + 
+  geom_histogram() + 
+  geom_density(color = "red", size = 1) +
+  theme_bw()
+  
+ipf_lifts %>% 
+  select(starts_with("best3")) %>% 
+  pivot_longer(cols = everything(), names_to = "exercise", values_to = "weight") %>% 
+  filter(weight > 0) %>% 
+  ggplot(aes(x = weight, y = stat(density))) + 
+  geom_density(aes(color = exercise), size = 1, bw = 10) + 
+  theme_bw()
+
+```
+
+
+***
+
+Questions:
+
+   1. Which exercise has relatively lower weight values?
+   2. Which exercise has higher dispersion?
+   3. Can you think of familiar distributions (or a combination of such) which would fit these densities?
+
+***
+
+Here are some familiar forms of distributions:
+
+```{r density and histogram demonstrations}
+
+familiar_distributions <- tibble(values = rnorm(1000), dist_type = "normal(mu=0,sig=1)") %>% 
+  bind_rows(tibble(values = runif(1000), dist_type = "uniform(a=0,b=1)"),
+            tibble(values = rexp(1000), dist_type = "exponential(rate=1)"),
+            tibble(values = rchisq(1000, df = 3), dist_type = "Chi-sqaure(df=3)"),
+            tibble(values = rbinom(1000, size = 6, prob = 0.5), dist_type = "binomial(n=6,p=0.5)")) 
+  
+ggplot(familiar_distributions, aes(x = values, y = stat(density))) + 
+  geom_histogram() + 
+  geom_density(color = "red", size = 1) + 
+  facet_wrap(~dist_type) + 
+  theme_bw()
+
+```
+
+Notice a few things:
+
+   * The difference between a discrete distribution and a continuous distribution
+   * The variance (dispersion) of the distributions (second moment)
+   * The asymmetry of certain distributions - which can be measured via skeweness (third moment)
+   * The tendency to yield outliers (extreme values) - which is measured by kurtosis (fourth moment)
+
+These can be computed either from the data, though since these distributions are given we can compute this analytically. We will delve deeper into these terms later on.
+
+### Mean, standard deviation (and variance)
+
+Reminder: the mean or expected value of a random variable $X$ is defined as:
+
+\[
+
+E[X] = \mu_X = \int_{x=-\infty}^\infty{xf(x)dx}
+
+\]
+
+In the case of a **discrete** variable, the integral becomes summation.
+
+\[
+
+E[X] = \sum_{x=-\infty}^\infty{xf(x)}
+
+\]
+
+When we are estimating the mean from a given sample, the weight of each observation is $1/n$, hence, we get the familiar form for computing the mean (average):
+
+\[
+\bar{x} = \frac{1}{n}\sum_{i=1}^n{x_i}
+\]
+
+The standard deviation (variance) is a measure of dispersion of a distribution. Defined as:
+
+\[
+V(X) = \sigma^2=E[(X-\mu)^2] = \int{(x-\mu)^2f(x)dx}
+\]
+
+Note that $\sigma^2=E[X^2]-(EX)^2$. For a sample there are two types of estimates to standard deviations which are used oftenly (either $\hat{\sigma}$ or $s$, for population and for a sample).
+
+The standard deviation is the sqaure root of the variance $\sigma$.
+
+When computing the standard deviation of a population we use:
+
+\[\hat{\sigma} = \sqrt{\frac{1}{n}\sum_{i=1}^n(x_i-\bar{x})^2}\]
+
+And for a sample we would use a denominator $n-1$ instead of $n$:
+
+\[
+s = \sqrt{\frac{1}{n-1}\sum_{i=1}^n(x_i-\bar{x})^2}
+\]
+
+This is called Bessel's correction, which is applied to yield an **unbiased estimate**. We'll get back to that later on and explain bias in detail, and why it is unbiased.
+
+```{r compute mean and std}
+
+familiar_distributions %>% 
+  group_by(dist_type) %>% 
+  summarize(mean = mean(values),
+            sd = sd(values),
+            var = var(values))
+
+
+```
+
+### Boxplot, median, quartiles (and percentiles)
+
+```{r boxplot example}
+
+ipf_lifts %>% 
+  select(starts_with("best3")) %>% 
+  pivot_longer(cols = everything(), names_to = "exercise", values_to = "weight") %>% 
+  filter(weight > 0) %>% 
+  ggplot(aes(y = weight, x = exercise)) + 
+  geom_boxplot() +
+  theme_bw()
+
+```
+
+The median is the value that 50\% of the obsevations are below it and 50\% of the observations are above it, i.e.: the median is the observation right in the middle. If there are an even number of observations, there will be two observations "in the middle" and the median is defined as their average. 
+
+The $P$-th **percentile** of a list of $n$ observations (sorted in an increasing order) is the number located at $\left\lceil {\frac {P}{100}}\times n\right\rceil$.
+
+The estimate of percentile $p$ ($0\leq p\leq1$) is the value $v$ which yields:
+
+\[
+P(X\leq v) = p
+\]
+
+(For median $p=0.5$, for quantiles $p\in\{0.25, 0.5, 0.75\}$)
+
+The boxplot illustrates the quantiles (box ends), the median (line inside the box), the box extends with two wiskers up to $1.5\time IQR$ (the Inter-Quartile-Range). Observations outside the IQR are considered outliers, and marked by a point.
+
+### Data transformation
+
+## Bias
