@@ -90,11 +90,13 @@ ipf_lifts %>%
 
 ***
 
-Questions:
+Questions: 
+[Mentimeter edit link](https://www.mentimeter.com/s/c53753031b6cccd429aebeedf531eb1d/fb09c578738d/edit)
 
-   1. Which exercise has relatively lower weight values?
-   2. Which exercise has higher dispersion?
-   3. Can you think of familiar distributions (or a combination of such) which would fit these densities?
+   1. Which exercise has relatively lower weight values? [mentimeter](https://www.menti.com/tgdkyggsnu)
+   2. The densities look bi-modal (two peaks). Can you guess why?
+   3. Which exercise has higher dispersion?
+   4. Can you think of familiar distributions (or a combination of such) which would fit these densities?
 
 ***
 
@@ -130,17 +132,13 @@ These can be computed either from the data, though since these distributions are
 Reminder: the mean or expected value of a random variable $X$ is defined as:
 
 \[
-
 E[X] = \mu_X = \int_{x=-\infty}^\infty{xf(x)dx}
-
 \]
 
 In the case of a **discrete** variable, the integral becomes summation.
 
 \[
-
 E[X] = \sum_{x=-\infty}^\infty{xf(x)}
-
 \]
 
 When we are estimating the mean from a given sample, the weight of each observation is $1/n$, hence, we get the familiar form for computing the mean (average):
@@ -161,7 +159,9 @@ The standard deviation is the sqaure root of the variance $\sigma$.
 
 When computing the standard deviation of a population we use:
 
-\[\hat{\sigma} = \sqrt{\frac{1}{n}\sum_{i=1}^n(x_i-\bar{x})^2}\]
+\[
+\hat{\sigma} = \sqrt{\frac{1}{n}\sum_{i=1}^n(x_i-\bar{x})^2}
+\]
 
 And for a sample we would use a denominator $n-1$ instead of $n$:
 
@@ -208,8 +208,53 @@ P(X\leq v) = p
 
 (For median $p=0.5$, for quantiles $p\in\{0.25, 0.5, 0.75\}$)
 
-The boxplot illustrates the quantiles (box ends), the median (line inside the box), the box extends with two wiskers up to $1.5\time IQR$ (the Inter-Quartile-Range). Observations outside the IQR are considered outliers, and marked by a point.
+The boxplot illustrates the quantiles (box ends), the median (line inside the box), the box extends with two wiskers up to $1.5\times IQR$ (the Inter-Quartile-Range). Observations outside the IQR are considered outliers, and marked by a point.
 
-### Data transformation
+```{r example for IQR}
 
-## Bias
+ipf_lifts %>% 
+  select(starts_with("best3")) %>% 
+  pivot_longer(cols = everything(), names_to = "exercise", values_to = "weight") %>% 
+  filter(weight > 0) %>% 
+  group_by(exercise) %>% 
+  summarize(quartile1 = quantile(weight, 0.25),
+            quartile3 = quantile(weight, 0.75)) %>% 
+  mutate(IQR = quartile3 - quartile1) %>% 
+  mutate(buttom_whisker = quartile1 - 1.5*IQR,
+         top_whisker = quartile3 + 1.5*IQR)
+
+```
+
+Example for boxplot of common distributions.
+
+```{r boxplot common distributions}
+ggplot(familiar_distributions, aes(x = dist_type, y = values)) + 
+  geom_boxplot() +
+  theme_bw()
+```
+
+### Data transformations
+
+Sometimes, it's useful to transform data. Transformations can reveal new relationships between variables, and allow us to improve models. We will learn more about transformations later on in the course (when we discuss linear and logistic regression, for example). 
+
+Here is a demonstration from the `diamonds` data set. You will work with this data set in the homework (questions from the R4DS book).
+
+```{r relationship with transformations}
+
+ggplot(diamonds,
+       aes(x = carat, y = price)) + 
+  geom_point(alpha = 0.3) + 
+  theme_bw()
+
+ggplot(diamonds,
+       aes(x = log(carat), y = price)) + 
+  geom_point(alpha = 0.3) + 
+  theme_bw()
+
+ggplot(diamonds,
+       aes(x = log(carat), y = log(price))) + 
+  geom_point(alpha = 0.3) + 
+  theme_bw()
+
+
+```
