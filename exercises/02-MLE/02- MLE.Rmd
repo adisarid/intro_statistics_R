@@ -1,27 +1,113 @@
 ---
-title: "02 - Maximum Likelihood Estimators"
+title: "EX 02 - Data Handling & MLE"
 author: "Afek Adler"
 date: "`r Sys.Date()`"
-output: html_document
+output:
+  html_document :  
+    number_sections: TRUE
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Today we are going to go over MLE (Maximum Likelihood Estimation):
+Today we are going to go over data Handling With R and MLE (Maximum Likelihood Estimation):
 
+   1. Best practices for data handling with R
    1. Motivation example: solving MLE with the expectation maximization algorithm for GMM
    2. Simple examples with the the binomial distribution/poisson/uniform/noraml from wiki
 
+# Best Pracitces for data Data handling with R
 
-#### From Wikipedia
+R main datatypes:
 
+  * vectors
+  * matrices
+  * data.frame - matrices with meatadata, added functionallity and allow multiple data types
+  * tibbles  - modern take on dataframes 
+
+dplyr is a grammar of data manipulation, providing a consistent set of verbs that help you solve the most common data manipulation challenges:
+
+  * `mutate()` adds new variables that are functions of existing variables.
+  * `select()` picks variables based on their names. 
+  * `filter()` picks cases based on their values.
+  * `summarize()` reduces multiple values down to a single summary.
+  * `arrange()` sorts the rows.
+
+```{r Impports, message=FALSE}
+library(tidyverse)
+library(nycflights13)
+```
+
+
+This dataset has 19 columns so the head function is not that usefull when knitting to html.
+It is always useful to know how many missing values we have in our dataset, sometimes missing values are not just given to us as NA.
+```{r describe dataset}
+head(flights,2)
+colSums(is.na(flights))/nrow(flights) 
+sapply(flights,class)
+```
+***
+**At home - find a better way to print the classes and the % of missing values in R** <br>
+
+
+## `select()` picks variables based on their names. 
+
+```{r select method}
+flight_ditance_airtime <- flights %>% select( distance, air_time) 
+flight_ditance_airtime %>% head(2)
+```
+
+
+## `mutate()` adds new variables that are functions of existing variables.
+```{r mutate method}
+flight_ditance_airtime %>% mutate(mean_speed = distance/air_time) %>% head(2)
+```
+If you only want to keep the new variables, use `transmute()`:
+```{r transmute method}
+flight_ditance_airtime %>% transmute(mean_speed = distance/air_time) %>% head(2)
+```
+
+##  `filter()` picks cases based on their values.
+```{r filter method}
+flights %>% filter(is.na(dep_delay)) %>% head(2)
+```
+
+
+##  `arrange()` picks cases based on their values.
+```{r arrange  method}
+flights %>% arrange(desc(month)) %>% head(2)
+```
+
+## `summarize()` reduces multiple values down to a single summary.
+
+```{r summarize  method}
+by_month <- group_by(flights,month)
+by_month %>% summarise(count = n()) %>% 
+  ggplot( mapping = aes(x = month, y = count)) + geom_bar(stat="identity") +  coord_cartesian(ylim = c(2*10^4, 3*10^4))
+```
+
+```{r another way}
+ggplot(data = flights) + 
+  geom_bar(mapping = aes(x = month)) +
+ coord_cartesian(ylim = c(2*10^4, 3*10^4))
+```
+
+
+Additional resources:
+
+  + [r4ds](https://r4ds.had.co.nz/transform.html)
+  + [dplyr](https://dplyr.tidyverse.org/)
+  + [dplyr cheat sheet](https://github.com/rstudio/cheatsheets/blob/master/data-transformation.pdf)
+
+
+
+# 2.MLE 
 In statistics, maximum likelihood estimation (MLE) is a method of estimating the parameters of a probability distribution by maximizing a likelihood function, so that under the assumed statistical model the observed data is most probable. The point in the parameter space that maximizes the likelihood function is called the maximum likelihood estimate. The logic of maximum likelihood is both intuitive and flexible, and as such the method has become a dominant means of statistical inference.
 
-If the likelihood function is differentiable, the derivative test for determining maxima can be applied. In some cases, the first-order conditions of the likelihood function can be solved explicitly; for instance, the ordinary least squares estimator maximizes the likelihood of the linear regression model. Under most circumstances, however, numerical methods will be necessary to find the maximum of the likelihood function. 
+If the likelihood function is differentiable, the derivative test for determining maxima can be applied. In some cases, the first-order conditions of the likelihood function can be solved explicitly; for instance, the ordinary least squares estimator maximizes the likelihood of the linear regression model. Under most circumstances, however, numerical methods will be necessary to find the maximum of the likelihood function. ("Wikipedia")
 
-### MLE for Human Hight
+## MLE for Human Hight
 
 Assume that we are given data of human height but we don't know their gender.
 
@@ -52,7 +138,6 @@ male_h <- rnorm(n_samples, male_avg_h, male_std_h)
 female_h <- rnorm(n_samples, female_avg_h, female_std_h)
 
 # a plot using ggplot
-library(tidyverse)
 all_h <- tibble(h = c(male_h,female_h))
 
 ggplot(all_h, aes(h)) + 
@@ -133,7 +218,7 @@ A : \
 
 ** Wait For Intro to Machine Learning Course! **
 
-### Simple Example
+# Simple Example
 With the binomial distribution
 
 \begin{equation}
@@ -151,38 +236,15 @@ L(p)=f_{D}(\mathrm{H}=49 | p)=\left(\begin{array}{c}{80} \\ {49}\end{array}\righ
 =p^{48}(1-p)^{30}[49-80 p]
 \end{equation}
 
-It's clear that the maximum is at p = 49/80.
+It's clear that the maximum is at p = 49/80. But let's see how we do it in R using the bulit in [optimize](ehttps://stat.ethz.ch/R-manual/R-devel/library/stats/html/optimize.html) function  
 
-### Best Pracitces for data Data handling with R
-
-* `mutate()` adds new variables that are functions of existing variables.
-* `select()` picks variables based on their names. 
-* `filter()` picks cases based on their values.
-* `summarize()` reduces multiple values down to a single summary.
-* `arrange()` sorts the rows.
-
-```{r, message=FALSE}
-library(dplyr) 
+``` {r find MlE}
+likelihood <- function(p) p^49*(1-p)^31
+tolerance <- 10^(-4) #0.0001
+pmax <- optimize(likelihood, c(0, 1), tol = , maximum = T)[[1]]
+delta <- abs(pmax- (49/80))
+delta
 ```
-
-```{r}
-# ?mtcars
-mtcars %>% head(2)
-```
-
-
-```{r}
-projected_fields <- c('mpg','cyl','disp')
-mtcars %>%
-  filter(mpg > 2 & cyl > 6) %>%
-  select(projected_fields)
-```
-
-Additional resources:
-
-+ [dplyr](https://dplyr.tidyverse.org/)
-+ [dplyr cheat sheet](https://github.com/rstudio/cheatsheets/blob/master/data-transformation.pdf)
-
 
 
 
