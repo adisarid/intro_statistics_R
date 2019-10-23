@@ -1,0 +1,114 @@
+---
+title: "EX 03"
+author: "Afek Adler"
+date: "`r Sys.Date()`"
+output:
+  html_document :  
+    number_sections: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+Last excercise we spoke about MLE, MLE is a method for point estimation.
+Today we will cover another method for point estimats which is the method of moments.
+Than, we will go over interval estimation
+
+
+We will go over an example of point estimation with the method of moments but let's remind ourself some desired characteristics of estimators:
+
+  * Unbiased. If: \[E(\hat{\theta}) = \theta \]
+  * Consistent. If the varaince of the estimator ~0 when N tends to $\infty$ 
+  
+  Remember that the sample mean is unbiased estimator of the population mean
+  
+# Point estimates with the method of moments
+The first moment
+ \[E(X)=\frac{\sum_{i=1}^{n} X_{i}}{n} \Rightarrow E(X)=\bar{X}\]
+The Second moment
+  \[E\left(X^{2}\right)=\frac{\sum_{i=1}^{n} X_{i}^{2}}{n} \Rightarrow \]
+   \[V(X)=E\left(X^{2}\right)-E^{2}(X) \Rightarrow V(X)=\frac{\sum_{i=1}^{n} X_{i}^{2}}{n}-(\bar{X})^{2}\]
+ 
+
+**Q1:**
+
+
+Let  \[X =  \mathcal{U}\left(\theta , \theta + 6 \right)\]
+Estimate $\theta$ with the method of moments \\
+
+Therfore \[E(X) =  (\theta + \theta+ 6 )/2 = \theta +3\]
+And \[E(X) = \bar{X} = \theta +3\]
+By the equation of the first moment.
+Therfore \[\hat{\theta} = \bar{X}  -3\]
+
+Note - There are another approaches to Estimating parameters,some are really different - like the Bayesian approach.
+Some are computationally different, for example, using transformations like the Moment-generating function. 
+
+# Interval Estimation
+
+## The student's t distribution 
+t distribution is used to model the expected values of a **small** sample from a population that is distributed noraml with unknown variance.
+As N increases, t distribution is getting closer and closer to the normal distribution.
+
+[student t dist vs normal dist as function of n](https://rpsychologist.com/d3/tdist/)
+
+## confidense interval
+
+In statistics, a confidence interval (CL) is a type of interval estimate, computed from the statistics of the observed data, that might contain the true value of an unknown population parameter. The interval has an associated confidence level, or coverage that, loosely speaking, quantifies the level of confidence that the deterministic parameter is captured by the interval. More strictly speaking, the confidence level represents the frequency (i.e. the proportion) of possible confidence intervals that contain the true value of the unknown population parameter. **In other words, if confidence intervals are constructed using a given confidence level from an infinite number of independent sample statistics, the proportion of those intervals that contain the true value of the parameter will be equal to the confidence level**. [wiki](https://en.wikipedia.org/wiki/Confidence_interval)
+
+There are one sided and two sided confidense intervals.
+
+### confidense interval for the mean based on n samples: 
+Based on our assumptions we get a different distribution of the sample, after we figure out how the sample is distributed computing the confidense interval is straighforward :
+\[\mu \in(\bar{X}-\#of\_std_\_for\_confidense\_level\_\alpha*std,\bar{X}+\#of\_std_\_for\_confidense\_level\_\alpha*std) \]
+1.When variance is known and the population is assumed to be distributer notmal or n is "big" (n > 30), the sample mean is distributed
+\[\mathcal{N}\left(\bar{X} , \frac{\sigma^{2}}{n}\right)\]
+So  a two sided confidense interval is:
+\[\mu \in\left(\bar{X}-Z_{1-\frac{\alpha}{2}} \frac{\sigma}{\sqrt{n}},\bar{X}+Z_{1-\frac{\alpha}{2}} \frac{\sigma}{\sqrt{n}}\right)\]
+2 .When variance is **not** known and n is "big" (n > 30), the sample mean is distributed
+\[\mathcal{N}\left(\bar{X} , \frac{\hat{\sigma}^{2}}{n}\right)\]
+3. When variance is **not** known and n is **not** "big" (n <= 30), the sample mean is distributed
+\[\mathcal{t_{n-1}}\left(\bar{X} , \frac{\hat{\sigma}^{2}}{n}\right)\] 
+
+Reminder:
+\[\hat{\sigma}^{2}=\frac{\sum_{i=1}^{n}\left(X_{i}-\bar{X}\right)^{2}}{n-1}=\frac{\sum_{i=1}^{n} X_{i}^{2}-n \bar{X}^{2}}{n-1} \]
+
+For your own understanding, for each case, derive the one sided and two sided confidense interval at home.
+
+### confidense interval for the proportion based on n samples
+if n is large enough, the proportion is distributed:
+\[\mathcal{N}\left(\hat{p} , \frac{\hat{p}\hat{q}}{n}\right)\]
+
+**Q2:**
+An online advertising company is doing an ab testing for a new advertisement and wants to model a confidense interval for the click thorogh rate (CTR) of a givent test such that it's confidense interval will be smaller than 5%  in confidense level of 95% . What is the minmum number of sample for this purpose?
+
+\[0.05 = Length \geq 2*Z_{1-\frac{\alpha}{2}}*\sqrt{\frac{\hat{p}\hat{q}}{n}} =  2*Z_.975*\sqrt{\frac{\hat{p}\hat{q}}{n}} \Rightarrow\]
+\[=  2*1.96*\sqrt{\frac{\hat{p}\hat{q}}{n}} \Rightarrow\ 0.01275 \geq \sqrt{\frac{\hat{p}\hat{q}}{n}} \Rightarrow\ n \geq \frac{\hat{p}\hat{q}}{0.00016} \Rightarrow\]
+\[n \geq  1562.5 = \frac{0.5*0.5}{0.00016} \geq \frac{\hat{p}\hat{q}}{0.00016}\]
+because \[ p(1-p) \leq 0.5*0.5  \ \forall p \in \{0,1\} \]
+
+If we know for example that the CTR is bounded by 4% than:
+\[n \geq  240 = \frac{0.5*0.5}{0.00016} \geq \frac{\hat{p}\hat{q}}{0.00016}\]
+
+# CL Verification
+Let's verify that indeed when we bouild CI (and..our assumptions are correct) than $1-\alpha$ our parameter is inside the CI:  
+``` {r confidense interval}
+miu = 10
+sigma = 3
+n = 10
+alpha = 0.1
+N_tests <- 10000
+counter <- 0
+error = qnorm(1-alpha/2)*(sigma/sqrt(n))
+for (i in 1:N_tests)
+  {sample = rnorm(n,miu,sigma)
+  sample_mean <- mean(sample)
+  left <- sample_mean-error 
+  right <- sample_mean + error
+  between <- (left <= miu) & (miu <= right)
+  counter <- counter+between}
+print(counter/N_tests)
+```
+
