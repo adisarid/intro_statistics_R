@@ -25,7 +25,11 @@ Instructor: Mr. Afek Adler.
 
 The course will be given in Hebrew, but all the supporting materials will be provided in English.
 
-Garding will be based on homework (30%) and a final test (70%).
+Garding will be based on: 
+
+   * Homework, in pairs (20%)
+   * Final project, individually (30%)
+   * Final exam (50%).
 
 ## Prerequisites
 
