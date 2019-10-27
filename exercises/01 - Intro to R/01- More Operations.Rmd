@@ -56,8 +56,8 @@ head(df,2)
 
 
 ``` {r read write csv}
-write_csv(df, "example_file.csv")
-new_file <- read_csv("example_file.csv") 
+write.csv(df, "example_file.csv")
+new_file <- read.csv("example_file.csv") 
 ```
 ``` {r}
 sapply(df, class)
