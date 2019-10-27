@@ -121,11 +121,11 @@ ggplot(familiar_distributions, aes(x = values, y = stat(density))) +
 Notice a few things:
 
    * The difference between a discrete distribution and a continuous distribution
-   * The variance (dispersion) of the distributions (second moment)
-   * The asymmetry of certain distributions - which can be measured via skeweness (third moment)
-   * The tendency to yield outliers (extreme values) - which is measured by kurtosis (fourth moment)
+   * The variance (dispersion) of the distributions (based on the second moment $EX^2 - (EX)^2$)
+   * The asymmetry of certain distributions - which can be measured via skeweness (based on the third moment $E[\left(\frac{X-\mu}{\sigma}\right)^3]$)
+   * The tendency to yield outliers (extreme values) - which is measured by kurtosis (based on the fourth moment $E[\left(\frac{X-\mu}{\sigma}\right)^4]$)
 
-These can be computed either from the data, though since these distributions are given we can compute this analytically. We will delve deeper into these terms later on.
+These can be computed either from the data, or analytically (when the distribution is known). We will delve deeper into these terms later on.
 
 ### Mean, standard deviation (and variance)
 
