@@ -12,7 +12,7 @@ In this course there are 3 lecture hours + 1 exercise (instructor) hour.
 
 Lecturer: Mr. Adi Sarid.
 
-   * Office hours: To be announced.
+   * Office hours: Sundays 13:00-14:00. Please **coordinate in advance**. Transportation lab (Wolfson 451).
    * E-mail: adi@sarid-ins.co.il.
    * Twitter: @SaridResearch
    * Mobile Phone: +972-50-8455450 (Please please try to reach out via email first).
@@ -20,12 +20,16 @@ Lecturer: Mr. Adi Sarid.
 
 Instructor: Mr. Afek Adler.
 
-   * Office hours: To be announced.
+   * Office hours: Sundays, 18:00. **Please coordinate in advance and send the question you want to discuss** (HW or the EX/L), location LAMBDA (Wolfson 451).
    * E-mail: afekilayadler@gmail.com.
 
 The course will be given in Hebrew, but all the supporting materials will be provided in English.
 
-Garding will be based on homework (30%) and a final test (70%).
+Garding will be based on: 
+
+   * Homework, in pairs (20%)
+   * Final project, individually (30%)
+   * Final exam (50%).
 
 ## Prerequisites
 
