@@ -260,3 +260,56 @@ We will show three methods:
    * Maximum Liklihood Estimation (MLE)
    
    * Moment method
+   
+---
+
+# The Bayesian method (reminder: Bayes' rule)
+
+First, a reminder about **Bayes' rule**.
+
+The definition of conditional probability is given by:
+
+--
+
+$$P(A|B)=\frac{P(A\cap B)}{P(B)}$$
+For $P(B)>0$. Then, since: $P(A\cap B)=P(B\cap A)$ we also have:
+
+--
+
+$$P(A|B)=\frac{P(B|A)P(A)}{P(B)}$$
+
+--
+
+If we have a partition $E_1,\ldots, E_k$ (i.e., $\cup E_i=\Omega$ , $E_i\cap E_j=\phi$) we get:
+
+$$P(B) = P(B|E_1)P(E_1)+\ldots+P(B|E_k)P(E_k)$$
+
+--
+
+And finally, we arrive at the general form of Bayes' theorem:
+
+$$P(E_1|B)=\frac{P(B|E_1)P(E_1)}{P(B|E_1)P(E_1)+\ldots+P(B|E_k)P(E_k)}$$
+
+---
+
+# Bayesian Methods of Estimation
+
+We have a parameter $\theta$ for a population with a distribution $f(x|\theta)$. We assume some prior distribution $\pi(\theta)$ (represents our belief on the unknown value of $\theta$).
+
+Assume a sample $x=(x_1,\ldots,x_n)$, then the sampling distribution is $f(x|\theta)$.
+
+We want to use the sampling distribution (obtained from data), and our prior belief in order to yield a *posterior* distribution, i.e., an estimate, of $\theta$.
+
+We use Bayes' rule
+
+$$\pi(\theta|x)=\frac{f(x|\theta)\pi(\theta)}{g(x)}$$
+
+Where:
+
+$$g(x)=\left\{\begin{array}{ll}\sum_\theta f(x|\theta)\pi(\theta) & \theta\text{ discrete}\\\int_{-\infty}^\infty f(x|\theta)\pi(\theta)d\theta & \theta\text{ continuous}\end{array}\right.$$
+
+---
+
+# Bayesian Methods of Estimation - Example
+
+XYZ
