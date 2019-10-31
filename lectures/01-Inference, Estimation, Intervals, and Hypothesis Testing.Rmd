@@ -95,5 +95,58 @@ We talked about *quantiles*/*percentiles*/*median*:
    
       * 2 quartile = .5 quantile = 50 percentile = median
       
-What is the *median* of the normal/exponential/poisson distributions?
+## To sum up
 
+   * The average: $\bar{X}=\sum_{i=1}^n{x_i}$ is an **unbiased** estimator of $E[X]=\mu$
+   
+   * Sample variance: $S^2=\frac{\sum_{i=1}^n(x_i-\bar{X})^2}{n-1}$ **unbiased** estimator of $V(X)=\sigma^2$
+   
+      * $V(X)=E(X-E[X])^2=EX^2-(EX)^2$
+   
+   * Standard deviation: $S$ is a **biased** estimator for $\sigma$ (can't enjoy both worlds)
+
+
+
+---
+
+# Why $S^2$ is an unbiased estimator to $\sigma^2$?
+
+$S^2$ is unbiased: 
+
+$$ES^2=\frac{1}{n-1}E{\sum_{i=1}^n(X_i-\bar{X})^2}=\frac{1}{n-1}E{\sum_{i=1}^n(x_i^2+\bar{X}^2-2\bar{X}x_i)}$$
+
+--
+
+$$=\frac{1}{n-1}E\left(\sum_{i=1}^nx_i^2-n\bar{X}^2\right)=\frac{1}{n-1}\left[\sum_{i=1}^n{Ex_i^2-nE(\bar{X}^2)}\right]$$
+
+--
+
+Using the fact that $E(x_i^2)=\mu^2+\sigma^2$ and that $E(\bar{X}^2)=\mu^2+\sigma^2/n$ we have:
+
+--
+
+$$E(S^2)=\frac{1}{n-1}\sum_{i=1}^n(\mu^2+\sigma^2)-n(\mu^2+\sigma^2/n)=\sigma^2$$
+
+$$\square$$
+
+---
+
+# Why is $S$ a biased estimator to $\sigma$?
+
+We need to show that $ES\neq\sigma$. Let 
+
+$$S=\sqrt{\sum_{i=1}^n{\frac{(x_i-\bar{X})^2}{n-1}}}$$
+
+--
+
+Consider that $0<Var(S)=E[S^2]-(E[S])^2$ 
+
+(this is true for any RV, specifically $S$ in this case)
+
+--
+
+Hence
+
+$$(ES)^2<E[S^2] \Leftrightarrow ES<\sqrt{E[S^2]}=\sigma$$ 
+
+$$\square$$
