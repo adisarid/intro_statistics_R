@@ -24,7 +24,7 @@ For this PDF -
 Find $$\theta$$ by the method of moments.
 
 #Q4 
-For the exponantiel distribution - 
+For the exponential distribution - 
 \[f(x ; \lambda)=\left\{\begin{array}{ll}{\lambda e^{-\lambda x}} & {x \geq 0} \\ {0} & {x<0}\end{array}\right.\]
 Find $$\lambda$$ by MLE and Method of Moments.
 
