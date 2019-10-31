@@ -1,5 +1,5 @@
 ---
-title: "Inference, Estimation, Intervals, and Hypothesis Testing"
+title: "Point Estimation Methods and Intervals"
 subtitle: "Lecture #2"
 author: "Adi Sarid"
 institute: "Tel-Aviv University"
@@ -39,7 +39,7 @@ output:
 
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE, fig.width = 3, fig.height = 3)
-knitr::opts_chunk$set(fig.dim=c(3, 3))
+knitr::opts_chunk$set(fig.dim=c(3, 3), fig.align = "center")
 library(tidyverse)
 ```
 
@@ -183,11 +183,12 @@ $$\sigma-E(S)\cong\frac{\sigma}{4n}$$ (see [here](https://stats.stackexchange.co
 
 ---
 
-# Estimating $S^2$ demonstration
+# Estimating $S^2$ - demonstration
 
 Take a normal distribution with
 .tiny[
 ```{r s as a function of n}
+set.seed(0)
 rv <- tibble(x = rnorm(500, mean = 0, sd = 5)) %>% 
   mutate(cumsum_x = cumsum(x),
          n = seq_along(x),
@@ -202,3 +203,60 @@ ggplot(rv, aes(x = n, y = sample_var)) +
 
 ```
 ]
+
+---
+
+# The central limit theorem
+
+If $\bar{X}$ is the mean of a random sample of size $n$ taken from a population with mean $\mu$ and finite variance $\sigma^2$, then the limiting form of the distribution of $ Z = \frac{\bar{X}-\mu}{\sigma/\sqrt{n}} $
+
+As $n\rightarrow\infty$ is the standard normal distribution $N(0,1)$
+
+For most purpuses, $n\geq30$ is considered "large enough" (as a rule-of-thumb). 
+
+Lets look at an example, take random variables with $\operatorname{Exp}(\lambda=1)$. What are $\mu$ and $\sigma$?
+
+---
+
+# The distribution of $\bar{X}$ with varying $n$
+
+With $\operatorname{Exp}(\lambda=1)$ we have $\mu=\sigma=1/\lambda=1$
+
+Try increasing `sample_size` and see what happens to the chart.
+
+--
+
+.tiny[
+```{r example how a sum of binomials becomes normal}
+
+sample_size <- 1
+lambda <- 1
+
+suppressMessages(
+rv_binom <- matrix(rexp(n = sample_size*1000, rate = lambda), nrow = sample_size, ncol = 1000) %>% 
+  as_tibble(.name_repair = "unique") %>% 
+  pivot_longer(cols = everything(), names_to = "var", values_to = "value") %>% 
+  group_by(var) %>% 
+  summarize(mean = mean(value)) %>% 
+  mutate(standardized = (mean - 1/lambda)/((1/lambda)/sqrt(sample_size))))
+
+ggplot(rv_binom, aes(x = standardized)) + 
+  geom_histogram(bins = 100) + 
+  theme_bw()
+
+```
+]
+
+---
+
+# Methods of point estimation
+
+So far we discussed some estimators (i.e., $\bar{X}, S^2$), and the desired properties they hold. But how can we find additional estimators (new statistics)?
+
+We will show three methods:
+
+   * The Bayesian method
+   
+   * Maximum Liklihood Estimation (MLE)
+   
+   * Moment method
