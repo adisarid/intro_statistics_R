@@ -1,0 +1,99 @@
+---
+title: "Inference, Estimation, Intervals, and Hypothesis Testing"
+subtitle: "Lecture #2"
+author: "Adi Sarid"
+institute: "Tel-Aviv University"
+date: "updated: `r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+```
+
+
+---
+
+# Reminder from previous lecture (1/3)
+
+Last lesson we talked about:
+
+--
+
+   * How data analysis is conducted (import -> tidy -> transform, visualize, model -> communicate)
+
+--
+
+   * About R, very broadly (RStudio, Rmd, scripts, functions, packages)
+   
+--
+
+   * What a tidy data set looks like (rows = observations, columns = variables, aka features)
+   
+--
+
+   * Variable types (numeric, date, logical, factor - category, ordinal)
+   
+--
+
+   * Demonstration of the grammer of graphics (`ggplot2`)
+   
+--
+
+Then, we also discussed **theory**:
+
+--
+
+   * What are point estimates, i.e.:
+   
+      * $\theta$ is a *population parameter*
+      
+      * Estimated by the statistic $\hat{\Theta}$, a *point estimator*
+      
+      * When it is computed (from a sample), it is called a *point estimate* 
+      
+---
+
+# Reminder from previous lecture (2/3)
+
+   * Desired properties of point estimates are:
+   
+      * Unbiased: $E\hat{\Theta} - \theta = 0$
+      * Low variance: $V(\hat{\Theta})$ as low as possible
+
+--
+   
+I've shown that: 
+
+   * The average $\bar{X}=\sum_{i=1}^n{x_i}$ is unbiased: 
+      * $E[\bar{X}] = \mu$
+      
+   * Its variance is $V(\bar{X})=\frac{\sigma^2}{n}$
+   
+   * In fact, it is the *Minimum Variance Unbiased Estimate* (proof out of scope)
+   
+--
+   
+   * We've also seen the bias-variance decomposition, i.e. the Mean Square Error is decomposed into:
+      
+$$E[(\hat{\Theta}-\theta)^2]=V(\hat{\Theta}) + E(\hat{\Theta} - \theta)^2$$
+
+---
+
+# Reminder from previous lecture (3/3)
+
+We talked about *quantiles*/*percentiles*/*median*:
+
+   * A quantile $q(f)$ of a sample is the **value** for which a specified fraction $f$ of the data values is $\leq q(f)$
+   * Note that quartile, quantile, percentile are related/interchangable: 
+   
+      * 2 quartile = .5 quantile = 50 percentile = median
+      
+What is the *median* of the normal/exponential/poisson distributions?
+
