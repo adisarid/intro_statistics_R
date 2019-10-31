@@ -12,6 +12,7 @@ output:
       highlightLines: true
       countIncrementalSlides: false
       ratio: "16:9"
+    css: [metropolis, rutgers-fonts]
 ---
 
 ```{css, echo = FALSE}
@@ -165,9 +166,7 @@ $$S=\sqrt{\sum_{i=1}^n{\frac{(x_i-\bar{X})^2}{n-1}}}$$
 
 --
 
-Consider that $0<Var(S)=E[S^2]-(E[S])^2$ 
-
-(this is true for any RV, specifically $S$ in this case)
+Consider that $0<Var(S)=E[S^2]-(E[S])^2$ (this is true for any RV, specifically $S$ in this case)
 
 --
 
@@ -208,7 +207,9 @@ ggplot(rv, aes(x = n, y = sample_var)) +
 
 # The central limit theorem
 
-If $\bar{X}$ is the mean of a random sample of size $n$ taken from a population with mean $\mu$ and finite variance $\sigma^2$, then the limiting form of the distribution of $ Z = \frac{\bar{X}-\mu}{\sigma/\sqrt{n}} $
+If $\bar{X}$ is the mean of a random sample of size $n$ taken from a population with mean $\mu$ and finite variance $\sigma^2$, then the limiting form of the distribution of 
+
+$$Z = \frac{\bar{X}-\mu}{\sigma/\sqrt{n}}$$
 
 As $n\rightarrow\infty$ is the standard normal distribution $N(0,1)$
 
