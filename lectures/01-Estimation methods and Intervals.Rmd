@@ -43,6 +43,15 @@ output:
 }
 
 table { display: inline-block; }
+
+th, td {
+   padding: 5px;
+}
+
+small-slide {
+   font-size: 70% !important;
+}
+
 ```
 
 ```{r setup, include=FALSE}
@@ -350,20 +359,96 @@ $$g(x)=\sum_p{\pi(p)\times f(x|p)}=\pi(0.1)\times f(x|0.1)+\pi(0.2)\times f(x|0.
 
 # Bayesian Methods of Estimation - Example (2/3)
 
-We can easily compute the binomial probability using `R`:
-.small[
-```{r compute binomial distribution}
-dbinom(x = 0:2, size = 2, prob = 0.1)
-dbinom(x = 0:2, size = 2, prob = 0.2)
-```
-]
-
-The posterior $\pi(p|x)$ is given by:
+We can easily compute the binomial probability using `R`.
 
 .small[
 ```{r compute posterior}
+f_x_p <- function(x, p){
+   dbinom(x, size = 2, prob = p)
+}
+
+pi_p <- function(p){
+   if (p == 0.1){
+      0.6
+   } else if (p == 0.2){
+      0.4
+   } else {
+      0
+   }
+}
+
 g_x <- function(x){
-   
+ pi_p(0.1)*f_x_p(x, 0.1) + 
+      pi_p(0.2)*f_x_p(x, 0.2)
+}
+
+pi_p_x <- function(p, x){
+   (f_x_p(x, p)*pi_p(p)) / (g_x(x))
 }
 ```
 ]
+
+---
+
+# Bayesian Method of Estimation - Example (3/3)
+
+Now we can compute $\pi(p|x)$ for any possible combination of $p$ and sample yielding $x$ defects.
+```{r results of pi_p_x}
+
+res <- tibble(p = c(0.1, 0.1, 0.1, 0.2, 0.2, 0.2),
+              x = c(0:2, 0:2)) %>% 
+   mutate(pi_p_x = map2_dbl(p, x, pi_p_x))
+
+knitr::kable(res, format = "html", padding = 3)
+
+```
+
+---
+
+# Mean of the posterior distribution
+
+The mean of the posterior distribution $p^*=E_p[\pi(p|x)]$ is called the **Bayes estimate of $p$**. In the previous example, if we find one defect (1 of 2 sampled) we get:
+
+$$p^*=(0.1)\times0.46 + (0.2)\times0.54 \approx 0.154$$
+
+Note the big difference from the classical estimator (the average). The average in this case is $\bar{p}=x/n=1/2=0.5$.
+
+---
+
+# Bayesian methods - continuous example
+
+This time, we are going to assume that $p$ can obtain any value within $[0,1]$. 
+
+   * What distribution would that yield?
+   * What is $\pi(p)$?
+
+--
+
+Uniform distribution! 
+
+$$\pi(p)=\left\{\begin{array}{ll}1 & p\in[0,1]\\0 & \text{Otherwise}\end{array}\right.$$
+
+$$\pi(p|x) = \frac{f(x|p)\pi(p)}{\int{f(x|p)\pi(p)dp}}=\frac{\left(\begin{array}{}2\\x\end{array}\right)p^x(1-p)^{2-x}}{\int_0^1{\left(\begin{array}{}2\\x\end{array}\right)p^x(1-p)^{2-x}dp}}$$
+
+--
+
+Take for example $x=1$ then:
+
+$$p^*=\int_0^1\pi(p|x=1)dp=3\left(\begin{array}{l}2\\1\end{array}\right)\int_0^1{p\times p^1(1-p)^{2-1}dp}=1/2$$
+
+   * Exactly the same we would have got with $\bar{p}=x/n=1/2$.
+
+--- 
+
+---
+
+# Maximum Likelihood Estimation (MLE)
+
+Estimation with the maximum likelihood method
+
+---
+
+# Moment Estimation
+
+
+XYZ
