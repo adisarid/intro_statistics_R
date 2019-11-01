@@ -107,7 +107,7 @@ In statistics, maximum likelihood estimation (MLE) is a method of estimating the
 
 If the likelihood function is differentiable, the derivative test for determining maxima can be applied. In some cases, the first-order conditions of the likelihood function can be solved explicitly; for instance, the ordinary least squares estimator maximizes the likelihood of the linear regression model. Under most circumstances, however, numerical methods will be necessary to find the maximum of the likelihood function. ("Wikipedia")
 
-## MLE for Human Height
+## MLE for Human Hight
 
 Assume that we are given data of human height but we don't know their gender.
 

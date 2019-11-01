@@ -1,0 +1,37 @@
+---
+title: "HW1"
+author: "Afek Adler"
+date: "10/31/2019"
+output: html_document
+---
+## Q1 + Q2 in the attached PDF file
+
+
+## Q3
+let X  be a random Bernoulli variable - 
+\[
+f(x ; p)=\left\{\begin{array}{ll}{p^{x}(1-p)^{1-x},} & {x=0,1} \\ {0,} & {\text { otherwise }}\end{array}\right.
+\]
+1. Show that X = 1 with probability $p$ and that p == 0 with probability $1-p$
+2. Suppose we get a random sample of n sample from this distribution. What is the likelihood function $L(p)$ of the sample? (what is the probability that $P\left(X_{1}=x_{1}, X_{2}=x_{2}, \ldots, X_{n}=x_{n}\right)$)
+3. apply Log on that likelihood function - what do you get?
+4. find the $p$ that maximizes $L(p)$ 
+
+## Q4
+For this PDF - 
+\[f(x)=\left\{\begin{array}{ll}{\frac{2}{\theta^{2}}(\theta-x)} & {0<x<\theta} \\ {0} & {\text { else }}\end{array}\right.\]
+Find $\theta$ by the method of moments.
+
+## Q5 
+For the exponantiel distribution - 
+\[f(x ; \lambda)=\left\{\begin{array}{ll}{\lambda e^{-\lambda x}} & {x \geq 0} \\ {0} & {x<0}\end{array}\right.\]
+Find $\lambda$ by MLE and Method of Moments.
+
+## Q6 - R
+For the following distributions - {Normal,t,chi squared}:
+Sample 25 random numbers:
+1. Using ggplot2, plot the distribution.
+2. Is the funciton symmetric? 
+3. Generally speaking (not related to the sample),is the support of the function positive? what is the reletionship between the median and the mean of the distribution?
+3. If the distribution relies on the number of examples - what happens to the function when n is 100? ilustrate with a graph.\
+* The support of a function is defined as - $\operatorname{supp}(f)=\{x \in X | f(x) \neq 0\}$
