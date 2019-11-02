@@ -698,7 +698,7 @@ $$Z = \frac{\bar{X}-\mu}{\sigma/\sqrt{n}}$$
 
 Is normally distributed as $n\rightarrow\infty$. Hence:
 
-$$P(z_{alpha/2} < Z < x_{1-\alpha/2}) = 1-\alpha$$
+$$P(z_{\alpha/2} < Z < x_{1-\alpha/2}) = 1-\alpha$$
 
 --
 
