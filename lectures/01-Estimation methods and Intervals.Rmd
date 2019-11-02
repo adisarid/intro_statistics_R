@@ -223,13 +223,11 @@ ggplot(rv, aes(x = n, y = sample_var)) +
 
 # Short quiz - identify the distributions
 
-I plotted a number of continuous/discrete probability density functions of commonly used distributions. 
-
-Before we continue, identify the distributions using the plot, and write them down on a piece of paper.
+Before we continue, **identify the distributions using the plot**, and write them down on a piece of paper, in pairs.
 
 Here are your options: Normal, Chi-square, Bernulli, Exponential, Poisson.
 
-```{r recognize the distribution quiz, echo=FALSE, fig.dim=c(10, 6)}
+```{r recognize the distribution quiz, echo=FALSE, fig.dim=c(8, 6)}
 
 tibble(x = seq(-25, 25, 1)) %>% 
   mutate(dist1 = dexp(x, rate = 1/5),
@@ -578,12 +576,23 @@ Note the big difference from the classical estimator (the average). The average 
 
 This time, we are going to assume that $p$ can obtain any value within $[0,1]$. 
 
-   * What distribution would that yield?
+**First, answer (write on a piece of paper) in pairs:**
+
+   * What distribution should we use a-priori to describe the value of $p$?
+   
+      1. Normal with $\mu=0.5$ and $\sigma = 0.001$
+      2. Uniform $[0,1]$
+      3. Exponential $\operatorname{Exp}(\lambda=0.001)$
+   
    * What is $\pi(p)$?
+      
+      * According to your answer to the previous question write $\pi(p)=\ldots$?
 
---
+---
 
-Uniform distribution! 
+# Bayesian methods - continuous example - cont.
+
+Uniform distribution! The others have a positive probability for values higher than $1$, and since our parameter $p$ reflects distribution, it can only obtain values in $[0,1]$.
 
 $$\pi(p)=\left\{\begin{array}{ll}1 & p\in[0,1]\\0 & \text{Otherwise}\end{array}\right.$$
 
@@ -636,3 +645,118 @@ $$\hat{\sigma}^2 = \frac{1}{n}\sum_{i=1}^n{x_i^2} - \left(\frac{1}{n}\sum_{i=1}^
 Again, this is a biased estimator for $\sigma^2$, usually we will use $s^2$ seen earlier.
 
 In the homework, you will be requested to use the moment method on two distributions (the exponential distribution and another distribution) to find estimators for parameters of the distributions.
+
+---
+
+# Statistical Intervals
+
+We discussed point estimates, however
+
+   * Even if everything works "properly" (a random sample, unbiased estimator), it is unlikely that we will reach the exact parameter value
+   
+   * As the sample increases accuracy improves; but
+
+--
+   
+   * Sometimes we are interested in a *Confidence Interval*
+   
+   * An interval of the form $\hat{\Theta}_l < \theta < \hat{\Theta}_u$ where 
+
+--
+   
+   * The lower and upper bounds $\hat{\Theta}_l, \hat{\Theta}_u$ depend on the statistic $\hat{\Theta}$
+
+--
+
+In a probabalistic notation, we are looking for $\hat{\Theta}_l, \hat{\Theta}_u$ such that:
+
+$$P(\hat{\Theta}_l < \theta < \hat{\Theta}_u) = 1-\alpha$$
+
+For $\alpha\in(0,1)$. For example, when we set $\alpha=0.05$, we call this a 95% confidence interval for $\theta$.
+
+---
+
+# Sanity check
+
+**What would be a 100% confidence interval**? 
+
+   * I.e., what would be $\hat{\Theta}_l, \hat{\Theta}_u$ such that:
+
+$$P(\hat{\Theta}_l < \theta < \hat{\Theta}_u) = 1$$
+
+--
+
+Setting $\hat{\Theta}_l=-\infty, \hat{\Theta}_u=\infty$ gives us a 100% confidence interval (i.e., the $\theta$ is a real number).
+
+---
+
+# Confidence Interval for Normal Distribution with Known Variance
+
+We previously mentioned the central limit theorem and that 
+
+$$Z = \frac{\bar{X}-\mu}{\sigma/\sqrt{n}}$$
+
+Is normally distributed as $n\rightarrow\infty$. Hence:
+
+$$P(z_{alpha/2} < Z < x_{1-\alpha/2}) = 1-\alpha$$
+
+--
+
+$$P(z_{\alpha/2} < \frac{\bar{X}-\mu}{\sigma/\sqrt{n}} < z_{1-\alpha/2}) = 1-\alpha$$
+
+--
+
+Using the fact that for the normal distribution $z_{1-\alpha/2}=-z_{\alpha/2}$:
+
+$$P(\bar{X} - z_{\alpha/2}\frac{\sigma}{\sqrt{n}} < \mu < \bar{X} + z_{\alpha/2}\frac{\sigma}{\sqrt{n}}) = 1-\alpha$$
+
+---
+
+# Example - determining the sample size from a desired confidence range
+
+If we want to have a confidence interval with a range not exceeding $\pm r$, we can use:
+
+$$\bar{X}+z_{\alpha/2}\frac{\sigma}{\sqrt{n}}-\left(\bar{X}-z_{\alpha/2}\frac{\sigma}{\sqrt{n}}\right) \leq 2r$$
+
+--
+
+Then,
+
+$$\sqrt{n}\geq z_{\alpha/2}\frac{2\sigma}{2r}$$
+
+--
+
+$$n\geq \left(z_{\alpha/2}\frac{\sigma}{r}\right)^2$$
+
+Ever wondered why surveys have $n=500$ respondents? it comes from a $\pm 4.4\%$ margin of error with a $95\%$ confidence interval (using a binomial distribution). 
+
+Maybe in the next homework.
+
+---
+
+# Confidence Interval for Normal Distribution with Unknown Variance
+
+In this case, we use our estimator $S$ to compute our statistic and confidence interval.
+
+$$T = \frac{\bar{X}-\mu}{S/\sqrt{n}}$$
+
+The statistic $T$ has a student's t-distribution with $n-1$ degrees of freedom. I.e.:
+
+$$P(-t_{\alpha/2,n} < T < t_{\alpha/2,n})=1-\alpha$$
+
+.center[
+```{r example for the t distribution, echo = F, fig.dim=c(7,4)}
+
+t_dist_example <- tibble(x = -seq(-10, 10, 0.1)) %>% 
+   mutate(t01 = dt(x, df = 1),
+          t05 = dt(x, df = 5),
+          t10 = dt(x, df = 10),
+          norm = dnorm(x, mean = 0, sd = 1)) %>% 
+   pivot_longer(cols = -x, names_to = "distribution", values_to = "y")
+
+ggplot(t_dist_example, aes(x, y, color = distribution, linetype = distribution)) + 
+   geom_line(size = 0.8) + 
+   theme_bw()
+
+```
+]
