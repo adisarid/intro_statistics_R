@@ -272,12 +272,62 @@ So far we discussed some estimators (i.e., $\bar{X}, S^2$), and the desired prop
 
 We will show three methods:
 
-   * The Bayesian method
-   
    * Maximum Liklihood Estimation (MLE)
    
-   * Moment method
+   * The Bayesian method
    
+   * Moment method
+
+---
+
+# Maximum Likelihood Estimation (MLE)
+
+An important and very common approach to solving estimation problems in statistics. The idea is as follows:
+
+If you want to estimate some population parameter $\theta$, use the most **likely** value. 
+
+--
+
+Let $f(x;\theta)$ represent the density function of $X$. Given a sample $x_1,\dots,x_n$ in which $x_i$'s are independent, we can write the liklihood of the sample:
+
+$$L(\theta)=f(x_1,\ldots,x_n;\theta)=f(x_1;\theta)\times\ldots\times f(x_n;\theta)=\prod_{i=1}^nf(x_i;\theta)$$
+
+--
+
+   * The product (multiplication) can be used thanks to the assumption of independence of the sampled observations.
+   
+   * $L(\theta)$ is a function of $\theta$ (only) once the sample has been set.
+
+   * In the discrete case we will use $P(X_1 = x_1,\ldots,X_n=x_n;\theta)$. The likelihood is the same as the probability of obtaining the sample.
+
+---
+
+# MLE example - Poisson distribution (discrete)
+
+The Poisson distribution is used to represent a counting processes. I.e., the number of accumulated events is distributed Poisson.
+
+---
+
+# MLE example - Bernulli distribution
+
+Let's assume we conducted $n$ experiments each with probability $p$ for success and $q=1-p$ for failure. These are Bernulli i.i.d variables.
+
+$$B_i=\left\{\begin{array}{ll}1 & \text{w.p. } p\\ 0 & \text{w.p. } 1-p\end{array}\right.$$
+
+Assume we got $v$ success, $n-v$ failures. 
+
+   * What is the Liklihood?
+   * What is the log-Liklihood?
+   * Find the optimal $\hat{p}$.
+
+You will do this in the homework.
+
+---
+
+# Moment Estimation
+
+XYZ
+
 ---
 
 # The Bayesian method (reminder: Bayes' rule)
@@ -438,17 +488,4 @@ $$p^*=\int_0^1\pi(p|x=1)dp=3\left(\begin{array}{l}2\\1\end{array}\right)\int_0^1
 
    * Exactly the same we would have got with $\bar{p}=x/n=1/2$.
 
---- 
-
 ---
-
-# Maximum Likelihood Estimation (MLE)
-
-Estimation with the maximum likelihood method
-
----
-
-# Moment Estimation
-
-
-XYZ
