@@ -182,7 +182,7 @@ $$S=\sqrt{\sum_{i=1}^n{\frac{(x_i-\bar{X})^2}{n-1}}}$$
 
 --
 
-Consider that $0<Var(S)=E[S^2]-(E[S])^2$ (this is true for any RV, specifically $S$ in this case)
+Consider that $0<\operatorname{Var}(S)=E[S^2]-(E[S])^2$ (this is true for any RV, specifically $S$ in this case)
 
 --
 
@@ -221,7 +221,33 @@ ggplot(rv, aes(x = n, y = sample_var)) +
 
 ---
 
-# The central limit theorem
+# Short quiz - identify the distributions
+
+I plotted a number of continuous/discrete probability density functions of commonly used distributions. 
+
+Before we continue, identify the distributions using the plot, and write them down on a piece of paper.
+
+Here are your options: Normal, Chi-square, Bernulli, Exponential, Poisson.
+
+```{r recognize the distribution quiz, echo=FALSE, fig.dim=c(10, 6)}
+
+tibble(x = seq(-25, 25, 1)) %>% 
+  mutate(dist1 = dexp(x, rate = 1/5),
+         dist2 = dnorm(x, mean = 1, sd = 3),
+         dist3 = dpois(x, lambda = 5),
+         dist4 = dchisq(x, df = 5)) %>% 
+  pivot_longer(cols = -x, names_to = "distribution", values_to = "y") %>% 
+   ggplot(aes(x=x, y=y, fill = distribution)) + 
+   geom_col() + 
+   facet_wrap(~distribution) + 
+   coord_cartesian(xlim = c(-10, 25)) + 
+   theme_bw()
+
+```
+
+---
+
+# The Central Limit Theorem
 
 If $\bar{X}$ is the mean of a random sample of size $n$ taken from a population with mean $\mu$ and finite variance $\sigma^2$, then the limiting form of the distribution of 
 
@@ -231,7 +257,7 @@ As $n\rightarrow\infty$ is the standard normal distribution $N(0,1)$
 
 For most purpuses, $n\geq30$ is considered "large enough" (as a rule-of-thumb). 
 
-Lets look at an example, take random variables with $\operatorname{Exp}(\lambda=1)$. What are $\mu$ and $\sigma$?
+Lets look at an example of exponential distribution: $\operatorname{Exp}(\lambda=1)$. **What are $\mu$ and $\sigma$?**
 
 ---
 
@@ -244,7 +270,7 @@ Try increasing `sample_size` and see what happens to the chart.
 --
 
 .tiny[
-```{r example how a sum of binomials becomes normal}
+```{r example how a sum of exp becomes normal}
 
 sample_size <- 1
 lambda <- 1
