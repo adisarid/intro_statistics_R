@@ -306,6 +306,53 @@ $$L(\theta)=f(x_1,\ldots,x_n;\theta)=f(x_1;\theta)\times\ldots\times f(x_n;\thet
 
 The Poisson distribution is used to represent a counting processes. I.e., the number of accumulated events is distributed Poisson.
 
+--
+
+$$P(X=x)=\frac{\lambda^xe^{-\lambda}}{x!}$$
+
+--
+.small[
+```{r demonstration poisson, fig.dim=c(7, 3)}
+
+poiss_demonstration <- crossing(x = 0:25, pois_rate = c(0.5, 1, 2, 10)) %>% 
+   mutate(dpois = map2_dbl(x, pois_rate, dpois))
+
+ggplot(poiss_demonstration, aes(x = x, y = dpois, fill = factor(pois_rate))) +
+   geom_col() + 
+   facet_wrap(~pois_rate) + 
+   theme_bw()
+
+```
+]
+
+---
+
+# MLE example - Poisson distribution (discrete) - cont.
+
+Assume we sample the number of arrivals to the hospital during $n$ weekdays: $x_1,\ldots,x_n$. The number of arrivals is distributed with a $\text{Poisson}(\lambda)$ distribution.
+
+--
+
+Then, the likelihood is:
+
+$$L(\lambda) = \prod_{i=1}^n{(\lambda^{x_i}e^{-\lambda})/x_i!}$$
+
+--
+
+Taking logarithm we have:
+
+$$\log L(\lambda)=\sum_{i=1}^n{\left(x_i\log\lambda-\lambda\log(e)-\log(x_i!)\right)}$$
+
+--
+
+Now we require an extremum, i.e. $d\log L(\lambda)/d\lambda=0$:
+
+$$\sum_{i=1}^n{x_i/\lambda^*}-n=0 \Longrightarrow \lambda^*=\bar{X}$$
+
+--
+
+This is indeed a maximum $\frac{d^2\log{L(\lambda)}}{d\lambda^2}=-\left(\sum_{i=1}^n{\frac{x_i}{\lambda}}\right)<0$
+
 ---
 
 # MLE example - Bernulli distribution
@@ -324,9 +371,45 @@ You will do this in the homework.
 
 ---
 
-# Moment Estimation
+# Maximum Liklihood Estimate - Normal distribution
 
-XYZ
+The previous examples dealt with discrete distributions. What happens in the continuous case?
+
+--
+
+Assume $X_1,\ldots,X_n\sim \mathcal{N}(\mu,\sigma)$ i.i.d distributed. We sample $x_1,\ldots,x_n$ and we are looking for an MLE for $\mu$ and $\sigma^2$:
+
+--
+
+The likelihood:
+
+$$L(\mu)=\prod_{i=1}^n\left(\frac{e^{\frac{-(x_i - \mu)^2}{2 \sigma^2}}}{\sqrt{2\pi}\sigma}\right)=\frac{1}{(2\pi\sigma^2)^{n/2}}\exp{\left[-\frac{1}{2}\sum_{i=1}^n{\left(\frac{x_i-\mu}{\sigma}\right)^2}\right]}$$
+
+--
+
+Taking $\log$ we get:
+
+$$\log L(\mu,\sigma^2)=-\frac{n}{2}\log(2\pi)-\frac{n}{2}\log(\sigma^2)-\frac{1}{2}\sum_{i=1}^n\left(\frac{x_i-\mu}{\sigma}\right)^2$$
+
+--
+
+$$\frac{\partial\log L(\mu,\sigma^2)}{\partial \mu}=\sum_{i=1}^n{\frac{x_i-\mu}{\sigma}} \Longrightarrow \mu^*=\bar{X}$$
+
+---
+
+# Maximum Liklihood Estimate - Normal distribution - cont.
+
+Now, derivative by $\sigma$ we obtain:
+
+$$\frac{\partial\log L(\mu,\sigma^2)}{\partial (\sigma^2)}=-\frac{n}{2}\frac{1}{\sigma^2}+\frac{1}{2}\frac{1}{\sigma^4}\sum_{i=1}^n(x_i-\mu)^2$$
+
+From here we get:
+
+$$(\sigma^*)^2=\frac{1}{n}\sum_{i=1}^n(x_i-\mu)^2$$
+
+--
+
+As you have seen, $(\sigma^*)^2$ is a **biased** estimator to the variance (the unbiased estimator $s^2$ had $n-1$ in the denominator).
 
 ---
 
@@ -489,3 +572,41 @@ $$p^*=\int_0^1\pi(p|x=1)dp=3\left(\begin{array}{l}2\\1\end{array}\right)\int_0^1
    * Exactly the same we would have got with $\bar{p}=x/n=1/2$.
 
 ---
+
+# Method of Moments Estimation
+
+In this method, we use knowledge about the moments of the distribution (i.e. $E[X], E[X^2], E[X^3], \ldots$), express the parameters as functions of these moments, and then use the sample moments to compute our estimator.
+
+Let $f(x)$ be a density function for $X_1,\ldots,X_n$, then:
+
+| Moment | Continuous | Discrete | Sample |
+|--------|------------|----------|--------|
+| $E[X]$ | $\int{xf(x)dx}$ | $\sum_k{kP(X=k)}$ | $(1/n)\sum_{i=1}^{n}{x_i}$ |
+| $E[X^2]$ | $\int{x^2f(x)dx}$ | $\sum_k{k^2P(X=k)}$ | $(1/n)\sum_{i=1}^{n}{x_i^2}$ |
+| $E[X^m]$ | $\int{x^mf(x)dx}$ | $\sum_k{k^mP(X=k)}$ | $(1/n)\sum_{i=1}^{n}{x_i^m}$ |
+
+The sample mean $\bar{X}=(1/n)\sum_{i=1}^n{x_i}$ is the moment estimator of the population mean.
+
+---
+
+# Method of Moments - Example - the Normal disribution
+
+The first moment is $E[X]=\mu$, hence $\hat{\mu}=\bar{X}$ is the moment estimator for the population mean.
+
+--
+
+The second moment is $E[X^2] = \mu^2 + \sigma^2$ require:
+
+$$\mu^2 + \sigma^2 = \frac{1}{n}\sum_{i=1}^n{x_i^2}$$
+
+--
+
+Set $\mu^2=\left(\frac{1}{n}\sum_{i=1}^n{x_i}\right)^2$
+
+--
+
+$$\hat{\sigma}^2 = \frac{1}{n}\sum_{i=1}^n{x_i^2} - \left(\frac{1}{n}\sum_{i=1}^n{x_i}\right)^2=\frac{\sum{x_i^2}-(\sum{x_i})^2/n}{n}=\frac{\sum_{i=1}^n(x_i-\bar{X})^2}{n}$$
+
+Again, this is a biased estimator for $\sigma^2$, usually we will use $s^2$ seen earlier.
+
+In the homework, you will be requested to use the moment method on two distributions (the exponential distribution and another distribution) to find estimators for parameters of the distributions.
