@@ -1,37 +1,135 @@
 ---
-title: "HW1"
-author: "Afek Adler"
-date: "10/31/2019"
-output: html_document
+title: 'Introduction to Statistics and Data Analysis with R - Homework #1'
+author: "Adi Sarid and Afek Adler"
+date: '2019-11-03'
+output:
+  pdf_document: default
+  html_document: default
 ---
-## Q1 + Q2 in the attached PDF file
+
+This homework sheet is due on the 18th of November. You may submit your answers in pairs.
+Submission will be performed electronically via the moodle.
+
+We urge you to start solving this sheet as soon as possible and, if you have any questions, come to visit us in reception hours next week.
+
+The exercise is divided into two parts: Technical (programming in `R`) and theoretical.
+
+# Technical (programming in `R`)
+
+## Question 1:
+
+Please read the following chapters in [R4DS - https://r4ds.had.co.nz](https://r4ds.had.co.nz):
+
+   1. [Introduction](https://r4ds.had.co.nz/introduction.html)
+   2. [Explore - Introduction](https://r4ds.had.co.nz/explore-intro.html)
+   3. [Explore - Data visualizations](https://r4ds.had.co.nz/data-visualisation.html) **up to 3.6**
+   
+Solve exercise 3.6.1, and **submit the code for question 6** ("*Recreate the R code necessary to generate the following graphs*").
+
+## Question 2:
+
+In this question, you will get acquainted (or reminded of) the following distributions:
+
+   * Normal distribution $N(\mu, \sigma)$
+   * Student's t $t_{\operatorname{df}}$
+   * Chi-square $\chi^2$
+
+Complete the blanks (`___`) in the following code, to generate $n=100$ random values from each of these distributions with:
+
+   * Normal with $\mu=3, \sigma = 1.5$
+   * Student's-t with $\operatorname{df}=10$
+   * Chi-square with $\operatorname{df}=12$
+
+Tip: if you type a `?` followed by the command name in the console, you will see its documentation. I.e., type `?rnorm` to see the help on the random number generator for the normal distribution.
+
+### Complete the blanks:
+
+```
+set.seed(0)  # we set the seed of the random generator so that your results will be consistent
+
+random_normal <- rnorm(n = ___, mean = ___, ___ = 1.5)
+random_t <- rt(n = ___, df = ___)
+random_chi <- rchisq(n = ___, df = ___)
+
+```
+
+### Plot by completing the blanks:
+
+Plot each of these samples using `ggplot2`. Think, what `geom` would you use to plot the distribution of the sample?
+
+```
+
+# if you don't have the tidyverse package first install by running
+# install.packages("tidyverse")
+
+library(tidyverse) 
+
+all_random_data <- tibble(random_normal, random_t, random_chi)
+
+ggplot(all_random_data, aes(random_normal)) + 
+  geom____()
+
+ggplot(all_random_data, aes(random_t)) + 
+  ___
+
+ggplot(all_random_data, aes(random_chi)) + 
+  ___
+
+```
+
+### Answer these:
+
+   1. Is the original distribution symmetric? does the plots look symmetric, why?
+   2. Generally speaking (not relating to the specific sample you obtained), what is the relationship between the mean and median of each of these distributions?
+   3. What would happen if we increase $n$ from 100 to 1000? 
+   
+      a. How would the distribution look like? 
+      b. Why? 
+      c. Modify your code and visualize the updates.
 
 
-## Q3
-let X  be a random Bernoulli variable - 
+# Theoretical
+
+## Question 3:
+
+In the smallest branch of the smallest bank, the number of customers in the queue (waiting customers), is a random variable $Q\in\{0,1,2\}$. You cannot have more than 2 customers waiting in the queue, because the've been downsizing and the branch is really small.
+
+The distribution of $Q$ is dependent on a parameter $\theta$.
+
+$$Q = \left\{\begin{array}{ll}0 & \text{w.p. }4\theta^2\\
+1 & \text{w.p. }4\theta-8\theta^2\\
+2 & \text{w.p. }1-4\theta+4\theta^2\end{array}\right.$$
+
+The bank's headquarters randomly sampled the queue during five independent times. The results were $\{0,1,0,0,0\}$ customers in the queue.
+
+### Answer the following questions:
+
+   1. Find an unbiased estimator $\hat{\Theta}$ for the parameter $\theta$ for a sample of size $n=5$. What is $\hat{\Theta}$ based on the current sample? (you should get 0.45)
+   2. Find an unbiased estimator for the expected number of customers waiting in the queue based on a sample of size $n=5$. What is the estimate of the expected number of customers, based on the current sample? (0.2)
+   3. Find an estimator for $\theta$ in the maximum likelihood estimation method. (0.45)
+   
+## Question 4:
+
+let $X$ be a random Bernoulli variable. It's probability density function can be formulated as follows:
+
 \[
-f(x ; p)=\left\{\begin{array}{ll}{p^{x}(1-p)^{1-x},} & {x=0,1} \\ {0,} & {\text { otherwise }}\end{array}\right.
+f(x ; p)=\left\{\begin{array}{ll}{p^{x}(1-p)^{1-x}} & {x=0,1} \\ {0} & {\text { otherwise }}\end{array}\right.
 \]
-1. Show that X = 1 with probability $p$ and that p == 0 with probability $1-p$
-2. Suppose we get a random sample of n sample from this distribution. What is the likelihood function $L(p)$ of the sample? (what is the probability that $P\left(X_{1}=x_{1}, X_{2}=x_{2}, \ldots, X_{n}=x_{n}\right)$)
-3. apply Log on that likelihood function - what do you get?
-4. find the $p$ that maximizes $L(p)$ 
 
-## Q4
-For this PDF - 
+1. Show that $X=1$ with probability $p$ and that $X=0$ with probability $1-p$
+2. Suppose we get a random sample of size $n$ from a Bernulli distribution. What is the likelihood function $L(p)$ of the sample? (what is the probability that $P\left(X_{1}=x_{1}, X_{2}=x_{2}, \ldots, X_{n}=x_{n}\right)$)
+3. Apply the $\log$ transformation on this likelihood function, what do you get?
+4. Find the $p$ that maximizes $\log L(p)$
+
+## Question 5:
+
+For the following probability density function:
 \[f(x)=\left\{\begin{array}{ll}{\frac{2}{\theta^{2}}(\theta-x)} & {0<x<\theta} \\ {0} & {\text { else }}\end{array}\right.\]
 Find $\theta$ by the method of moments.
 
-## Q5 
-For the exponantiel distribution - 
-\[f(x ; \lambda)=\left\{\begin{array}{ll}{\lambda e^{-\lambda x}} & {x \geq 0} \\ {0} & {x<0}\end{array}\right.\]
-Find $\lambda$ by MLE and Method of Moments.
+## Question 6:
 
-## Q6 - R
-For the following distributions - {Normal,t,chi squared}:
-Sample 25 random numbers:
-1. Using ggplot2, plot the distribution.
-2. Is the funciton symmetric? 
-3. Generally speaking (not related to the sample),is the support of the function positive? what is the reletionship between the median and the mean of the distribution?
-3. If the distribution relies on the number of examples - what happens to the function when n is 100? ilustrate with a graph.\
-* The support of a function is defined as - $\operatorname{supp}(f)=\{x \in X | f(x) \neq 0\}$
+For the exponential distribution:
+\[f(x ; \lambda)=\left\{\begin{array}{ll}{\lambda e^{-\lambda x}} & {x \geq 0} \\ {0} & {x<0}\end{array}\right.\]
+Find $\lambda$ by MLE and by the Method of Moments.
+
