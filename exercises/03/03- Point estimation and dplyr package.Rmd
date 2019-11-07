@@ -1,0 +1,195 @@
+---
+title: "EX 02 - Data Handling & MLE"
+author: "Afek Adler"
+date: "`r Sys.Date()`"
+output:
+  html_document :  
+    number_sections: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set
+```
+
+
+Last excercise we did:
+
+  * Expectency and Variance of the sample mean
+  * Central limit theoram 
+  * Bias variance decomposition of a point estimator
+  * Derived an unbiased estimate for $\sigma^{2}(S^{2})$ 
+  * Coverd the student's t-distribution and chi square distribution
+  
+Today we will:
+
+  * Do a quick recap on MSE because there was an interesting discussion about it in the last excercise
+  * Cover methods for point estimats
+  * Get to know dplyr package`
+
+
+# Loss function
+A quick recap of the MSE of an estimator:
+\[\operatorname{MSE}(\hat{\Theta})=E((\hat{\Theta}-\theta)^{2})\]
+
+The squared loss (variant of L2 norm) did not come from heaven but from convienince. for example, another good criterion can be:
+
+  \[\operatorname{MAE}(\hat{\Theta})=E(|\hat{\Theta}-\theta)|)\]
+
+Or many other types of error function.
+Also, at the lecture you have seen an *example* of Bayesian estimation where $\hat{\theta}_{\mathrm{MMSE}}=\int \theta \mathrm{p}(\theta | \mathbf{x}) \mathrm{d} \theta=\mathrm{E}(\theta | \mathbf{x})$ ,the derivation of this formula was taken under assumption of a  square loss but there are also many other bayesian estimators like the maximum a posteriori estimation - $\hat{\theta}_{\mathrm{MAP}}=\underset{\theta}{\arg \max } p(\mathbf{x} | \theta) \mathrm{p}(\theta)$
+
+
+# Point estimaion
+
+## Some nice to have charactraists 
+
+  * Unbiased. If $E(\hat{\theta}) = \theta$
+  * Consistent. If the varaince of the estimator ~0 when N tends to $\infty$ 
+  
+Remember that the sample mean is unbiased estimator of the population mean
+  
+## Point estimates with the method of moments (MOM)
+
+The first moment
+ \[E(X)=\frac{\sum_{i=1}^{n} X_{i}}{n} \Rightarrow E(X)=\bar{X}\]
+The Second moment
+  \[E\left(X^{2}\right)=\frac{\sum_{i=1}^{n} X_{i}^{2}}{n} \Rightarrow \]
+   \[V(X)=E\left(X^{2}\right)-E^{2}(X) \Rightarrow V(X)=\frac{\sum_{i=1}^{n} X_{i}^{2}}{n}-(\bar{X})^{2}\]
+ 
+
+**Q1: MOM**
+
+Let  \[X =  \mathcal{U}\left(\theta , \theta + 6 \right)\]
+Estimate $\theta$ with the method of moments \
+
+Therfore \[E(X) =  (\theta + \theta+ 6 )/2 = \theta +3\]
+And \[E(X) = \bar{X} = \theta +3\]
+By the equation of the first moment.
+Therfore \[\hat{\theta} = \bar{X}  -3\]
+
+
+
+# 2.Point estimates with the mazimum likelihood estimation (MLE)
+In statistics, maximum likelihood estimation (MLE) is a method of estimating the parameters of a probability distribution by maximizing a likelihood function, so that under the assumed statistical model the observed data is most probable. The point in the parameter space that maximizes the likelihood function is called the maximum likelihood estimate. The logic of maximum likelihood is both intuitive and flexible, and as such the method has become a dominant means of statistical inference.
+
+If the likelihood function is differentiable, the derivative test for determining maxima can be applied. In some cases, the first-order conditions of the likelihood function can be solved explicitly; for instance, the ordinary least squares estimator maximizes the likelihood of the linear regression model. Under most circumstances, however, numerical methods will be necessary to find the maximum of the likelihood function. ("Wikipedia")
+
+**Q2: MLE**
+With the binomial distribution
+
+\begin{equation}
+L(p)=f_{D}(\mathrm{H}=49 | p)=\left(\begin{array}{c}{80} \\ {49}\end{array}\right) p^{49}(1-p)^{31}\end{equation}
+\begin{equation}
+0=\frac{\partial}{\partial p}\left(\left(\begin{array}{c}{80} \\ {49}\end{array}\right) p^{49}(1-p)^{31}\right)
+\end{equation}
+\begin{equation}
+0=49 p^{48}(1-p)^{31}-31 p^{49}(1-p)^{30}
+\end{equation}
+\begin{equation}
+=p^{48}(1-p)^{30}[49(1-p)-31 p]
+\end{equation}
+\begin{equation}
+=p^{48}(1-p)^{30}[49-80 p]
+\end{equation}
+
+It's clear that the maximum is at p = 49/80. But let's see how we do it in R using the bulit in [optimize](ehttps://stat.ethz.ch/R-manual/R-devel/library/stats/html/optimize.html) function:  
+
+``` {r find MlE}
+likelihood <- function(p) p^49*(1-p)^31
+tolerance <- 10^(-4) #0.0001
+pmax <- optimize(likelihood, c(0, 1), tol = , maximum = T)[[1]]
+delta <- abs(pmax- (49/80))
+delta
+```
+
+
+# Best Pracitces for data Data handling with R
+
+R main datatypes:
+
+  * vectors
+  * matrices
+  * data.frame - matrices with meatadata, added functionallity and allow multiple data types
+  * tibbles  - modern take on dataframes 
+
+dplyr is a grammar of data manipulation, providing a consistent set of verbs that help you solve the most common data manipulation challenges:
+
+  * `mutate()` adds new variables that are functions of existing variables.
+  * `select()` picks variables based on their names. 
+  * `filter()` picks cases based on their values.
+  * `summarize()` reduces multiple values down to a single summary.
+  * `arrange()` sorts the rows.
+
+```{r Impports, message=FALSE}
+library(tidyverse)
+library(nycflights13)
+```
+
+
+This dataset has 19 columns so the head function is not that usefull when knitting to html.
+It is always useful to know how many missing values we have in our dataset, sometimes missing values are not just given to us as NA.
+```{r describe dataset}
+head(flights,2)
+colSums(is.na(flights))/nrow(flights) 
+sapply(flights,class)
+```
+***
+**At home - find a better way to print the classes and the % of missing values in R** <br>
+
+
+## `select()` picks variables based on their names. 
+
+```{r select method}
+flight_ditance_airtime <- flights %>% select( distance, air_time) 
+flight_ditance_airtime %>% head(2)
+```
+
+
+## `mutate()` adds new variables that are functions of existing variables.
+```{r mutate method}
+flight_ditance_airtime %>% mutate(mean_speed = distance/air_time) %>% head(2)
+```
+If you only want to keep the new variables, use `transmute()`:
+```{r transmute method}
+flight_ditance_airtime %>% transmute(mean_speed = distance/air_time) %>% head(2)
+```
+
+##  `filter()` picks cases based on their values.
+```{r filter method}
+flights %>% filter(is.na(dep_delay)) %>% head(2)
+```
+
+
+##  `arrange()` picks cases based on their values.
+```{r arrange  method}
+flights %>% arrange(desc(month)) %>% head(2)
+```
+
+## `summarize()` reduces multiple values down to a single summary.
+
+```{r summarize  method}
+by_month <- group_by(flights,month)
+by_month %>% summarise(count = n()) %>% 
+  ggplot( mapping = aes(x = month, y = count)) + geom_bar(stat="identity") +  coord_cartesian(ylim = c(2*10^4, 3*10^4))
+```
+
+```{r another way}
+ggplot(data = flights) + 
+  geom_bar(mapping = aes(x = month)) +
+ coord_cartesian(ylim = c(2*10^4, 3*10^4))
+```
+
+
+Additional resources:
+
+  + [r4ds](https://r4ds.had.co.nz/transform.html)
+  + [dplyr](https://dplyr.tidyverse.org/)
+  + [dplyr cheat sheet](https://github.com/rstudio/cheatsheets/blob/master/data-transformation.pdf)
+
+
+
+
+
+
+
+

@@ -1,51 +1,11 @@
 ---
-title: "EX 03"
+title: "EX 04 - confidense intervals and MLE motivation"
 author: "Afek Adler"
 date: "`r Sys.Date()`"
 output:
   html_document :  
     number_sections: TRUE
 ---
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-
-Last excercise we spoke about MLE, MLE is a method for point estimation.
-Today we will cover another method for point estimats which is the method of moments.
-Than, we will go over interval estimation
-
-
-We will go over an example of point estimation with the method of moments but let's remind ourself some desired characteristics of estimators:
-
-  * Unbiased. If: \[E(\hat{\theta}) = \theta \]
-  * Consistent. If the varaince of the estimator ~0 when N tends to $\infty$ 
-  
-  Remember that the sample mean is unbiased estimator of the population mean
-  
-# Point estimates with the method of moments
-The first moment
- \[E(X)=\frac{\sum_{i=1}^{n} X_{i}}{n} \Rightarrow E(X)=\bar{X}\]
-The Second moment
-  \[E\left(X^{2}\right)=\frac{\sum_{i=1}^{n} X_{i}^{2}}{n} \Rightarrow \]
-   \[V(X)=E\left(X^{2}\right)-E^{2}(X) \Rightarrow V(X)=\frac{\sum_{i=1}^{n} X_{i}^{2}}{n}-(\bar{X})^{2}\]
- 
-
-**Q1:**
-
-
-Let  \[X =  \mathcal{U}\left(\theta , \theta + 6 \right)\]
-Estimate $\theta$ with the method of moments \\
-
-Therfore \[E(X) =  (\theta + \theta+ 6 )/2 = \theta +3\]
-And \[E(X) = \bar{X} = \theta +3\]
-By the equation of the first moment.
-Therfore \[\hat{\theta} = \bar{X}  -3\]
-
-Note - There are another approaches to Estimating parameters,some are really different - like the Bayesian approach.
-Some are computationally different, for example, using transformations like the Moment-generating function. 
-
 # Interval Estimation
 
 ## The student's t distribution 
@@ -112,3 +72,116 @@ for (i in 1:N_tests)
 print(counter/N_tests)
 ```
 
+# MLE motivation
+
+Motivation example: solving MLE with the expectation maximization algorithm for GMM
+## MLE for Human Hight
+
+Assume that we are given data of human height but we don't know their gender.
+
+
+``` {r}
+photo_path <- 'https://ourworldindata.org/uploads/2019/06/distribution-1.png'
+destination_path <- 'heights.jpg'
+download.file(photo_path,destination_path, mode = 'wb')
+```
+
+```{r human height, echo=FALSE, fig.cap="Distribution of height by Gender", out.width = '75%'}
+knitr::include_graphics(destination_path)
+```
+
+Let's generate a sample:
+
+```{r  sample generation}
+library(tidyverse)
+set.seed(42)
+n_samples = 500
+
+male_avg_h = 178.4
+male_std_h = 7.6
+
+female_avg_h = 154  # 164.7 
+female_std_h = 7.1
+
+male_h <- rnorm(n_samples, male_avg_h, male_std_h)
+female_h <- rnorm(n_samples, female_avg_h, female_std_h)
+
+# a plot using ggplot
+all_h <- tibble(h = c(male_h,female_h))
+
+ggplot(all_h, aes(h)) + 
+  geom_density(fill = "red", color = "blue") + 
+  ggtitle("Human Height [cm]") +
+  labs(caption = "n=1000")
+
+# this can also be generated via base R plots, but we highly recommend the use of ggplot2 for producing plots
+# Kernel Density Plot
+d <- density(all_h$h)
+
+plot(d, main = "Human Height (CM)" )
+polygon(d, col="red", border="blue") 
+```
+
+
+Let's assume we know only the heights vector but we don't know the genders at all.
+We call the gender a hidden variable because we never observe it.
+let's consider a model to generate this vector:
+
+For each sample:
+
+  1. Sample a gender: \[ Z \in \{Female,Male\} \]
+NOTE : in our example z is derived from a Bernoulli distribution but the general case is Categorical distribution.
+for simplicity lets note: 
+ \[ p(Z = Male) = p ,p(Z = Female) = 1-p\]
+  2. After we know a gender we need to sample a height - let's assume: 
+\[ p(X|Z) = \mathcal{N}\left(\mu_z , \sigma_z^{2}\right)\]
+
+NOTE : it means that there are parameters that describe the height of Males and different parametrs that describe the height Females but their both from normal distribution.
+
+Therefore we can deduce:
+\[ p(X = x ,Z= z ) = p(Z=z)* p(X = x|Z= z) \]
+
+Suppose we know the genders in our sample, finding the parameters is than trivial:
+\[ \hat{p} = NumberOfMalesInSample/SampleSize \]
+\[ \hat{\mu}_{Male} = AvgMaleHeight \]
+\[ \hat{\sigma}_{Male} = SigmaMaleHeight \]
+
+
+If we see a height and we want to know whether its a Female or Male, we can do it in a probabalistic manner, given that we know the parameters of the model:
+\[ p(Z= z|X = x) = p(X = x ,Z= z )/p(X=x)\]
+This is called soft clustering.
+and if we would have to guess a class (gender), than we would guess:
+\[ Z_i = argmax_z p(Z= z|X = x_i)\]
+This is called Hard clustering.
+So if we know the parameters we "know" Z and if we know Z we know the parameters.
+
+
+**But we don't know them..** MLE to the rescue!
+Let's define the likelihood of one sample:
+\[ p(X = x) = p(Z=Male)* p(X = x|Z=Male) + p(Z=Female)* p(X = x|Z=Fenale)\]
+And the complete Data liklihood:
+\[\prod_{i}^{n}  p(X = x_i) = \prod_{i}^{n} (p(Z=Male)* p(X = x_i|Z=Male) + p(Z=Female)* p(X = x_i|Z=Fenale))\]
+But you will find that this term is impossible to optimize analytically. 
+Luckily, there are ways to solve this problem (heuristically):
+  
+  1. Expectaion maximization algorithm - There exist a lower bound on the log likelihood of the data and it's possible to optimize it iteratively, those improving the likelihood. But we are not guaranteed a global maxima.
+  2. Gradient descent (with a a constrain on each sigma being positive semi definite).
+  
+We will not cover this terms in this course but you will meet the gradient descent algorithm in the future.
+
+
+Resources : 
+
+* [most detailed explanations](http://cs229.stanford.edu/notes/cs229-notes8.pdf)
+* [example in 2d](http://www.ee.bgu.ac.il/~haimp/ml/lectures/lec2/lec2.pdf)
+* [video](https://www.youtube.com/watch?v=Rkl30Fr2S38)
+
+
+Q: 
+
+* What happens if there are more females? 
+* What happens if we care more about false positives/false negatives?
+
+A : \
+
+** Wait For Intro to Machine Learning Course! **
