@@ -12,7 +12,7 @@
 
 <meta name="author" content="Afek Adler" />
 
-<meta name="date" content="2019-11-07" />
+<meta name="date" content="2019-11-09" />
 
 <title>EX 02 - Data Handling &amp; MLE</title>
 
@@ -365,7 +365,7 @@ summary {
 
 <h1 class="title toc-ignore">EX 02 - Data Handling &amp; MLE</h1>
 <h4 class="author">Afek Adler</h4>
-<h4 class="date">2019-11-07</h4>
+<h4 class="date">2019-11-09</h4>
 
 </div>
 
@@ -382,12 +382,12 @@ summary {
 <ul>
 <li>Do a quick recap on MSE because there was an interesting discussion about it in the last excercise</li>
 <li>Cover methods for point estimats</li>
-<li>Get to know dplyr package`</li>
+<li>Get to know dplyr package</li>
 </ul>
 <div id="loss-function" class="section level1">
 <h1><span class="header-section-number">1</span> Loss function</h1>
 <p>A quick recap of the MSE of an estimator: <span class="math display">\[\operatorname{MSE}(\hat{\Theta})=E((\hat{\Theta}-\theta)^{2})\]</span></p>
-<p>The squared loss (variant of L2 norm) did not come from heaven but from convienince. for example, another good criterion can be:</p>
+<p>The squared loss did not come from heaven but from convienince. for example, another good criterion can be:</p>
 <p><span class="math display">\[\operatorname{MAE}(\hat{\Theta})=E(|\hat{\Theta}-\theta)|)\]</span></p>
 <p>Or many other types of error function. Also, at the lecture you have seen an <em>example</em> of Bayesian estimation where <span class="math inline">\(\hat{\theta}_{\mathrm{MMSE}}=\int \theta \mathrm{p}(\theta | \mathbf{x}) \mathrm{d} \theta=\mathrm{E}(\theta | \mathbf{x})\)</span> ,the derivation of this formula was taken under assumption of a square loss but there are also many other bayesian estimators like the maximum a posteriori estimation - <span class="math inline">\(\hat{\theta}_{\mathrm{MAP}}=\underset{\theta}{\arg \max } p(\mathbf{x} | \theta) \mathrm{p}(\theta)\)</span></p>
 </div>
@@ -409,9 +409,8 @@ summary {
 </p>
 <p>Therfore <span class="math display">\[E(X) =  (\theta + \theta+ 6 )/2 = \theta +3\]</span> And <span class="math display">\[E(X) = \bar{X} = \theta +3\]</span> By the equation of the first moment. Therfore <span class="math display">\[\hat{\theta} = \bar{X}  -3\]</span></p>
 </div>
-</div>
-<div id="point-estimates-with-the-mazimum-likelihood-estimation-mle" class="section level1">
-<h1><span class="header-section-number">3</span> 2.Point estimates with the mazimum likelihood estimation (MLE)</h1>
+<div id="point-estimates-with-the-mazimum-likelihood-estimation-mle" class="section level2">
+<h2><span class="header-section-number">2.3</span> Point estimates with the mazimum likelihood estimation (MLE)</h2>
 <p>In statistics, maximum likelihood estimation (MLE) is a method of estimating the parameters of a probability distribution by maximizing a likelihood function, so that under the assumed statistical model the observed data is most probable. The point in the parameter space that maximizes the likelihood function is called the maximum likelihood estimate. The logic of maximum likelihood is both intuitive and flexible, and as such the method has become a dominant means of statistical inference.</p>
 <p>If the likelihood function is differentiable, the derivative test for determining maxima can be applied. In some cases, the first-order conditions of the likelihood function can be solved explicitly; for instance, the ordinary least squares estimator maximizes the likelihood of the linear regression model. Under most circumstances, however, numerical methods will be necessary to find the maximum of the likelihood function. (“Wikipedia”)</p>
 <p><strong>Q2: MLE</strong> With the binomial distribution</p>
@@ -433,8 +432,9 @@ delta &lt;- abs(pmax- (49/80))
 delta</code></pre>
 <pre><code>## [1] 6.814623e-07</code></pre>
 </div>
+</div>
 <div id="best-pracitces-for-data-data-handling-with-r" class="section level1">
-<h1><span class="header-section-number">4</span> Best Pracitces for data Data handling with R</h1>
+<h1><span class="header-section-number">3</span> Best Pracitces for data Data handling with R</h1>
 <p>R main datatypes:</p>
 <ul>
 <li>vectors</li>
@@ -532,7 +532,7 @@ library(nycflights13)</code></pre>
 <hr />
 <p><strong>At home - find a better way to print the classes and the % of missing values in R</strong> <br></p>
 <div id="select-picks-variables-based-on-their-names." class="section level2">
-<h2><span class="header-section-number">4.1</span> <code>select()</code> picks variables based on their names.</h2>
+<h2><span class="header-section-number">3.1</span> <code>select()</code> picks variables based on their names.</h2>
 <pre class="r"><code>flight_ditance_airtime &lt;- flights %&gt;% select( distance, air_time) 
 flight_ditance_airtime %&gt;% head(2)</code></pre>
 <pre><code>## # A tibble: 2 x 2
@@ -542,7 +542,7 @@ flight_ditance_airtime %&gt;% head(2)</code></pre>
 ## 2     1416      227</code></pre>
 </div>
 <div id="mutate-adds-new-variables-that-are-functions-of-existing-variables." class="section level2">
-<h2><span class="header-section-number">4.2</span> <code>mutate()</code> adds new variables that are functions of existing variables.</h2>
+<h2><span class="header-section-number">3.2</span> <code>mutate()</code> adds new variables that are functions of existing variables.</h2>
 <pre class="r"><code>flight_ditance_airtime %&gt;% mutate(mean_speed = distance/air_time) %&gt;% head(2)</code></pre>
 <pre><code>## # A tibble: 2 x 3
 ##   distance air_time mean_speed
@@ -558,7 +558,7 @@ flight_ditance_airtime %&gt;% head(2)</code></pre>
 ## 2       6.24</code></pre>
 </div>
 <div id="filter-picks-cases-based-on-their-values." class="section level2">
-<h2><span class="header-section-number">4.3</span> <code>filter()</code> picks cases based on their values.</h2>
+<h2><span class="header-section-number">3.3</span> <code>filter()</code> picks cases based on their values.</h2>
 <pre class="r"><code>flights %&gt;% filter(is.na(dep_delay)) %&gt;% head(2)</code></pre>
 <pre><code>## # A tibble: 2 x 19
 ##    year month   day dep_time sched_dep_time dep_delay arr_time
@@ -571,7 +571,7 @@ flight_ditance_airtime %&gt;% head(2)</code></pre>
 ## #   time_hour &lt;dttm&gt;</code></pre>
 </div>
 <div id="arrange-picks-cases-based-on-their-values." class="section level2">
-<h2><span class="header-section-number">4.4</span> <code>arrange()</code> picks cases based on their values.</h2>
+<h2><span class="header-section-number">3.4</span> <code>arrange()</code> picks cases based on their values.</h2>
 <pre class="r"><code>flights %&gt;% arrange(desc(month)) %&gt;% head(2)</code></pre>
 <pre><code>## # A tibble: 2 x 19
 ##    year month   day dep_time sched_dep_time dep_delay arr_time
@@ -584,7 +584,7 @@ flight_ditance_airtime %&gt;% head(2)</code></pre>
 ## #   time_hour &lt;dttm&gt;</code></pre>
 </div>
 <div id="summarize-reduces-multiple-values-down-to-a-single-summary." class="section level2">
-<h2><span class="header-section-number">4.5</span> <code>summarize()</code> reduces multiple values down to a single summary.</h2>
+<h2><span class="header-section-number">3.5</span> <code>summarize()</code> reduces multiple values down to a single summary.</h2>
 <pre class="r"><code>by_month &lt;- group_by(flights,month)
 by_month %&gt;% summarise(count = n()) %&gt;% 
   ggplot( mapping = aes(x = month, y = count)) + geom_bar(stat=&quot;identity&quot;) +  coord_cartesian(ylim = c(2*10^4, 3*10^4))</code></pre>

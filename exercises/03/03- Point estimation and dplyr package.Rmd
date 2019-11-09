@@ -24,14 +24,14 @@ Today we will:
 
   * Do a quick recap on MSE because there was an interesting discussion about it in the last excercise
   * Cover methods for point estimats
-  * Get to know dplyr package`
+  * Get to know dplyr package
 
 
 # Loss function
 A quick recap of the MSE of an estimator:
 \[\operatorname{MSE}(\hat{\Theta})=E((\hat{\Theta}-\theta)^{2})\]
 
-The squared loss (variant of L2 norm) did not come from heaven but from convienince. for example, another good criterion can be:
+The squared loss did not come from heaven but from convienince. for example, another good criterion can be:
 
   \[\operatorname{MAE}(\hat{\Theta})=E(|\hat{\Theta}-\theta)|)\]
 
@@ -69,7 +69,7 @@ Therfore \[\hat{\theta} = \bar{X}  -3\]
 
 
 
-# 2.Point estimates with the mazimum likelihood estimation (MLE)
+## Point estimates with the mazimum likelihood estimation (MLE)
 In statistics, maximum likelihood estimation (MLE) is a method of estimating the parameters of a probability distribution by maximizing a likelihood function, so that under the assumed statistical model the observed data is most probable. The point in the parameter space that maximizes the likelihood function is called the maximum likelihood estimate. The logic of maximum likelihood is both intuitive and flexible, and as such the method has become a dominant means of statistical inference.
 
 If the likelihood function is differentiable, the derivative test for determining maxima can be applied. In some cases, the first-order conditions of the likelihood function can be solved explicitly; for instance, the ordinary least squares estimator maximizes the likelihood of the linear regression model. Under most circumstances, however, numerical methods will be necessary to find the maximum of the likelihood function. ("Wikipedia")
