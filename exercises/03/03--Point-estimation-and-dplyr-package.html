@@ -383,13 +383,14 @@ summary {
 <li>Do a quick recap on MSE because there was an interesting discussion about it in the last excercise</li>
 <li>Cover methods for point estimats</li>
 <li>Get to know dplyr package</li>
+<li>If we will have time - we will try to develop a feeling for bayesian estimation.</li>
 </ul>
 <div id="loss-function" class="section level1">
 <h1><span class="header-section-number">1</span> Loss function</h1>
 <p>A quick recap of the MSE of an estimator: <span class="math display">\[\operatorname{MSE}(\hat{\Theta})=E((\hat{\Theta}-\theta)^{2})\]</span></p>
 <p>The squared loss did not come from heaven but from convienince. for example, another good criterion can be:</p>
 <p><span class="math display">\[\operatorname{MAE}(\hat{\Theta})=E(|\hat{\Theta}-\theta)|)\]</span></p>
-<p>Or many other types of error function. Also, at the lecture you have seen an <em>example</em> of Bayesian estimation where <span class="math inline">\(\hat{\theta}_{\mathrm{MMSE}}=\int \theta \mathrm{p}(\theta | \mathbf{x}) \mathrm{d} \theta=\mathrm{E}(\theta | \mathbf{x})\)</span> ,the derivation of this formula was taken under assumption of a square loss but there are also many other bayesian estimators like the maximum a posteriori estimation - <span class="math inline">\(\hat{\theta}_{\mathrm{MAP}}=\underset{\theta}{\arg \max } p(\mathbf{x} | \theta) \mathrm{p}(\theta)\)</span></p>
+<p>Or many other types of error function. Also, at the lecture you have seen an <em>example</em> of Bayesian estimation where <span class="math inline">\(\hat{\theta}_{\mathrm{MMSE}}=\int \theta \mathrm{p}(\theta | \mathbf{x}) \mathrm{d} \theta=\mathrm{E}(\theta | \mathbf{x})\)</span> ,the derivation of this formula was taken under assumption of a square loss but there are also many other bayesian estimators like the maximum a posteriori estimation - <span class="math inline">\(\hat{\theta}_{\mathrm{MAP}}=\underset{\theta}{\arg \max } p(\mathbf{\theta}| x)\)</span></p>
 </div>
 <div id="point-estimaion" class="section level1">
 <h1><span class="header-section-number">2</span> Point estimaion</h1>
@@ -600,6 +601,11 @@ by_month %&gt;% summarise(count = n()) %&gt;%
 <li><a href="https://github.com/rstudio/cheatsheets/blob/master/data-transformation.pdf">dplyr cheat sheet</a></li>
 </ul>
 </div>
+</div>
+<div id="bayesian-estimation" class="section level1">
+<h1><span class="header-section-number">4</span> Bayesian estimation</h1>
+<p>We want to minimize with respect to a given loss function - <span class="math display">\[\int L(\hat{\theta}- \theta)*p(\theta|x)d\theta\]</span></p>
+<p>In the lecture, we have seen that when <span class="math inline">\(L(\hat{\theta},\theta) = (\hat{\theta}- \theta)^2\)</span> than <span class="math inline">\(\hat{\theta} = E(posterier)\)</span>, other types of loss functions will derive different estimators (like we have seen above). The logic of this method is as follows - we have somekind of a distribution over <span class="math inline">\(\theta\)</span>, but we need to choose only one of those. So we formulate an objective function and minimze it with respect to the parameter that we want to find. The most used ones are the mean, median, and common of that distribution, and as we said, thet are the bayesian estimators for different loss functions.</p>
 </div>
 
 
