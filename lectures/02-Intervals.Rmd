@@ -643,3 +643,37 @@ $$\bar{X}-t_{\alpha/2,n-1}\times s\sqrt{1+\frac{1}{n}}\leq x_{n+1} \leq \bar{X} 
 --
 
 **Question:** Reflecting back on the problem we started the lecture with (the drive duration problem). Should we have used a confidence interval or a prediction interval instead?
+
+---
+
+# Hypothesis testing
+
+A *statistical hypothesis* is a statement about the parameters of one or more populations.
+
+--
+
+In empirical research, we first formulate our hypothesis, and then we try to find empirical results to support our hypothesis (never the other way around, that's called HARK-ing).
+
+--
+
+For example:
+
+  * $H_0$: The average time to reach TLV from Netanya $=$ 40 minutes
+  
+  * $H_1$: The average time to reach TLV from Netanya $\neq$ 40 minutes 
+  
+--
+  
+The $H_0$ is called the *null hypothesis* and the $H_1$ is called the *alternative hypothesis*.
+
+--
+
+The same situation can be descrived with different hypothesis (with a different meaning):
+
+  * $H_0$: The average time to reach TLV from Netanya $=$ 40 minutes
+  
+  * $H_1$: The average time to reach TLV from Netanya $>$ 40 minutes
+
+--
+
+In the next lecture we will discuss how to devise hypothesis tests, what are type-I and type-II errors, what is the meaning of rejecting a null hypothesis, what are p-values and what is the connection to the statistical intervals we were discussing.
