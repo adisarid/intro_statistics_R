@@ -18,14 +18,14 @@ Last excercise we did:
   * Central limit theoram 
   * Bias variance decomposition of a point estimator
   * Derived an unbiased estimate for $\sigma^{2}(S^{2})$ 
-  * Coverd the student's t-distribution and chi square distribution
+  * Covered the student's t-distribution and chi square distribution
   
 Today we will:
 
   * Do a quick recap on MSE because there was an interesting discussion about it in the last excercise
-  * Cover methods for point estimats
-  * Get to know dplyr package
-  * If we will have time - we will try to develop a feeling for bayesian estimation.
+  * Cover methods for point estimattion
+  * Get to know `dplyr` package
+  * Try to develop a feeling for bayesian estimation.
 
 
 # Loss function
@@ -37,7 +37,8 @@ The squared loss did not come from heaven but from convienince. for example, ano
   \[\operatorname{MAE}(\hat{\Theta})=E(|\hat{\Theta}-\theta)|)\]
 
 Or many other types of error function.
-Also, at the lecture you have seen an *example* of Bayesian estimation where $\hat{\theta}_{\mathrm{MMSE}}=\int \theta \mathrm{p}(\theta | \mathbf{x}) \mathrm{d} \theta=\mathrm{E}(\theta | \mathbf{x})$ ,the derivation of this formula was taken under assumption of a  square loss but there are also many other bayesian estimators like the maximum a posteriori estimation - $\hat{\theta}_{\mathrm{MAP}}=\underset{\theta}{\arg \max } p(\mathbf{\theta}| x)$
+Also, at the lecture you have seen an *example* of Bayesian estimation where $\hat{\theta}_{\mathrm{MMSE}}=\int \theta \mathrm{p}(\theta | \mathbf{x}) \mathrm{d} \theta=\mathrm{E}(\theta | \mathbf{x})$ ,the derivation of this formula was taken under assumption of a  square loss but there are also many other bayesian estimators like the maximum a posteriori estimation - $\hat{\theta}_{\mathrm{MAP}}=\underset{\theta}{\arg \max } p(\mathbf{\theta}| x)$.
+In the end of the excercise we will go deeper into this subject.
 
 
 # Point estimaion
@@ -76,15 +77,15 @@ In statistics, maximum likelihood estimation (MLE) is a method of estimating the
 If the likelihood function is differentiable, the derivative test for determining maxima can be applied. In some cases, the first-order conditions of the likelihood function can be solved explicitly; for instance, the ordinary least squares estimator maximizes the likelihood of the linear regression model. Under most circumstances, however, numerical methods will be necessary to find the maximum of the likelihood function. ("Wikipedia")
 
 **Q2: MLE**
-With the binomial distribution
+With the binomial distribution - suppose we had a trial with 49 success ou of 80.
 
 \begin{equation}
 L(p)=f_{D}(\mathrm{H}=49 | p)=\left(\begin{array}{c}{80} \\ {49}\end{array}\right) p^{49}(1-p)^{31}\end{equation}
 \begin{equation}
-0=\frac{\partial}{\partial p}\left(\left(\begin{array}{c}{80} \\ {49}\end{array}\right) p^{49}(1-p)^{31}\right)
+0=\frac{\partial}{\partial p}\left(\left(\begin{array}{c}{80} \\ {49}\end{array}\right) p^{49}(1-p)^{31}\right) , \{discard binomial coefficient\}
 \end{equation}
 \begin{equation}
-0=49 p^{48}(1-p)^{31}-31 p^{49}(1-p)^{30}
+0=49 p^{48}(1-p)^{31}-31 p^{49}(1-p)^{30}, \{(uv)` = u`v +v`u\}
 \end{equation}
 \begin{equation}
 =p^{48}(1-p)^{30}[49(1-p)-31 p]
@@ -92,13 +93,16 @@ L(p)=f_{D}(\mathrm{H}=49 | p)=\left(\begin{array}{c}{80} \\ {49}\end{array}\righ
 \begin{equation}
 =p^{48}(1-p)^{30}[49-80 p]
 \end{equation}
+Can be solved also by applying log on the likelihood.
 
 It's clear that the maximum is at p = 49/80. But let's see how we do it in R using the bulit in [optimize](ehttps://stat.ethz.ch/R-manual/R-devel/library/stats/html/optimize.html) function:  
 
 ``` {r find MlE}
-likelihood <- function(p) p^49*(1-p)^31
-tolerance <- 10^(-4) #0.0001
-pmax <- optimize(likelihood, c(0, 1), tol = , maximum = T)[[1]]
+likelihood <- function(p) {
+  p^49*((1-p)^31)
+}
+tolerance <- 10^(-4) 
+pmax <- optimize(likelihood, c(0, 1), tol = tolerance  , maximum = T)[[1]]
 delta <- abs(pmax- (49/80))
 delta
 ```
@@ -113,7 +117,7 @@ R main datatypes:
   * data.frame - matrices with meatadata, added functionallity and allow multiple data types
   * tibbles  - modern take on dataframes 
 
-dplyr is a grammar of data manipulation, providing a consistent set of verbs that help you solve the most common data manipulation challenges:
+`dplyr` is a grammar of data manipulation, providing a consistent set of verbs that help you solve the most common data manipulation challenges:
 
   * `mutate()` adds new variables that are functions of existing variables.
   * `select()` picks variables based on their names. 

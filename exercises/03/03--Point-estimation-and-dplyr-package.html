@@ -12,7 +12,7 @@
 
 <meta name="author" content="Afek Adler" />
 
-<meta name="date" content="2019-11-09" />
+<meta name="date" content="2019-11-10" />
 
 <title>EX 02 - Data Handling &amp; MLE</title>
 
@@ -365,7 +365,7 @@ summary {
 
 <h1 class="title toc-ignore">EX 02 - Data Handling &amp; MLE</h1>
 <h4 class="author">Afek Adler</h4>
-<h4 class="date">2019-11-09</h4>
+<h4 class="date">2019-11-10</h4>
 
 </div>
 
@@ -376,21 +376,21 @@ summary {
 <li>Central limit theoram</li>
 <li>Bias variance decomposition of a point estimator</li>
 <li>Derived an unbiased estimate for <span class="math inline">\(\sigma^{2}(S^{2})\)</span></li>
-<li>Coverd the student’s t-distribution and chi square distribution</li>
+<li>Covered the student’s t-distribution and chi square distribution</li>
 </ul>
 <p>Today we will:</p>
 <ul>
 <li>Do a quick recap on MSE because there was an interesting discussion about it in the last excercise</li>
-<li>Cover methods for point estimats</li>
-<li>Get to know dplyr package</li>
-<li>If we will have time - we will try to develop a feeling for bayesian estimation.</li>
+<li>Cover methods for point estimattion</li>
+<li>Get to know <code>dplyr</code> package</li>
+<li>Try to develop a feeling for bayesian estimation.</li>
 </ul>
 <div id="loss-function" class="section level1">
 <h1><span class="header-section-number">1</span> Loss function</h1>
 <p>A quick recap of the MSE of an estimator: <span class="math display">\[\operatorname{MSE}(\hat{\Theta})=E((\hat{\Theta}-\theta)^{2})\]</span></p>
 <p>The squared loss did not come from heaven but from convienince. for example, another good criterion can be:</p>
 <p><span class="math display">\[\operatorname{MAE}(\hat{\Theta})=E(|\hat{\Theta}-\theta)|)\]</span></p>
-<p>Or many other types of error function. Also, at the lecture you have seen an <em>example</em> of Bayesian estimation where <span class="math inline">\(\hat{\theta}_{\mathrm{MMSE}}=\int \theta \mathrm{p}(\theta | \mathbf{x}) \mathrm{d} \theta=\mathrm{E}(\theta | \mathbf{x})\)</span> ,the derivation of this formula was taken under assumption of a square loss but there are also many other bayesian estimators like the maximum a posteriori estimation - <span class="math inline">\(\hat{\theta}_{\mathrm{MAP}}=\underset{\theta}{\arg \max } p(\mathbf{\theta}| x)\)</span></p>
+<p>Or many other types of error function. Also, at the lecture you have seen an <em>example</em> of Bayesian estimation where <span class="math inline">\(\hat{\theta}_{\mathrm{MMSE}}=\int \theta \mathrm{p}(\theta | \mathbf{x}) \mathrm{d} \theta=\mathrm{E}(\theta | \mathbf{x})\)</span> ,the derivation of this formula was taken under assumption of a square loss but there are also many other bayesian estimators like the maximum a posteriori estimation - <span class="math inline">\(\hat{\theta}_{\mathrm{MAP}}=\underset{\theta}{\arg \max } p(\mathbf{\theta}| x)\)</span>. In the end of the excercise we will go deeper into this subject.</p>
 </div>
 <div id="point-estimaion" class="section level1">
 <h1><span class="header-section-number">2</span> Point estimaion</h1>
@@ -414,21 +414,23 @@ summary {
 <h2><span class="header-section-number">2.3</span> Point estimates with the mazimum likelihood estimation (MLE)</h2>
 <p>In statistics, maximum likelihood estimation (MLE) is a method of estimating the parameters of a probability distribution by maximizing a likelihood function, so that under the assumed statistical model the observed data is most probable. The point in the parameter space that maximizes the likelihood function is called the maximum likelihood estimate. The logic of maximum likelihood is both intuitive and flexible, and as such the method has become a dominant means of statistical inference.</p>
 <p>If the likelihood function is differentiable, the derivative test for determining maxima can be applied. In some cases, the first-order conditions of the likelihood function can be solved explicitly; for instance, the ordinary least squares estimator maximizes the likelihood of the linear regression model. Under most circumstances, however, numerical methods will be necessary to find the maximum of the likelihood function. (“Wikipedia”)</p>
-<p><strong>Q2: MLE</strong> With the binomial distribution</p>
+<p><strong>Q2: MLE</strong> With the binomial distribution - suppose we had a trial with 49 success ou of 80.</p>
 <p><span class="math display">\[\begin{equation}
 L(p)=f_{D}(\mathrm{H}=49 | p)=\left(\begin{array}{c}{80} \\ {49}\end{array}\right) p^{49}(1-p)^{31}\end{equation}\]</span> <span class="math display">\[\begin{equation}
-0=\frac{\partial}{\partial p}\left(\left(\begin{array}{c}{80} \\ {49}\end{array}\right) p^{49}(1-p)^{31}\right)
+0=\frac{\partial}{\partial p}\left(\left(\begin{array}{c}{80} \\ {49}\end{array}\right) p^{49}(1-p)^{31}\right) , \{discard binomial coefficient\}
 \end{equation}\]</span> <span class="math display">\[\begin{equation}
-0=49 p^{48}(1-p)^{31}-31 p^{49}(1-p)^{30}
+0=49 p^{48}(1-p)^{31}-31 p^{49}(1-p)^{30}, \{(uv)` = u`v +v`u\}
 \end{equation}\]</span> <span class="math display">\[\begin{equation}
 =p^{48}(1-p)^{30}[49(1-p)-31 p]
 \end{equation}\]</span> <span class="math display">\[\begin{equation}
 =p^{48}(1-p)^{30}[49-80 p]
 \end{equation}\]</span></p>
 <p>It’s clear that the maximum is at p = 49/80. But let’s see how we do it in R using the bulit in <a href="ehttps://stat.ethz.ch/R-manual/R-devel/library/stats/html/optimize.html">optimize</a> function:</p>
-<pre class="r"><code>likelihood &lt;- function(p) p^49*(1-p)^31
-tolerance &lt;- 10^(-4) #0.0001
-pmax &lt;- optimize(likelihood, c(0, 1), tol = , maximum = T)[[1]]
+<pre class="r"><code>likelihood &lt;- function(p) {
+  p^49*((1-p)^31)
+}
+tolerance &lt;- 10^(-4) 
+pmax &lt;- optimize(likelihood, c(0, 1), tol = tolerance  , maximum = T)[[1]]
 delta &lt;- abs(pmax- (49/80))
 delta</code></pre>
 <pre><code>## [1] 6.814623e-07</code></pre>
@@ -443,7 +445,7 @@ delta</code></pre>
 <li>data.frame - matrices with meatadata, added functionallity and allow multiple data types</li>
 <li>tibbles - modern take on dataframes</li>
 </ul>
-<p>dplyr is a grammar of data manipulation, providing a consistent set of verbs that help you solve the most common data manipulation challenges:</p>
+<p><code>dplyr</code> is a grammar of data manipulation, providing a consistent set of verbs that help you solve the most common data manipulation challenges:</p>
 <ul>
 <li><code>mutate()</code> adds new variables that are functions of existing variables.</li>
 <li><code>select()</code> picks variables based on their names.</li>
