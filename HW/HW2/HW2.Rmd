@@ -1,0 +1,83 @@
+---
+title: 'Introduction to Statistics and Data Analysis with R - Homework #2'
+author: "Adi Sarid and Afek Adler"
+date: '2019-11-03'
+output:
+  html_document: default
+  pdf_document: default
+---
+
+This homework sheet is due on the ***** of November. You may submit your answers in pairs, **in R**.
+Submission will be performed electronically via the moodle.
+
+We urge you to start solving this sheet as soon as possible and, if you have any questions, come to visit us in reception hours next week.
+
+## Question 1:
+
+As we did in the excercise 4 for the normal distributin (empirically), show that if confidence intervals are constructed using a given confidence level from an infinite number of independent sample statistics, the proportion of those intervals that contain the true value of the parameter will be equal to the confidence level. In the excercise we have seen it for the normal distribution, here you will work with the chi square distribution (Lecture 3, slide #20).
+
+``` {r confidense interval for chi square distribution}
+set.seed(0)  # we set the seed of the random generator so that your results will be consistent
+
+
+
+```
+
+## Question 2:
+In this question we will look at the iris classic dataset:
+
+  1. Plot a boxplot of the numeric featurs
+  1. Provide two sided CI for the  Sepal.Length & Sepal.Width 
+  2. Provide a confidense interval for the probability to belong to the setosa species
+  
+Note: iris is a built in dataset in the r environment.
+
+``` {r confidense interval iris}
+
+
+```
+
+## Question 3:
+This question is an appetizer for hypothesis test. we will create a QQ plot.
+A QQ plot is a visual test to check whether a one dimensional variable is distributed normal.
+There are instructions in the attached link:
+
+  1. make a QQ plot for sample1 and sample2. are the plots the same? What's the difference?
+* As always, plot the graph with `ggplot`
+[https://www.youtube.com/watch?v=X9_ISJ0YpGw](explanation)
+
+
+
+``` {r QQ plot}
+set.seed(0)
+sample1 <- rnorm(100,100,36)
+sample2 <- rnorm(100^2,100,36)
+####### 
+# your code here
+
+
+#######
+```
+
+
+## Question 4:
+In this question we will challange the following formulas:
+
+\[E(\bar{X})=E\left(\frac{1}{n} \sum_{i=1}^{n} X_{i}\right)=\frac{1}{n} \sum_{i=1}^{n} E\left(X_{i}\right)=\frac{1}{n} \sum_{i=1}^{n} \mu=\frac{1}{n} \cdot n \mu=\mu\]
+What does the following code do?
+
+[https://en.wikipedia.org/wiki/Bootstrapping_(statistics)](bootstrapping)
+
+``` {r bootstrapping,warning=FALSE }
+set.seed(0)
+samples <- rpois(1000, lambda = 10)
+len <- 1000
+n_samples <- 100
+means <- numeric(len)
+for (i in 1:len) { 
+   means[i] <- sample (samples, size= n_samples, replace =F)
+} 
+print (abs(mean(means)-10))
+```
+## Question 5:
+explain the relationship between the CI length and the confidense level $(\alpha)$
