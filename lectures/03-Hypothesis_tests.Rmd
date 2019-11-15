@@ -61,10 +61,16 @@ th, td {
 }
 
 .right-plot {
-  width: 60%;
-  float: right;
-  padding-left: 1%;
+   width: 60%;
+   float: right;
+   padding-left: 1%;
+   bottom: 0px;
+   right: 0px;
+   position: absolute;
 }
+
+
+
 ```
 
 ```{r setup, include=FALSE}
@@ -153,7 +159,7 @@ Scan the following QR code (or visit the link) and answer the survey.
 ![](images/link_for_survey_example.png)
 
 ```{r counter for survey, echo = F}
-countdown(minutes = 5)
+countdown(minutes = 5, play_sound = FALSE)
 ```
 
 --
@@ -298,13 +304,19 @@ The type-I error is also called the *significance level*, or $\alpha$-error.
 
 $$\alpha = P(\text{Reject } H_0| H_0 \text{ True})$$
 
-Question:
+```{r countdown for zero type I err, echo=F}
+countdown(minutes = 1, top = 0)
+```
+
+Questions:
 
    * In the pregnancy classification example, what is an $\alpha=0$ decision rule?
    
    * In the flu vaccination example, what is an $\alpha=0$ decision rule?
    
 --
+
+Answers:
 
    * Always classify: not pregnant
    
@@ -436,6 +448,70 @@ $$\text{p-value}=1-\Phi(z_0=2.25) = 0.012$$
 
 ---
 
+# Type-II error and determining the sample size (1/3)
+
+So far, we've only considered the choice of $\alpha$, i.e., the type-I error. However, we can also influence $\beta$ by choice of the sample size $n$ (and sometimes also by the type of test - *out of scope*).
+
+Let's see how change in $n$ can increase the power (decrease the type-II error, $\beta$).
+
+--
+
+In our example, we had $p_0=0.2$, let's assume now that in the alternative hypothesis we use $p_1=p_0+\delta$ (one sided "greater than" test).
+
+--
+
+$$\beta=P(\text{Not rejecting } H_0 | H_1 \text{ true}) = P\left(\frac{x-np_0}{\sqrt{np_0(1-p_0)}}\leq z_{1-\alpha} | p_1=p_0+\delta\right)$$
+
+--
+
+Note that
+
+$$Z_0=\frac{x-np_0}{\sqrt{np_0(1-p_0)}}=\frac{x-(np_0 + n\delta)}{\sqrt{np_0(1-p_0)}} + \frac{\delta\sqrt{n}}{\sqrt{p_0(1-p_0)}}$$
+
+Given $H_0$, the distribution of $Z_0\sim\mathcal{N}\left(\delta\sqrt{n/p_0(1-p_0)}, 1\right)$, hence
+
+---
+
+# Type-II error and determining the sample size (2/3)
+
+$$\beta = P\left(\frac{x-(np_0+n\delta)}{\sqrt{np_0(1-p_0)}}<z_{1-\alpha} - \frac{\delta\sqrt{n}}{\sqrt{p_0(1-p_0)}} | p_1=p_0+\delta\right) =$$ 
+$$=P\left(\frac{x-(np_0+n\delta)}{\sqrt{n(p_0+\delta)(1-p_0-\delta)}}<\frac{z_{1-\alpha}\sqrt{np_0(1-p_0)}-\delta n}{\sqrt{n(p_1+\delta)(1-p_1-\delta)}}\quad|\quad p_0+\delta\right)$$
+
+$$\beta=\Phi\left(\frac{z_{1-\alpha}\sqrt{np_0(1-p_0)}-\delta n}{\sqrt{n(p_0+\delta)(1-p_0-\delta)}}\right)$$
+
+Now we can use `qnorm(beta)`, i.e.: $\Phi^{-1}(\beta)$, and given $\beta$, $p_0$, $\delta$ compute $n$.
+
+--
+
+Luckily, we have a function for that. From package `pwr`, function `pwr.p.test`.
+
+---
+
+# Type-II error and determining the sample size (3/3)
+
+.tiny[
+```{r power computation example}
+beta <- 0.2
+delta <- 0.05
+alpha <- 0.05
+p_0 <- 0.2
+
+library(pwr)
+p_out <- pwr::pwr.p.test(h = ES.h(p1 = p_0 + delta, p2 = p_0),
+                sig.level = alpha,
+                power = 1-beta,
+                alternative = "greater")
+p_out
+```
+]
+.right-plot[
+```{r plot, echo = FALSE, fig.dim=c(5,5)}
+plot(p_out)
+```
+]
+
+---
+
 # One-tailed versus two-tailed hypothesis
 
 So far, in our example, we've used a one-tailed hypothesis:
@@ -482,4 +558,133 @@ $$\text{p-value}=2[1-\Phi(|z_0|)] = 0.0244$$
 
 ---
 
-# Type-II error and the sample size 
+# The relationship between hypothesis testing and confidence intervals
+
+For confidence intervals of the proportion $p$ we used:
+
+$$1-\alpha = P\left(\hat{p}+z_{\alpha/2}\sqrt{p(1-p)/n}<p<\hat{p}+z_{1-\alpha/2}\sqrt{p(1-p)/n}\right)$$
+
+.small[(We had similar confidence intervals for the average of a population normally distributed, for variance, etc.)]
+
+--
+
+Negating the expression $\ldots$ within the probability $P(\ldots)$, we get:
+
+$$\alpha = 1-(1-\alpha) = 1-P\left(\hat{p}+z_{\alpha/2}\sqrt{p(1-p)/n}<p<\hat{p}+z_{1-\alpha/2}\sqrt{p(1-p)/n}\right)=$$
+
+$$=P\left(\hat{p}+z_{\alpha/2}\sqrt{p(1-p)/n}\geq p\right)+P\left(p\leq\hat{p}+z_{1-\alpha/2}\sqrt{p(1-p)/n}\right)$$
+
+--
+
+When the parameter under $H_0$ is "outside" a 95% confidence interval based on the sample, the null hypothesis is rejected at $\alpha=0.05$
+
+   * E.g., $p=0.2$ in the previous example is outside the confidence interval for $p\in(0.216,1)$.
+
+---
+
+# Hypothesis testing for expectancy - normal distribution
+
+In this example, we implement a two sided hypothesis test on the power lifting data.
+.tiny[
+```{r power lifting}
+# data source:
+#https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-10-08/ipf_lifts.csv
+male_deadlift <- read_csv("data/ipf_lifts.csv", col_types = cols()) %>% 
+   filter(sex == "M") %>% 
+   select(best3deadlift_kg) %>% 
+   filter(best3deadlift_kg > 0) %>% 
+   sample_n(500)
+
+ggplot(male_deadlift, aes(best3deadlift_kg)) + 
+   geom_histogram() + 
+   theme_bw()
+```
+]
+
+---
+
+# Hypothesis testing for expectancy - normal distribution - power lifting example
+
+Parameter $\mu$ is the expected weight a power lifter can pull in a deadlift
+   
+   * $H_0$: $\mu=225$ kg
+   * $H_0$: $\mu\neq225$ kg
+   * $\alpha=0.05$
+   * Test statistic $T_0 = \frac{\bar{X}-\mu_0}{s/\sqrt{n}}$
+   * $T_0 < t_{\alpha/2,n-1}$ or $T_0> t_{1-\alpha/2,n-1}$
+.tiny[
+```{r ttest computation}
+t.test(x = male_deadlift$best3deadlift_kg, 
+       alternative = "two.sided", 
+       mu = 225, conf.level = 0.95)
+```
+]
+
+---
+
+# Comparing distributions - qqplot
+
+So far, we discussed tests related to parameters' values, however, sometimes we want to compare entire disributions. For example, is the deadlift max weight normally distributed?
+
+--
+
+A qqplot draws the sample (on y axis) versus the theoretical distribuion (on x-axis). If the two are on $y=x$ this means that the distributions match. 
+
+--
+
+Would you say that the following are from the same distribution?
+.tiny[
+```{r deadlift weight qqplot}
+
+ggplot(male_deadlift, aes(sample = best3deadlift_kg)) + 
+   geom_qq(distribution = stats::qnorm, dparams = list(mean = 250, sd = 50)) + 
+   theme_bw() + 
+   geom_abline(slope = 1, intercept = 0)
+
+```
+]
+
+---
+
+# Comparing distributions - qqplot - another example
+
+This time, without separating genders.
+.tiny[
+```{r qqplot example}
+
+deadlift <- read_csv("data/ipf_lifts.csv", col_types = cols()) %>% 
+   select(best3deadlift_kg) %>% 
+   filter(best3deadlift_kg > 0) %>% 
+   sample_n(500)
+
+ggplot(deadlift, aes(sample = best3deadlift_kg)) + 
+   geom_qq(distribution = stats::qnorm, dparams = list(mean = 223, sd = 63)) + 
+   theme_bw() + 
+   geom_abline(slope = 1, intercept = 0)
+
+```
+]
+
+--
+
+Looks like there's a heavy tail towards higher weights in the sample than the theoretical. How do we quantify this as a statistical hypothesis test of "goodness of fit"?
+
+---
+
+# Hypothesis testing - goodness of fit
+
+
+
+---
+
+# Hypothesis testing Kolmogorov Smirnov test
+
+---
+
+# Word of caution #1 - HARKing
+
+---
+
+# Word of caution #2 - multiple tests (and adjustments of p-value - False Discovery Rate)
+
+---
