@@ -30,8 +30,12 @@ output:
   font-size: 50%;
 }
 
+.small .remark-code{
+   font-size: 85% !important;
+}
+
 .small {
-   font-size: 85%;
+   font-size: 85% !important;
 }
 
 .remark-slide-content {
@@ -349,23 +353,36 @@ Let's create an $\alpha=0.05$ decision rule for classifying if the attraction ef
 --
 
 .small[
-   * The parameter $p$ (vaccinations after intervention)
+  * The parameter is $p$ (vaccinations after intervention)
+]
+.small[
+  * $H_0$: p = 0.2 (no attraction effect)
+]
+.small[
+  * $H_1$: p > 0.2 (interevntion was successful)
+]
+.small[
+  * $\alpha = 0.05$
+]
+
+--
+
+.small[
    
-   * $H_0$: p = 0.2
-   
-   * $H_1$: p > 0.2 (interevntion was successful)
-   
-   * $\alpha = 0.05$
-   
-   * The test statistic, $x=29$ successes, $n = 100$ subjects
+   * The test statistic
    
 $$z_0 = \frac{x-np_0}{\sqrt{np_0(1-p_0)}}$$
 
    * Reject $H_0$ if $z_0>z_{1-\alpha}=1.96$
    
-   * Compute $z_0$:
+   * Compute $z_0$, given experiment results: $x=29$ successes, $n = 100$ subjects
    
 $$z_0 = \frac{29-100\times0.2}{\sqrt{100\times0.2\times0.8}}=2.25>1.96 = z_{0.95}$$
+]
+
+--
+
+.small[
 
    * Conclusion: we reject $H_0$, and therefor claim that the experiment nudged patients to vaccinate.
 ]
@@ -387,3 +404,82 @@ binom.test(x = 29, n = 100, p = 0.2, alternative = "greater")
 
 ```
 ]
+
+---
+
+# P-value versus specified $\alpha$ value
+
+The results in R do not state a specific $z_0$ but rather a **p-value**. What does p-value mean?
+
+   * By stating "we reject $H_0$ at the $\alpha$ level" we're omitting important information:
+
+      * How "significant" is our rejection? 
+      * Would this rejection hold when we vary $\alpha$? i.e.: Would our rejection hold at $\alpha=0.03$? $\alpha=0.0001$?
+
+--
+
+* The p-value is the smallest level of significance that would lead to rejection of the null hypothesis $H_0$ with the given data.
+
+--
+
+$$z_0 = \frac{29-100\times0.2}{\sqrt{100\times0.2\times0.8}}=2.25>1.65 = z_{0.95} = z_{1-\alpha}$$
+
+As long as $z_{1-\alpha}$ < 2.25 we would still reject $H_0$. Hence, the p-value is:
+
+$$\text{p-value}=1-\Phi(z_0=2.25) = 0.012$$
+
+.small[
+```{r computing p value for normal dist}
+1-pnorm(q=2.25)
+```
+]
+
+---
+
+# One-tailed versus two-tailed hypothesis
+
+So far, in our example, we've used a one-tailed hypothesis:
+
+   * $H_0$: $p=0.2$
+   * $H_1$: $p>0.2$
+
+--
+   
+Depending on context, we can also have the other direction:
+   
+   * $H_0$: $p=0.2$
+   * $H_1$: $p<0.2$
+   
+--
+
+Or a two sided hypothesis:
+
+   * $H_0$: $p=0.2$
+   * $H_1$: $p\neq0.2$
+   
+---
+
+# Two tailed hypothesis in the vaccination example
+
+If we were to use a two tailed hypothesis (the attraction had some effect, either increase or decrease vaccination rates), then our rejection criteria would become:
+
+   * Reject $H_0$ if $z_0>z_{1-\alpha/2}$ or $z_0<z_{\alpha/2}$
+
+--
+   
+   * I.e., for $\alpha=0.05$:
+   * Reject $H_0$ if $z_0>1.96$ or $z_0<-1.96$
+
+--
+
+The p-value would be in this case:
+
+$$\text{p-value}=2[1-\Phi(|z_0|)] = 0.0244$$
+
+```{r the pvalue in two sided test}
+2*(1-pnorm(q = 2.25))
+```
+
+---
+
+# Type-II error and the sample size 
