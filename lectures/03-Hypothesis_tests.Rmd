@@ -315,8 +315,48 @@ Question:
 
 As the type-I error decreases the decision rule tends to prefer not rejecting $H_0$ which leads to a higher type-II error
 
-$$\beta=P(\text{Fail to reject } H_0| H_1 \text{ True})$$$$
+$$\beta=P(\text{Fail to reject } H_0| H_1 \text{ True})$$
 
 ---
 
-# 
+# Example for attraction effect hypothesis test decision rule (1)
+
+Let's create an $\alpha=0.05$ decision rule for classifying if the attraction effect worked in our experiment.
+
+--
+
+In the general population $p=0.2$. 
+
+Draw a random sample of $n=500$ and run our experiment. 
+
+--
+
+What does $\hat{p}$ need to be, in order for us to reject $H_0$ in $\alpha=0.05$ (or confidence interval of 95%).
+
+--
+
+In other words, find $L$ and $U$ such that:
+
+$$\alpha = P(\hat{p}<L | p=0.2) + P(\hat{p}>U | p=0.2) = 0.5$$
+
+---
+
+# Example for attraction effect hypothesis test decision rule (2)
+
+Find $L$ and $U$ such that:
+
+$$\alpha = P(\hat{p}<L | p=0.2) + P(\hat{p}>U | p=0.2) = 0.5$$
+
+$$0.05 = \alpha = P(\frac{\hat{p}-p}{\sqrt{\frac{p(1-p)}{n}}}<z_{\alpha/2} | p=0.2) + P(\frac{\hat{p}-p}{\sqrt{\frac{p(1-p)}{n}}}>z_{1-\alpha/2} | p=0.2)$$
+
+Reject $H_0$ when:
+
+$$\hat{p}<p+z_{\alpha/2}\sqrt{\frac{p(1-p)}{n}} \quad\text{ OR }\quad \hat{p}>p+z_{1-\alpha/2}\sqrt{\frac{p(1-p)}{n}}$$ 
+
+Setting $p=0.2$, reject $H_0$ when:
+
+$$\hat{p}<0.2-0.0314\approx0.1686 \quad\text{ OR }\quad \hat{p}>0.2+0.0314\approx0.2314$$
+
+--
+
+This means that the null hypothesis will not be rejected if $\hat{p}=0.19$, but will be rejected if $\hat{p}=0.25$.
