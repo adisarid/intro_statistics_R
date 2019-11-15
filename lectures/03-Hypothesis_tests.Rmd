@@ -16,25 +16,22 @@ output:
 ---
 
 ```{css, echo = FALSE}
-.remark-slide-content {
-  font-size: 28px;
-  padding: 20px 80px 20px 80px;
-}
 .remark-code, .remark-inline-code {
   background: #f0f0f0;
 }
 .remark-code {
   font-size: 24px;
 }
-.huge .remark-code { /*Change made here*/
-  font-size: 200% !important;
+
+.huge { 
+  font-size: 200%;
 }
-.tiny .remark-code { /*Change made here*/
-  font-size: 50% !important;
+.tiny .remark-code {
+  font-size: 50%;
 }
 
-.small .remark-code {
-   font-size: 75% !important;
+.small {
+   font-size: 85%;
 }
 
 .remark-slide-content {
@@ -319,44 +316,74 @@ $$\beta=P(\text{Fail to reject } H_0| H_1 \text{ True})$$
 
 ---
 
-# Example for attraction effect hypothesis test decision rule (1)
+# General framework for hypothesis testing
+
+This is the procedure for hypothesis testing:
+
+   1. Identify the parameter of interest (i.e., proportion, expectancy, std, etc.)
+   
+   2. State the null hypothesis $H_0$
+   
+   3. Specify the alternative hypothesis $H_1$ (one sided, two sided, etc.) 
+   
+   4. Choose significance level $\alpha$
+   
+   5. Determine what test statistic to use (e.g., $Z, T, X^2$)
+    
+   6. State the rejection region for the statistic
+   
+   7. Compute the sample quantities, plug-in into the test statistic and compute it
+   
+   8. Decide if $H_0$ should be rejected based on 6-7
+   
+--
+
+Steps 1-4 must be done before starting the research (a-priori and not posteriori, we'll see why later on)
+
+---
+
+# Example for attraction effect hypothesis test decision rule (computation)
 
 Let's create an $\alpha=0.05$ decision rule for classifying if the attraction effect worked in our experiment.
 
 --
 
-In the general population $p=0.2$. 
+.small[
+   * The parameter $p$ (vaccinations after intervention)
+   
+   * $H_0$: p = 0.2
+   
+   * $H_1$: p > 0.2 (interevntion was successful)
+   
+   * $\alpha = 0.05$
+   
+   * The test statistic, $x=29$ successes, $n = 100$ subjects
+   
+$$z_0 = \frac{x-np_0}{\sqrt{np_0(1-p_0)}}$$
 
-Draw a random sample of $n=500$ and run our experiment. 
+   * Reject $H_0$ if $z_0>z_{1-\alpha}=1.96$
+   
+   * Compute $z_0$:
+   
+$$z_0 = \frac{29-100\times0.2}{\sqrt{100\times0.2\times0.8}}=2.25>1.96 = z_{0.95}$$
 
---
-
-What does $\hat{p}$ need to be, in order for us to reject $H_0$ in $\alpha=0.05$ (or confidence interval of 95%).
-
---
-
-In other words, find $L$ and $U$ such that:
-
-$$\alpha = P(\hat{p}<L | p=0.2) + P(\hat{p}>U | p=0.2) = 0.5$$
+   * Conclusion: we reject $H_0$, and therefor claim that the experiment nudged patients to vaccinate.
+]
 
 ---
+   
+# Example for attraction effect hypothesis test decision rule (code)
 
-# Example for attraction effect hypothesis test decision rule (2)
+.small[
+In R, we have a number of functions for this specific test. The previous computation is an **apporximation** (doesn't work for small $n$ or extreme $p$). R can compute an approximate or an exact test.
+]
 
-Find $L$ and $U$ such that:
+.tiny[
+```{r example for binom test}
 
-$$\alpha = P(\hat{p}<L | p=0.2) + P(\hat{p}>U | p=0.2) = 0.5$$
+prop.test(x = 29, n = 100, p = 0.2, alternative = "greater")
 
-$$0.05 = \alpha = P(\frac{\hat{p}-p}{\sqrt{\frac{p(1-p)}{n}}}<z_{\alpha/2} | p=0.2) + P(\frac{\hat{p}-p}{\sqrt{\frac{p(1-p)}{n}}}>z_{1-\alpha/2} | p=0.2)$$
+binom.test(x = 29, n = 100, p = 0.2, alternative = "greater")
 
-Reject $H_0$ when:
-
-$$\hat{p}<p+z_{\alpha/2}\sqrt{\frac{p(1-p)}{n}} \quad\text{ OR }\quad \hat{p}>p+z_{1-\alpha/2}\sqrt{\frac{p(1-p)}{n}}$$ 
-
-Setting $p=0.2$, reject $H_0$ when:
-
-$$\hat{p}<0.2-0.0314\approx0.1686 \quad\text{ OR }\quad \hat{p}>0.2+0.0314\approx0.2314$$
-
---
-
-This means that the null hypothesis will not be rejected if $\hat{p}=0.19$, but will be rejected if $\hat{p}=0.25$.
+```
+]
