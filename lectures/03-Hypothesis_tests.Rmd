@@ -1,0 +1,322 @@
+---
+title: "Hypothesis Tests"
+subtitle: "Lecture #4"
+author: "Adi Sarid"
+institute: "Tel-Aviv University"
+date: "updated: `r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "16:9"
+    css: [metropolis, rutgers-fonts]
+---
+
+```{css, echo = FALSE}
+.remark-slide-content {
+  font-size: 28px;
+  padding: 20px 80px 20px 80px;
+}
+.remark-code, .remark-inline-code {
+  background: #f0f0f0;
+}
+.remark-code {
+  font-size: 24px;
+}
+.huge .remark-code { /*Change made here*/
+  font-size: 200% !important;
+}
+.tiny .remark-code { /*Change made here*/
+  font-size: 50% !important;
+}
+
+.small .remark-code {
+   font-size: 75% !important;
+}
+
+.remark-slide-content {
+    font-size: 20px;
+    padding: 1em 4em 1em 4em;
+}
+
+table { display: inline-block; }
+
+th, td {
+   padding: 5px;
+}
+
+.small-slide {
+   font-size: 70% !important;
+}
+
+.image-50 img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
+.right-plot {
+  width: 60%;
+  float: right;
+  padding-left: 1%;
+}
+```
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE, fig.width = 3, fig.height = 3)
+knitr::opts_chunk$set(fig.dim=c(3, 3), fig.align = "center")
+library(tidyverse)
+library(countdown)
+```
+
+# Reminder from previous lecture
+
+Last lesson we talked about:
+
+--
+
+   * Confidence intervals, i.e.:
+   
+$$P(\bar{X} - z_{\alpha/2}\frac{\sigma}{\sqrt{n}} < \mu < \bar{X} + z_{\alpha/2}\frac{\sigma}{\sqrt{n}}) = 1-\alpha$$
+
+--
+
+   * We've seen confidence intervals for
+   
+      * Normal distribution (for $\mu$ and for $\sigma$)
+      
+      * Using Student's T (variance unknown)
+      
+      * Binomial case (the election survey example)
+      
+$$\hat{p}\pm \frac{z_{\alpha/2}}{2\sqrt{n}}$$
+
+--
+
+   * Setting the sample size according to a confidence interval length, e.g.:
+   
+$$n\geq \left(z_{\alpha/2}\frac{\sigma}{r}\right)^2$$
+
+   * Prediction intervals
+   
+      * Used when we want to express the uncertainty of the *next observation*
+
+$$\bar{X}-t_{\alpha/2,n-1}\times s\sqrt{1+\frac{1}{n}}\leq x_{n+1} \leq \bar{X} + t_{\alpha/2,n-1}\times s\sqrt{1+\frac{1}{n}}$$
+
+---
+
+# Hypothesis testing (Montgomery chapter 9)
+
+A *statistical hypothesis* is a statement about the parameters of one or more populations.
+
+--
+
+In empirical research, we first formulate our hypothesis, and then we try to find empirical results to support our hypothesis (never the other way around, that's called HARK-ing).
+
+--
+
+For example:
+
+  * $H_0$: The average time to reach TLV from Netanya $=$ 40 minutes
+  
+  * $H_1$: The average time to reach TLV from Netanya $\neq$ 40 minutes 
+  
+--
+  
+The $H_0$ is called the *null hypothesis* and the $H_1$ is called the *alternative hypothesis*.
+
+--
+
+The same situation can be descrived with different hypothesis (with a different meaning):
+
+  * $H_0$: The average time to reach TLV from Netanya $=$ 40 minutes
+  
+  * $H_1$: The average time to reach TLV from Netanya $>$ 40 minutes
+
+--
+
+Today we will discuss how to devise hypothesis tests, what are type-I and type-II errors, what is the meaning of rejecting a null hypothesis, what are p-values and what is the connection to the statistical intervals we were discussing.
+
+---
+
+# First - an example
+
+Scan the following QR code (or visit the link) and answer the survey.
+
+[http://bit.ly/att_flu_ex](http://bit.ly/att_flu_ex)
+
+![](images/link_for_survey_example.png)
+
+```{r counter for survey, echo = F}
+countdown(minutes = 5)
+```
+
+--
+
+This is a copy of a true survey used in a research I did with a collegue.
+
+   * What do you think were our hypothesis in this survey?
+   
+   * What were we trying to accomplish?
+
+---
+
+# The Attractive Flu Shot (1/2)
+
+The survey has a number of versions, rendered to respondents randomly. There are five groups:
+
+   * Control (a "regular" message from the HMO)
+   
+   * Recommendation (for effectiveness of the shot, the health ministry recommends to take it early)
+   
+   * Stock (if you don't take an early shot, the stock may run out)
+   
+   * Cost (the shot would cost for patients taking it after December)
+   
+   * Benefit (if you take an early shot, you get some kind of incentive)
+
+--
+
+This psychological nudge leverages the *attraction effect*, i.e.: options *A* and *B* are not comparable, but when decoy *b* is added, and is comparable to *B*, we tend to choose *B* over *A*.
+
+```{r nudge example, echo=FALSE, fig.dim=c(5,3)}
+tribble(~option, ~value1, ~value2,
+        "A", 1, 2,
+        "B", 2, 1,
+        "b", 2, 0.5) %>% 
+   ggplot(aes(value1, value2, label = option, color = option)) + 
+   geom_point() + 
+   geom_label() +
+   theme_bw() + 
+   coord_cartesian(xlim = c(0.5,2.5), ylim = c(0,2.5))
+```
+
+---
+
+# The Attractive Flu Shot (2/2)
+
+If you read Dan Arieli's books, you probably read about attraction.
+
+We have a lot of hypothesis in this research, but here is an example (the treatment increases vaccination intentions):
+
+   * Recommendation treatment:
+       
+      * $H_0$: $p_{\text{control}}=p_{\text{recommendation}}$
+      * $H_1$: $p_{\text{control}}<p_{\text{recommendation}}$
+
+--
+
+   * Stock treatment:
+   
+      * $H_0$: $p_{\text{control}}=p_{\text{stock}}$
+      * $H_1$: $p_{\text{control}}<p_{\text{stock}}$
+
+--
+      
+   * You get the hang of it...
+   
+--
+
+Additional hypothesis deal with the interaction of *certainty* and the attraction effect's influence.
+
+---
+
+# Back to theory of hypothesis testing
+
+Let's simplify things: say that the percent of patients taking flu vaccinations is about 20% (known based on previous years). We want to see if our experiment led to an increase in that percent, that is *significantly* higher.
+
+   * $H_0$: $p_\text{treatment} = 0.2$
+   
+   * $H_1$: $p_\text{treatment} > 0.2$
+   
+--
+
+What would you say if we measure after the intervention the following rates...?
+
+   * $\hat{p} = 0.19$
+
+--
+
+   * $\hat{p} = 0.60$
+
+--
+   
+   * $\hat{p} = 0.25$
+   
+--
+
+We need a clear statistical *criteria* for deciding what is significant and what is not.
+
+--
+
+class: small-slide
+
+```{r binomial distribution and criteria, echo = FALSE, fig.dim=c(4.5,4.5)}
+
+binomial_dist <- tibble(x = seq(0, 100, 1)) %>% 
+   mutate(binom_dens = dbinom(x, size = 100, prob = 0.2))
+
+ggplot(binomial_dist, aes(x = x, y = binom_dens)) + 
+   geom_line() + 
+   geom_vline(xintercept = 19, color = "red") + 
+   geom_vline(xintercept = 25, color = "darkgreen") + 
+   geom_vline(xintercept = 60, color = "darkblue") + 
+   theme_bw()
+
+```
+
+---
+
+# Two types of errors
+
+In order to set a decision rule, we need to consider two types of errors:
+
+   * **Type-I** error (aka False-positive): **rejecting** $H_0$ when it is **true**.
+   
+   * **Type-II** error (aka False-negative): **failing** to reject $H_0$ when it is **false**.
+   
+--
+
+In medical decision making, this would look like $H_0$: not pregnant
+.image-50[
+![](images/Type_IandType_II_errors.jpg)
+]
+[(source)](http://www.statisticssolutions.com/to-err-is-human-what-are-type-i-and-ii-errors/])
+
+---
+
+# Tradeoff between type-I and type-II errors
+
+### Type-I error
+
+The type-I error is also called the *significance level*, or $\alpha$-error.
+
+$$\alpha = P(\text{Reject } H_0| H_0 \text{ True})$$
+
+Question:
+
+   * In the pregnancy classification example, what is an $\alpha=0$ decision rule?
+   
+   * In the flu vaccination example, what is an $\alpha=0$ decision rule?
+   
+--
+
+   * Always classify: not pregnant
+   
+   * Reject $H_0$ when $\hat{p}=\pm\infty$ (i.e. never reject $H_0$)
+
+--
+
+### Type-II error
+
+As the type-I error decreases the decision rule tends to prefer not rejecting $H_0$ which leads to a higher type-II error
+
+$$\beta=P(\text{Fail to reject } H_0| H_1 \text{ True})$$$$
+
+---
+
+# 
