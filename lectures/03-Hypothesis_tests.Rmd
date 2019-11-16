@@ -651,7 +651,7 @@ ggplot(male_deadlift, aes(sample = best3deadlift_kg)) +
 Now with both genders.
 .tiny[
 ```{r qqplot example}
-
+set.seed(0)
 deadlift <- read_csv("data/ipf_lifts.csv", col_types = cols()) %>% 
    select(best3deadlift_kg) %>% 
    filter(best3deadlift_kg > 0) %>% 
@@ -677,26 +677,136 @@ Goodness of fit tests are used to test how good is the fit of our empirical dist
 
 --
 
-Arrange the empirical distribution in $k$ bins, and let $O_i$ be the observed frequency in the $i$th class bin. Let $E_i$ be the expected probability.
+Arrange the empirical distribution in $k$ bins, and let $O_i$ be the observed frequency in the $i$th class bin. Let $E_i$ be the expected probability. The test statistic is:
+
+$$\chi^2_0=\sum_{i=1}^k\frac{(O_i-E_i)^2}{E_i}$$
+
+If the population follows the hypothesized distribution, then the expression is approximately distributed $\chi^2_{k-p-1}$, where $p$ os the number of parameters of the hypothesized distribution estimated by sample statistics.
+
+The approximation improves as $n$ increases.
+
+--
+
+When using the approximation, make sure that $E_i$ is "big enough" (i.e., $E_i\geq5, \forall i$)
+
+---
+
+# Hypothesis testing - goodness of fit - procedure
+
+We would reject the hypothesis if $\chi_0^2>\chi_{\alpha,k-p-1}^2$.
 
    1. We are interested in the form of the distribution of maximum deadlift weight
    2. $H_0$: The deadlift weight is normally distributed
    3. $H_1$: The deadlift weight is not normally distributed
    4. $\alpha = 0.05$
-   5. The test statistic is: $\chi^2_0=\sum_{i=1}^k{\frac{(o_i-E_i)^2}{E_i}}$
+   5. The test statistic is: $\chi^2_0=\sum_{i=1}^k{\frac{(O_i-E_i)^2}{E_i}}$
    6. Reject $H_0$ if $\chi_0^2>\chi^2_{0.05,k-p-1}$
 
+---
+
+# Goodness of fit - example
+
+.tiny[
+```{r}
+interval_breaks <- c(0, 120, 190, 250, 320, 600)
+sample_size <- 500
+
+deadlift_gfit <- deadlift %>% 
+   mutate(weight_gr = cut(best3deadlift_kg, breaks = interval_breaks))
+
+mu <- mean(deadlift_gfit$best3deadlift_kg)
+sigma <- sd(deadlift_gfit$best3deadlift_kg)
+
+deadlift_chi_prep <- deadlift_gfit %>% 
+   count(weight_gr, name = "observed") %>% 
+   mutate(upper_bound = interval_breaks[-1]) %>% 
+   mutate(lower_bound = interval_breaks[1:5]) %>% 
+   mutate(expected_prob = pnorm(q = upper_bound, mean = mu, sd = sigma)-
+             pnorm(q = lower_bound, mean = mu, sd = sigma)) %>% 
+   mutate(expected_prob =  expected_prob/sum(expected_prob)) %>% 
+   mutate(expected = expected_prob*500) %>% 
+   mutate(chi_comp = (observed-expected)^2/expected)
+
+chi2_0 <- sum(deadlift_chi_prep$chi_comp)
+chi2_0
+qchisq(p = 1-0.05, df = 5-1)
+
+```
+]
+
+Since $26.3=\chi^2_0>\chi^2_{500, 3}=9.49$ we reject the null hypothesis. This distribution is not normal.
+
+What is the p-value? (really small)
+
+--
+
+.tiny[
+```{r compute p-value}
+1-pchisq(q = chi2_0, df = 5-1)
+```
+]
 
 ---
 
-# Hypothesis testing Kolmogorov Smirnov test
+# Goodness of fit - example - using R's *chisq.test* command
+
+```{r goodness of fit example R code native}
+chisq.test(x = deadlift_chi_prep$observed, 
+           p = deadlift_chi_prep$expected_prob)
+```
 
 ---
 
-# Word of caution #1 - HARKing
+# Words of caution 
+
+Two common mistakes when analyzing data are:
+
+   1. HARKing (Hypothesizing After Results are Known)
+   2. Using multiple comparisons without compensating for them
+
+In essense, Since we have a $\alpha$ error rate (e.g. 5%), when we perform 100 hypothesis tests we are bound to get 5% false positives.
+
+--
+
+For (1) that's something you shouldn't do! Some organizations offer *preregistration* as means of avoiding HARKing and improving research. I.e., [https://cos.io/prereg/](https://cos.io/prereg/)
+
+--
+
+For (2) there are procedures to control the false discovery rate (FDR). In R, there is a command called `p.adjust` for example. We might talk about this, if time permits.
 
 ---
 
-# Word of caution #2 - multiple tests (and adjustments of p-value - False Discovery Rate)
+# Abusing hypothesis tests - example (don't try this at home!)
+
+.tiny[
+```{r example for many hypothesis tests errors}
+set.seed(0)
+
+# let's get random numbers
+random_normal <- matrix(rnorm(n=100*100, mean = 0, sd = 1),
+                        nrow = 100, ncol = 100) %>% 
+   as_tibble(.name_repair = "unique")
+```
+]
 
 ---
+
+# Abusing hypothesis tests - example (don't try this at home!)
+
+.tiny[
+```{r example for many hypothesis tests errors results}
+# we have 100 variables which are standard normal distributed
+# let's take the one with the highest average
+random_normal %>% 
+   pivot_longer(cols = everything(), names_to = "variable", values_to = "value") %>%
+   group_by(variable) %>% 
+   summarize(mean_val = mean(value)) %>% 
+   arrange(desc(mean_val))
+
+# H_0: this variable (..78) has mu=0, H_1: otherwise
+
+t.test(random_normal$...78)
+
+```
+]
+
