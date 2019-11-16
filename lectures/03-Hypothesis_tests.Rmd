@@ -624,7 +624,7 @@ t.test(x = male_deadlift$best3deadlift_kg,
 
 # Comparing distributions - qqplot
 
-So far, we discussed tests related to parameters' values, however, sometimes we want to compare entire disributions. For example, is the deadlift max weight normally distributed?
+So far, we discussed tests related to parameters' values, however, sometimes we want to compare entire distributions. For example, is the deadlift max weight normally distributed?
 
 --
 
@@ -648,7 +648,7 @@ ggplot(male_deadlift, aes(sample = best3deadlift_kg)) +
 
 # Comparing distributions - qqplot - another example
 
-This time, without separating genders.
+Now with both genders.
 .tiny[
 ```{r qqplot example}
 
@@ -673,6 +673,18 @@ Looks like there's a heavy tail towards higher weights in the sample than the th
 
 # Hypothesis testing - goodness of fit
 
+Goodness of fit tests are used to test how good is the fit of our empirical distribution to that of a theoretical distribution.
+
+--
+
+Arrange the empirical distribution in $k$ bins, and let $O_i$ be the observed frequency in the $i$th class bin. Let $E_i$ be the expected probability.
+
+   1. We are interested in the form of the distribution of maximum deadlift weight
+   2. $H_0$: The deadlift weight is normally distributed
+   3. $H_1$: The deadlift weight is not normally distributed
+   4. $\alpha = 0.05$
+   5. The test statistic is: $\chi^2_0=\sum_{i=1}^k{\frac{(o_i-E_i)^2}{E_i}}$
+   6. Reject $H_0$ if $\chi_0^2>\chi^2_{0.05,k-p-1}$
 
 
 ---
