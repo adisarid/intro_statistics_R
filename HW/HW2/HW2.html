@@ -370,11 +370,11 @@ summary {
 </div>
 
 
-<p>This homework sheet is due on the ***** of November. You may submit your answers in pairs, <strong>in R</strong>. Submission will be performed electronically via the moodle.</p>
+<p>This homework sheet is due on the 1st of December. You may submit your answers in pairs, <strong>in R</strong> (,Rmd file). Submission will be performed electronically via the moodle.</p>
 <p>We urge you to start solving this sheet as soon as possible and, if you have any questions, come to visit us in reception hours next week.</p>
 <div id="question-1" class="section level2">
 <h2>Question 1:</h2>
-<p>As we did in the excercise 4 for the normal distributin (empirically), show that if confidence intervals are constructed using a given confidence level from an infinite number of independent sample statistics, the proportion of those intervals that contain the true value of the parameter will be equal to the confidence level. In the excercise we have seen it for the normal distribution, here you will work with the chi square distribution (Lecture 3, slide #20).</p>
+<p>As we did in the excercise 4 for the normal distributin (empirically), show that if confidence intervals are constructed using a given confidence level from an infinite number of independent sample statistics, the proportion of those intervals that contain the true value of the parameter will be equal to the confidence level. In the excercise we have seen it for the normal distribution, here you will shoe it for the chi square distribution (Lecture 3, slide #20).</p>
 <pre class="r"><code>set.seed(0)  # we set the seed of the random generator so that your results will be consistent</code></pre>
 </div>
 <div id="question-2" class="section level2">
@@ -384,13 +384,16 @@ summary {
 <li>Plot a boxplot of the numeric featurs</li>
 <li>Provide two sided CI for the Sepal.Length &amp; Sepal.Width</li>
 <li>Provide a confidense interval for the probability to belong to the setosa species</li>
+<li>Find a picture of an iris which you like and add it to your solution.</li>
 </ol>
 <p>Note: iris is a built in dataset in the r environment.</p>
 </div>
 <div id="question-3" class="section level2">
 <h2>Question 3:</h2>
-<p>This question is an appetizer for hypothesis test. we will create a QQ plot. A QQ plot is a visual test to check whether a one dimensional variable is distributed normal. There are instructions in the attached link:</p>
+<p>This question is an appetizer for hypothesis test. we will create a QQ plot. A QQ plot is a visual test (not a statistical test!) to check whether a one dimensional variable is distributed normal.</p>
+<p>Instructions are provided in the attached link:</p>
 <ol style="list-style-type: decimal">
+<li>What is a QQ plot? e.g, what appears in the x and y axis?</li>
 <li>make a QQ plot for sample1 and sample2. are the plots the same? What’s the difference?</li>
 </ol>
 <ul>
@@ -408,18 +411,35 @@ sample2 &lt;- rnorm(100^2,100,36)
 <div id="question-4" class="section level2">
 <h2>Question 4:</h2>
 <p>In this question we will challange the following formulas:</p>
-<p><span class="math display">\[E(\bar{X})=E\left(\frac{1}{n} \sum_{i=1}^{n} X_{i}\right)=\frac{1}{n} \sum_{i=1}^{n} E\left(X_{i}\right)=\frac{1}{n} \sum_{i=1}^{n} \mu=\frac{1}{n} \cdot n \mu=\mu\]</span> What does the following code do?</p>
+<p><span class="math display">\[E(\bar{X})=E\left(\frac{1}{n} \sum_{i=1}^{n} X_{i}\right)=\frac{1}{n} \sum_{i=1}^{n} E\left(X_{i}\right)=\frac{1}{n} \sum_{i=1}^{n} \mu=\frac{1}{n} \cdot n \mu=\mu\]</span></p>
+<p><span class="math display">\[V(\bar{X})=V\left(\frac{1}{n} \sum_{i=1}^{n} X_{i}\right)=\frac{1}{n^{2}} \sum_{i=1}^{n} V\left(X_{i}\right)=\frac{1}{n^{2}} \sum_{i=1}^{n} \sigma^{2}=\frac{1}{n^{2}} \cdot n \sigma^{2}=\frac{\sigma^{2}}{n}\]</span></p>
+<ol style="list-style-type: decimal">
+<li>What does the following code do?</li>
+<li>What is the error metric we use in order to calculate the deviations in the result simulation, why?</li>
+</ol>
 <p><a href="bootstrapping">https://en.wikipedia.org/wiki/Bootstrapping_(statistics)</a></p>
 <pre class="r"><code>set.seed(0)
-samples &lt;- rpois(1000, lambda = 10)
-len &lt;- 1000
+true_mean &lt;- 10
+true_var &lt;- true_mean
+true_sd &lt;- sqrt(true_mean)
+population &lt;- 10^3
+samples &lt;- rpois(population, lambda = true_mean)
+bootstrap_samples &lt;-1000
 n_samples &lt;- 100
-means &lt;- numeric(len)
-for (i in 1:len) { 
-   means[i] &lt;- sample (samples, size= n_samples, replace =F)
+means &lt;- numeric(bootstrap_samples)
+var &lt;- numeric(bootstrap_samples)
+for (i in 1:bootstrap_samples) { 
+   temp_sample &lt;- sample(samples, size= n_samples, replace =T)
+   means[i] &lt;- mean(temp_sample)
+   var[i] &lt;- var(temp_sample)
+   
 } 
-print (abs(mean(means)-10))</code></pre>
-<pre><code>## [1] 0.134</code></pre>
+mean_daviation &lt;- abs(mean(means)-true_mean)/true_mean
+var_deviation &lt;- abs(var(means)-true_mean/n_samples)/true_mean
+print (mean_daviation)</code></pre>
+<pre><code>## [1] 0.020381</code></pre>
+<pre class="r"><code>print(var_deviation)</code></pre>
+<pre><code>## [1] 0.0005721305</code></pre>
 </div>
 <div id="question-5" class="section level2">
 <h2>Question 5:</h2>
