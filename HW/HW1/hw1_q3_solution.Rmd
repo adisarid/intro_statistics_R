@@ -1,0 +1,57 @@
+---
+title: "HW1_Q3_Solution"
+author: "Afek Adler"
+date: "11/14/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Question 3:
+
+In the smallest branch of the smallest bank, the number of customers in the queue (waiting customers), is a random variable $Q\in\{0,1,2\}$. You cannot have more than 2 customers waiting in the queue, because the've been downsizing and the branch is really small.
+
+The distribution of $Q$ is dependent on a parameter $\theta$.
+
+$$Q = \left\{\begin{array}{ll}0 & \text{w.p. }4\theta^2\\
+1 & \text{w.p. }4\theta-8\theta^2\\
+2 & \text{w.p. }1-4\theta+4\theta^2\end{array}\right.$$
+
+The bank's headquarters randomly sampled the queue during five independent times. The results were $\{0,1,0,0,0\}$ customers in the queue.
+
+### Answer the following questions:
+
+   1. Find an unbiased estimator $\hat{\Theta}$ for the parameter $\theta$ for a sample of size $n=5$. What is $\hat{\Theta}$ based on the current sample? (you should get 0.45)
+   2. Find an unbiased estimator for the expected number of customers waiting in the queue based on a sample of size $n=5$. What is the estimate of the expected number of customers, based on the current sample? (0.2)
+   3. Find an estimator for $\theta$ in the maximum likelihood estimation method. (0.45)
+   
+   
+## Question 3 - Solution:
+### 1.
+We need to find $\hat{\Theta}$ such that $E(\hat{\theta}) = \theta$.
+It is known that $E(\overline{X}) = E(X_i)$ so:
+\[E(\overline{X}) = E(X_i) = 0 \cdot 4 \theta^{2}+1 \cdot\left(4 \theta-8 \theta^{2}\right)+2 \cdot\left(1-4 \theta+4 \theta^{2}\right)=2-4\theta \ \rightarrow\]
+\[\theta =\frac{2-E(\bar{X})}{4}= E(\frac{2-\bar{X}}{4}) \rightarrow\]
+\[\hat{\theta} = \frac{2-\bar{X}}{4}\]
+
+
+### 2.
+We need to find $\hat{u}$ such that $E(\hat{u})=E\left(X\right)$
+We know that  $E(\overline{X})=E\left(X\right)$, in the context of our sample - $\overline{X} = 0.2$
+
+### 3. 
+Let's form the likelihood function - 
+\[
+\begin{array}{l}{L(\theta)=P\left(X_{1}=0\right) \cdot P\left(X_{2}=1\right) \cdot P\left(X_{3}=0\right) \cdot P\left(X_{4}=0\right) \cdot P\left(X_{5}=0\right)} \\ {=[4 \theta(1-2 \theta)] \cdot\left[4 \theta^{2}\right]^{4}=1024 \theta^{9}-2048 \theta^{10}} \\ {\rightarrow L^{\prime}(\theta)=9216 \theta^{8}-20480 \theta^{9}=0 \rightarrow \hat{\theta}=0.45}\end{array}\]
+Let's verify it's a maxima -
+
+```{r}
+library(ggplot2)
+fun.1 <- function(x) 1024*(x^9) - 2048*(x^10)
+set.seed(1492)
+ggplot(data.frame(x = seq(from = -0.3, to = 0.5, by = 0.001)), aes(x)) +
+  stat_function(fun = fun.1, colour = "red") + ggtitle("y = 1024x^9 -2048x^10") + theme(plot.title = element_text(hjust = 0.5))
+```
+
