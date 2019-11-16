@@ -6,13 +6,29 @@ output:
   html_document :  
     number_sections: TRUE
 ---
+
+Last excercise we did:
+
+  * Cover methods for point estimattion
+  * Get to know dplyr package
+  * Developed a feeling for bayesian estimation
+
+Today we will:
+
+  * Talk on interavel estimation
+  * Go throw a reminder on MLE with a motivation for machine learning (a mixture process)
+
+
 # Interval Estimation
 
 ## The student's t distribution 
 t distribution is used to model the expected values of a **small** sample from a population that is distributed noraml with unknown variance.
 As N increases, t distribution is getting closer and closer to the normal distribution.
 
-[student t dist vs normal dist as function of n](https://rpsychologist.com/d3/tdist/)
+Lemma: 
+$\frac{\bar{X}-\mu}{S / \sqrt{n}}$ is t- distributed.
+
+[Student t dist vs normal dist as function of n](https://rpsychologist.com/d3/tdist/)
 
 ## confidense interval
 
@@ -21,7 +37,8 @@ In statistics, a confidence interval (CL) is a type of interval estimate, comput
 There are one sided and two sided confidense intervals.
 
 ### confidense interval for the mean based on n samples: 
-Based on our assumptions we get a different distribution of the sample, after we figure out how the sample is distributed computing the confidense interval is straighforward :
+Based on our assumptions we get a different distribution of the sample, after we figure out how the sample is distributed computing the confidense interval is straighforward. for example, for the mean - 
+
 \[\mu \in(\bar{X}-\#of\_std_\_for\_confidense\_level\_\alpha*std,\bar{X}+\#of\_std_\_for\_confidense\_level\_\alpha*std) \]
 1.When variance is known and the population is assumed to be distributer notmal or n is "big" (n > 30), the sample mean is distributed
 \[\mathcal{N}\left(\bar{X} , \frac{\sigma^{2}}{n}\right)\]
@@ -33,15 +50,17 @@ So  a two sided confidense interval is:
 \[\mathcal{t_{n-1}}\left(\bar{X} , \frac{\hat{\sigma}^{2}}{n}\right)\] 
 
 Reminder:
-\[\hat{\sigma}^{2}=\frac{\sum_{i=1}^{n}\left(X_{i}-\bar{X}\right)^{2}}{n-1}=\frac{\sum_{i=1}^{n} X_{i}^{2}-n \bar{X}^{2}}{n-1} \]
+\[\hat{\sigma}^{2} = S^2 =\frac{\sum_{i=1}^{n}\left(X_{i}-\bar{X}\right)^{2}}{n-1}=\frac{\sum_{i=1}^{n} X_{i}^{2}-n \bar{X}^{2}}{n-1} \]
 
 For your own understanding, for each case, derive the one sided and two sided confidense interval at home.
+
+* We have seen in the lecture alse CL for the $\sigma^2$, and we will encounter it at HW2 as well.
 
 ### confidense interval for the proportion based on n samples
 if n is large enough, the proportion is distributed:
 \[\mathcal{N}\left(\hat{p} , \frac{\hat{p}\hat{q}}{n}\right)\]
 
-**Q2:**
+**Q1:**
 An online advertising company is doing an ab testing for a new advertisement and wants to model a confidense interval for the click thorogh rate (CTR) of a givent test such that it's confidense interval will be smaller than 5%  in confidense level of 95% . What is the minmum number of sample for this purpose?
 
 \[0.05 = Length \geq 2*Z_{1-\frac{\alpha}{2}}*\sqrt{\frac{\hat{p}\hat{q}}{n}} =  2*Z_.975*\sqrt{\frac{\hat{p}\hat{q}}{n}} \Rightarrow\]
@@ -113,13 +132,6 @@ ggplot(all_h, aes(h)) +
   geom_density(fill = "red", color = "blue") + 
   ggtitle("Human Height [cm]") +
   labs(caption = "n=1000")
-
-# this can also be generated via base R plots, but we highly recommend the use of ggplot2 for producing plots
-# Kernel Density Plot
-d <- density(all_h$h)
-
-plot(d, main = "Human Height (CM)" )
-polygon(d, col="red", border="blue") 
 ```
 
 
@@ -172,9 +184,9 @@ We will not cover this terms in this course but you will meet the gradient desce
 
 Resources : 
 
-* [most detailed explanations](http://cs229.stanford.edu/notes/cs229-notes8.pdf)
-* [example in 2d](http://www.ee.bgu.ac.il/~haimp/ml/lectures/lec2/lec2.pdf)
-* [video](https://www.youtube.com/watch?v=Rkl30Fr2S38)
+* [Most detailed explanations](http://cs229.stanford.edu/notes/cs229-notes8.pdf)
+* [Example in 2d](http://www.ee.bgu.ac.il/~haimp/ml/lectures/lec2/lec2.pdf)
+* [Video](https://www.youtube.com/watch?v=Rkl30Fr2S38)
 
 
 Q: 
