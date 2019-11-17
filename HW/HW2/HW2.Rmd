@@ -7,33 +7,69 @@ output:
   pdf_document: default
 ---
 
-This homework sheet is due on the 1st of December. You may submit your answers in pairs, **in R** (,Rmd file).
-Submission will be performed electronically via the moodle.
+This homework sheet is due on the 3rd of December. You may submit your answers in pairs, **in R** (,Rmd file).
+Submission will be performed electronically via Moodle.
 
 We urge you to start solving this sheet as soon as possible and, if you have any questions, come to visit us in reception hours next week.
 
 ## Question 1:
 
-As we did in the excercise 4 for the normal distributin (empirically), show that if confidence intervals are constructed using a given confidence level from an infinite number of independent sample statistics, the proportion of those intervals that contain the true value of the parameter will be equal to the confidence level. In the excercise we have seen it for the normal distribution, here you will shoe it for the chi square distribution (Lecture 3, slide #20).
+As we did in the exercise 4, show that if confidence intervals are constructed using a given confidence level from an infinite number of independent sample statistics, the proportion of those intervals that contain the true value of the parameter will be equal to the confidence level. 
 
-``` {r confidense interval for chi square distribution}
-set.seed(0)  # we set the seed of the random generator so that your results will be consistent
+In the exercise we have seen it for the confidence interval for the mean of i.i.d samples from normal distribution with known variance, here we will do it for the confidence interval of sigma (as you have seen in lecture 3, slide #20).
 
+Modify the code - 
 
-
-
+``` {r confidense interval}
+miu = 10
+sigma = 3
+n = 10
+alpha = 0.1
+N_tests <- 10000
+counter <- 0
+error = qnorm(1-alpha/2)*(sigma/sqrt(n))
+for (i in 1:N_tests)
+  {sample = rnorm(n,miu,sigma)
+  sample_mean <- mean(sample)
+  left <- sample_mean-error 
+  right <- sample_mean + error
+  between <- (left <= miu) & (miu <= right)
+  counter <- counter+between}
+estimated_confidence <- (counter/N_tests)
+true_confidence <- 1- alpha
+print (abs(estimated_confidence - true_confidence))
 ```
 
-## Question 2:
-In this question we will look at the iris classic dataset:
 
-  1. Plot a boxplot of the numeric featurs
-  2. Provide two sided CI for the Sepal.Length & Sepal.Width 
-  3. Provide a confidense interval for the probability to belong to the setosa species
-  4. Find a picture of an iris which you like and attach it to your solution.
+## Question 2:
+In this question we will look at the iris classic dataset (built in in r environment):
+
+  1. Plot a box plot of the numeric features
+  2. Provide two sided confidence interval for the Sepal.Length & Sepal.Width. How was that confidence interval calculated? e.g what assumptions on the mean and variance fit to this particular confidence interval. 
+  3. Provide a confidence interval for the probability to belong to the setosa species.  
+  4. Does the above confidence interval really represent the confidence interval of this setosa species among the population of all the iris species? e.g, is this dataset biased in some meaning?
+  5. Plot a scatter plot such that:
   
-  
-Note: iris is a built in dataset in the r environment.
+    * Sepal.Length will appear on the x axis 
+    * Sepal.Width will appear on the y axis
+    * Each point will have color based on the species of that given iris
+    * The figure will have a legend that explains the colors of the species 
+  4. Look at that splendid iris -
+  ```{r,echo=FALSE}
+photo_path <- 'https://upload.wikimedia.org/wikipedia/commons/f/f8/Iris_virginica_2.jpg'
+destination_path <- 'iris.jpg'
+if (!(file.exists(destination_path))){
+download.file(photo_path,destination_path, mode = 'wb')}
+```
+
+```{r iris, echo=FALSE, out.width = '50%'}
+knitr::include_graphics(destination_path)
+```
+
+
+Suppose it has Sepal.Length of 7 and Sepal.Width of 3.
+Based on the previous figure, which iris type would you say it is?
+
 
 ``` {r confidense interval iris}
 
@@ -66,14 +102,15 @@ sample2 <- rnorm(100^2,100,36)
 
 
 ## Question 4:
-In this question we will challange the following formulas:
+In this question we will verify the following formulas:
 
 \[E(\bar{X})=E\left(\frac{1}{n} \sum_{i=1}^{n} X_{i}\right)=\frac{1}{n} \sum_{i=1}^{n} E\left(X_{i}\right)=\frac{1}{n} \sum_{i=1}^{n} \mu=\frac{1}{n} \cdot n \mu=\mu\]
 
 \[V(\bar{X})=V\left(\frac{1}{n} \sum_{i=1}^{n} X_{i}\right)=\frac{1}{n^{2}} \sum_{i=1}^{n} V\left(X_{i}\right)=\frac{1}{n^{2}} \sum_{i=1}^{n} \sigma^{2}=\frac{1}{n^{2}} \cdot n \sigma^{2}=\frac{\sigma^{2}}{n}\]
 
-1. What does the following code do?
-2. What is the error metric we use in order to calculate the deviations in the result simulation, why?
+1. Read about bootstrapping in Wikipedia.
+2. What are the different phases of performing bootstrapping? Where does it appear in the following code?
+2. What is the error metric we use in order to calculate the deviations in the result simulation, why? offer another evaluation metric.
 
 [https://en.wikipedia.org/wiki/Bootstrapping_(statistics)](bootstrapping)
 
@@ -92,14 +129,23 @@ for (i in 1:bootstrap_samples) {
    temp_sample <- sample(samples, size= n_samples, replace =T)
    means[i] <- mean(temp_sample)
    var[i] <- var(temp_sample)
-   
 } 
 mean_daviation <- abs(mean(means)-true_mean)/true_mean
-var_deviation <- abs(var(means)-true_mean/n_samples)/true_mean
+var_deviation <- abs(var(means)-true_mean/n_samples)/true_var
 print (mean_daviation)
 print(var_deviation)
 ```
 
+Bonus:
+  
+  * Implement the same code with r `boot` package. 
+
 
 ## Question 5:
-Explain the relationship between the CI length and the confidense level $(\alpha)$
+The breaking strength of yarn used in manufacturing
+drapery material is required to be at least 100 psi. Past experience
+has indicated that breaking strength is normally distributed
+and that $\sigma = 2$  psi. A random sample of nine specimens
+is tested, and the average breaking strength is found to be 98
+psi. Find a 95% two-sided confidence interval on the true
+mean breaking strength.
