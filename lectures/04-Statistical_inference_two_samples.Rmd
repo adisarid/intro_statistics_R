@@ -1,0 +1,98 @@
+---
+title: "Statistical inference for Two Samples"
+subtitle: "Lecture #5"
+author: "Adi Sarid"
+institute: "Tel-Aviv University"
+date: "updated: `r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: true
+      ratio: "16:9"
+    css: [metropolis, rutgers-fonts]
+---
+
+```{css, echo = FALSE}
+
+.remark-code {
+  font-size: 24px;
+}
+
+.huge { 
+  font-size: 200%;
+}
+.tiny .remark-code {
+  font-size: 50%;
+}
+
+.small .remark-code{
+   font-size: 85% !important;
+}
+
+.small {
+   font-size: 85% !important;
+}
+
+.remark-slide-content {
+    font-size: 20px;
+    padding: 1em 4em 1em 4em;
+}
+
+table { display: inline-block; }
+
+th, td {
+   padding: 5px;
+}
+
+.small-slide {
+   font-size: 70% !important;
+}
+
+.image-50 img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
+.right-plot {
+   width: 60%;
+   float: right;
+   padding-left: 1%;
+   bottom: 0px;
+   right: 0px;
+   position: absolute;
+}
+
+
+
+```
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE, fig.width = 3, fig.height = 3)
+knitr::opts_chunk$set(fig.dim=c(3, 3), fig.align = "center")
+library(tidyverse)
+library(countdown)
+```
+
+# Reminder from previous lecture
+
+   * Hypothesis tests (e.g., of proportion in the attractive flu shot experiment)
+   
+   * Type-I and Type-II errors $\alpha=P(H_1|H_0), \beta=P(H_0|H_1)$
+   
+   * General framework for hypothesis testing (the 8 steps)
+   
+      * Parameter -> Null hypothesis -> Altermative -> Significance -> Statistic -> Rejection criteria
+      * Sample, computation -> Decision
+   
+   * P-value and the relationship to confidence intervals
+   
+   * Designing the sample size for a desired power $1-\beta$
+   
+   * Goodness of fit hypothesis test (comparing to distribution)
+   
+   * Words of caution about HARKing and multiple comparisons
