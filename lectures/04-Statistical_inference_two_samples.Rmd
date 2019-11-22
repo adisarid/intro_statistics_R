@@ -184,12 +184,114 @@ The following quantity is normally distributed $\mathcal{N}(0,1)$:
 
 $$Z = \frac{\bar{X}_1 - \bar{X}_2 - (\mu_1-\mu_2)}{\sqrt{\frac{\sigma_1^2}{n_1} + \frac{\sigma^2_2}{n_2}}}$$
 
+--
 
-# Difference in means - variance unknown
+Null hypothesis: $H_0: \mu_1-\mu_2=\Delta_0$
+
+Alternative Hypotheses (rejection criterion):
+
+   * $H_1: \mu_1-\mu_2\neq\Delta_0$ $\quad(z_0>z_{\alpha/2} \text{ or } z_0<-z_{\alpha/2})$
+   
+   * $H_1: \mu_1-\mu_2>\Delta_0$ $\quad(z_0>z_\alpha)$
+   
+   * $H_1: \mu_1-\mu_2>\Delta_0$ $\quad(z_0<-z_\alpha)$
 
 ---
 
 # Choice of sample size
+
+Similarly to what we've seen in the last lecture, given $\alpha, \beta, \Delta$, we can determin the desired sample sizes $n_1, n_2$, by writing (example for a two sided hypothesis):
+
+$$\beta = P(H_0|H_1)=P\left(\left. z_{\alpha/2}<\frac{\bar{X}_1-\bar{X}_2-\Delta_0}{\sqrt{\frac{\sigma_1^2}{{n_1}} + \frac{\sigma_2^2}{{n_2}}}}< z_{1-\alpha/2}\right| \mu_1-\mu_2=\Delta_0+\delta\right)$$
+
+--
+
+Define $\Delta = \Delta_0 + \delta = \mu_1-\mu_2$, if we play a bit with the expression in the parentheses, and using $\Phi^{-1}(\cdot)$, we can reach the following expression:
+
+$$n\approx\frac{(z_{\alpha/2}+z_\beta)^2(\sigma_1^2+\sigma_2^2)}{(\Delta-\Delta_0)^2}$$
+
+where $n=n_1=n_2$ and the total sample size is $2n$.
+
+--
+
+
+For a one sided alternative hypothesis, the equivalent formulat would be
+
+$$n=\frac{(z_{\alpha}+z_\beta)^2(\sigma_1^2+\sigma_2^2)}{(\Delta-\Delta_0)^2}$$
+
+---
+
+# Confidence intervals on a difference in means
+
+When we discussed confidence intervals two weeks ago, we left out confidence intervals for the difference between two means, but this is actually almost the same (now that you've seen $Z$ for the difference). I.e.:
+
+$$P\left[z_{\alpha/2}\leq\frac{\bar{X}_1-\bar{X}_2-(\mu_1-\mu_2)}{\sqrt{\sigma_1^2/n_1+\sigma_2^2/n_2}}\leq z_{1-\alpha/2}\right]=1-\alpha$$
+
+Hence, a confidence interval for $\mu_1-\mu_2$ can be obtained by using:
+
+$$\bar{x}_1-\bar{x}_2+z_{\alpha/2}\sqrt{\sigma_1^2/n_1+\sigma_2^2/n_2}\leq \mu_1-\mu_2\leq \bar{x}_1-\bar{x}_2+z_{1-\alpha/2}\sqrt{\sigma_1^2/n_1+\sigma_2^2/n_2}$$
+
+--
+
+Or in the one-sided case:
+
+$$\mu_1-\mu_2 \leq \bar{x}_1-\bar{x}_2+z_{1-\alpha}\sqrt{\sigma_1^2/n_1+\sigma_2^2/n_2}$$ 
+
+--
+
+(Or the other side)
+   
+$$\mu_1-\mu_2 \geq \bar{x}_1-\bar{x}_2+z_{\alpha}\sqrt{\sigma_1^2/n_1+\sigma_2^2/n_2}$$ 
+
+---
+
+# Your turn (class exercise) - do mobile phones impact our health?
+
+In **pairs**, try to devise an experiment plan, that would test whether **mobile phones impact our health**.
+
+In your answer relate to the following points:
+
+   * What do you consider as an "effect"? (i.e., what kind of health measure?)
+
+   * How do you select and/or separate the groups participating in your experiment?
+   
+   * How do you neutralize other factors which might intervene with the experiment? (like selection of participants or other factors)
+   
+   * What would you use as a statistcal measure?
+   
+   * What sample size would you need?
+   
+   * What would be the hypotheses 8-step procedure of the experiment? reminder:
+      * Parameter -> Null hypothesis -> Altermative -> Significance -> Statistic -> Rejection criteria
+      * Sample, computation -> Decision
+
+```{r countdown for experiment designing, echo=FALSE}
+countdown::countdown(minutes = 10)
+```
+
+---
+
+# Difference in means - variance unknown
+
+Let's assume that $\sigma$ is unknown, but that $\sigma_1=\sigma_2=\sigma$.
+
+We've seen that $S_i^2 = \frac{\sum_j(X_{ij}-\bar{X}_i)^2}{n_i-1}$ is an unbiased estimator for $\sigma_i^2$.
+
+Introducing the pooled estimator of $\sigma^2$, denoted by $S^2_p$:
+
+$$S_p^2=\frac{(n_1-1)S_1^2+(n_2-1)S_2^2}{n_1+n_2-2}$$
+
+--
+
+This is a weighted average of $S_1^2$ and $S_2^2$. 
+
+--
+
+Each $S_i$ contributes $n_1-1$ degrees of freedom so overall $S_p^2$ has $n_1+n_2-2$ degrees of freedom.
+
+Given normality assumptions (or $n_1$ and $n_2$ large enough), we can use the following statistic as a student's t distribution
+
+$$T = \frac{\bar{X}_1-\bar{X}_2-(\mu_1-\mu_2)}{S_p\sqrt{1/n_1+1/n_2}}$$
 
 ---
 
