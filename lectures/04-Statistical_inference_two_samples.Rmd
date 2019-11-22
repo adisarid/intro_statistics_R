@@ -10,7 +10,7 @@ output:
     nature:
       highlightStyle: github
       highlightLines: true
-      countIncrementalSlides: true
+      countIncrementalSlides: false
       ratio: "16:9"
     css: [metropolis, rutgers-fonts]
 ---
@@ -159,7 +159,31 @@ Most of today's material is covered in Montgomery, chapter 10.
 
 # Difference in means - variance known
 
+Assume
+
+   * $X_{11},\ldots,X_{1n_1}$ is a random sample from population 1.
+   * $X_{21},\ldots,X_{2n_n}$ is a random sample from population 2.
+   * The two populations $X_1$ and $X_2$ are independent.
+   * Both populations are normally distributed.
+   
+Then, what is $E[\bar{X}_1-\bar{X}_2]$, and $\operatorname{Var}[\bar{X}_1-\bar{X}_2]$?
+
+--
+
+$$E[\bar{X}_1-\bar{X}_2] = \mu_1-\mu_2$$
+
+$$\operatorname{Var}[\bar{X}_1-\bar{X}_2]=\operatorname{Var}(\bar{X}_1)-\operatorname{Var}(\bar{X}_2)=\frac{\sigma_1^2}{n_1} + \frac{\sigma_2^2}{n_2}$$ 
+
+Using these, and the fact that the sum of two normally distributed variables is also normal we obtain...
+
 ---
+
+# Difference in means - variance known (2)
+
+The following quantity is normally distributed $\mathcal{N}(0,1)$:
+
+$$Z = \frac{\bar{X}_1 - \bar{X}_2 - (\mu_1-\mu_2)}{\sqrt{\frac{\sigma_1^2}{n_1} + \frac{\sigma^2_2}{n_2}}}$$
+
 
 # Difference in means - variance unknown
 
