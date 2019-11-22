@@ -245,6 +245,50 @@ $$\mu_1-\mu_2 \geq \bar{x}_1-\bar{x}_2+z_{\alpha}\sqrt{\sigma_1^2/n_1+\sigma_2^2
 
 ---
 
+# Difference in means - variance unknown, equal variances
+
+Let's assume that $\sigma$ is unknown, but that $\sigma_1=\sigma_2=\sigma$.
+
+We've seen that $S_i^2 = \frac{\sum_j(X_{ij}-\bar{X}_i)^2}{n_i-1}$ is an unbiased estimator for $\sigma_i^2$.
+
+Introducing the pooled estimator of $\sigma^2$, denoted by $S^2_p$:
+
+$$S_p^2=\frac{(n_1-1)S_1^2+(n_2-1)S_2^2}{n_1+n_2-2}$$
+
+--
+
+This is a weighted average of $S_1^2$ and $S_2^2$. 
+
+--
+
+Each $S_i$ contributes $n_1-1$ degrees of freedom so overall $S_p^2$ has $n_1+n_2-2$ degrees of freedom.
+
+Given normality assumptions (or $n_1$ and $n_2$ large enough), we can use the following statistic as a student's t distribution with $n_1+n_2-2$ degrees of freedom:
+
+$$T = \frac{\bar{X}_1-\bar{X}_2-(\mu_1-\mu_2)}{S_p\sqrt{1/n_1+1/n_2}}$$
+
+# Difference in means - variance unknown, equal variances (2)
+
+Summarizing the test, we can write:
+
+Null hypothesis:
+
+Test statistic:
+
+Alternative hypothesis (rejection criteria):
+
+---
+
+# Difference in means - variance unknown, unequal variances
+
+
+
+---
+
+# Paired or unpaired t-test?
+
+---
+
 # Your turn (class exercise) - do mobile phones impact our health?
 
 In **pairs**, try to devise an experiment plan, that would test whether **mobile phones impact our health**.
@@ -271,43 +315,13 @@ countdown::countdown(minutes = 10)
 
 ---
 
-# Difference in means - variance unknown
-
-Let's assume that $\sigma$ is unknown, but that $\sigma_1=\sigma_2=\sigma$.
-
-We've seen that $S_i^2 = \frac{\sum_j(X_{ij}-\bar{X}_i)^2}{n_i-1}$ is an unbiased estimator for $\sigma_i^2$.
-
-Introducing the pooled estimator of $\sigma^2$, denoted by $S^2_p$:
-
-$$S_p^2=\frac{(n_1-1)S_1^2+(n_2-1)S_2^2}{n_1+n_2-2}$$
-
---
-
-This is a weighted average of $S_1^2$ and $S_2^2$. 
-
---
-
-Each $S_i$ contributes $n_1-1$ degrees of freedom so overall $S_p^2$ has $n_1+n_2-2$ degrees of freedom.
-
-Given normality assumptions (or $n_1$ and $n_2$ large enough), we can use the following statistic as a student's t distribution with $n_1+n_2-2$ degrees of freedom:
-
-$$T = \frac{\bar{X}_1-\bar{X}_2-(\mu_1-\mu_2)}{S_p\sqrt{1/n_1+1/n_2}}$$
-
----
-
-# Paired or unpaired t-test?
-
----
-
 # Effect size and Cohen's d
 
 ---
 
-# Two sample Confidence intervals 
-
----
-
 # Variance of two proportions (F-test)
+
+We talked about t-test when the variance is unknown and presented two cases (with equal variance and uneqal variance). How would we decide which of the two to use? **a statistical test** of course.
 
 ---
 
