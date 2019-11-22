@@ -96,3 +96,95 @@ library(countdown)
    * Goodness of fit hypothesis test (comparing to distribution)
    
    * Words of caution about HARKing and multiple comparisons
+   
+---
+
+# Are men and women different? ♂  ♀
+
+Yes. Of course there are gender differences, but this is a great example to start today's lecture with!
+
+--
+
+Here is a research published in PLOS One, about gender differences relating to **empathy and moral cognition**:
+
+   * Baez, Sandra, et al. "Men, women… who cares? A population-based study on sex differences and gender roles in empathy and moral cognition." *PloS one* 12.6 (2017): e0179336.
+      * [https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0179336](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0179336)
+
+--
+
+   * The research uses statistical means to compare measures such as the **Interpersonal Reactivity Index** (IRI) to see if women score higher than men, in a **statistically significant manner**.
+      * For example, figure 3. (significant sex differences in self-reported empathy) shows that women **percive** themselves as being more interpersonal than what men perceive. However, these might be driven by stereotypes, and might be apparant only in self-assesment instruments.
+
+--
+      
+   * We won't go over the entire study, but I highly recommend reading it: based on a very large sample $n=10802$ and refutes some common stereotypes. (Also a misleading presentation e.g. y-axis inconsistencies, which we can learn from).
+  
+--
+
+   * One very cool feature of this study is that the authors made the data available for the public [here](https://figshare.com/s/06fa32a3c57b93adc1a7).
+   
+---
+
+# What is it to us?
+
+In previous lectures we saw confidence intervals and hypothesis tests relating to a **single parameter** (single sample)
+
+--
+
+Today we will explore the comparison between **two parameters** (two samples, e.g., male-female, tall-short, before-after).
+
+--
+
+In the gender empathy example, let $\mu_{\text{f}}, \mu_\text{m}$ represent female and male empathy scores. We want to test the following hypothesis:
+
+   * $H_0: \mu_\text{f}=\mu_\text{m}$
+   * $H_1: \mu_\text{f}>\mu_\text{m}$
+   
+--
+   
+Then, set $\mu_\text{diff} = \mu_\text{f}-\mu_\text{m}$ and
+
+   * $H_0: \mu_\text{diff}=0$
+   * $H_1: \mu_\text{diff}>0$
+
+--
+
+This, more-or-less, brings us back to what we already learned last week.
+
+--
+
+Most of today's material is covered in Montgomery, chapter 10.
+
+---
+
+# Difference in means - variance known
+
+---
+
+# Difference in means - variance unknown
+
+---
+
+# Choice of sample size
+
+---
+
+# Paired or unpaired t-test?
+
+---
+
+# Effect size and Cohen's d
+
+---
+
+# Two sample Confidence intervals 
+
+---
+
+# Variance of two proportions (F-test)
+
+---
+
+# Going back for some more "goodness of fit"
+
+We are going to jump back to something we talked about in the previous lecture - the goodness of fit $\chi^2$ test. This time however we will use it to test if two distributions are independent.
