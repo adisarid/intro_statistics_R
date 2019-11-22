@@ -267,32 +267,199 @@ Given normality assumptions (or $n_1$ and $n_2$ large enough), we can use the fo
 
 $$T = \frac{\bar{X}_1-\bar{X}_2-(\mu_1-\mu_2)}{S_p\sqrt{1/n_1+1/n_2}}$$
 
+---
+
 # Difference in means - variance unknown, equal variances (2)
 
 Summarizing the test, we can write:
 
-Null hypothesis:
+Null hypothesis: $H_0: \mu_1-\mu_2=\Delta_0$
 
-Test statistic:
+Test statistic: $T_0=\frac{\bar{X}_1-\bar{X}_2-\Delta_0}{S_p\sqrt{1/n_1+1/n_2}}$
 
 Alternative hypothesis (rejection criteria):
 
+   * $H_1:\mu_1-\mu_2\neq\Delta_0 \quad\quad(t_0>t_{1-\alpha/2,n_1+n_2-2}\text{ or } t_0<t_{\alpha/2,n-1+n_2-2})$
+   * $H_1:\mu_1-\mu_2>\Delta_0 \quad\quad(t_0>t_{1-\alpha,n_1+n_2-2})$
+   * $H_1:\mu_1-\mu_2<\Delta_0 \quad\quad(t_0<t_{\alpha,n_1+n_2-2})$
+
 ---
 
-# Difference in means - variance unknown, unequal variances
+# Difference in means - variance unknown, unequal variances $(\sigma_1\neq\sigma_2)$
 
+In the case that the variances are unequal and unknown, we can use the following statistic which is approximately distributed $t$ with $v$ degrees of freedom:
 
+$$T^*_0=\frac{\bar{X}_1-\bar{X}_2-\Delta_0}{\sqrt{S_1^2/n_1+S_2^2/n_2}}$$
+
+Where the degrees of freedom $v$ are equal:
+
+$$v=\frac{\left(S_1^2/n_1 + S_2^2/n_2\right)^2}{\frac{(S_1^2/n_1)^2}{n_1-1}+\frac{(S_2^2/n_2)^2}{n_2-1}}$$
 
 ---
 
 # Paired or unpaired t-test?
+
+Sometimes, data is collected in pairs, for example when an intervention plan is conducted on a group of individuals
+
+   * We want to compare the effect of the intervention before and after. 
+
+   * This *paired* situation may ocurr when we have multiple observations of the same group. 
+   
+   * We would like to match the observations to avoid differences which may ocurr due to variation between subjects. 
+
+--
+
+   * We pair the observations and conduct the statistical tests on the difference.
+   
+Let $(X_{11}, X_{21}),\ldots,(X_{1n}, X_{2n})$ a set of $n$ paired observations. Define $D_j=X_{ij}-X_{2j}$
+
+--
+
+$$\mu_D=E(X_1-X_2)=\mu_1-\mu_2$$
+
+--
+
+Null hypothesis: $H_0:\mu_D=\Delta_0$
+
+Test statistic: $T_0=\frac{\bar{D}-\Delta_0}{S_D/\sqrt{n}}$
+
+Where $S_D$ is the sample standard deviation of the differences.
+
+---
+
+# Example of two sample hypothesis testing - the ipf data set
+
+We go back to the ipf data set (the power lifting competition dataset). 
+
+What test would you use? (means paired / means unpaird / something else) for each of the following:
+.small[
+Test 1:
+   * $H_0:$ men lift higher weights than women
+   * $H_1:$ men and women lift the same weight
+   
+Test 2:
+   * $H_0:$ Deadlift and squat weights are the same
+   * $H_1:$ Deadlift weights are higher than squat weights
+
+Test 3:
+   * $H_0:$ The age of male athletes is normally distributed
+   * $H_1:$ The age of male athletes is not normally distributed
+
+Test 4:
+   * $H_0:$ The athletes age and gender are statistically independent
+   * $H_1:$ The athletes age and gender are not statistically independet
+]
+
+```{r counter for the hypothesis examples, echo=FALSE}
+countdown::countdown(minutes = 5)
+```
+
+---
+
+# Demonstrating tests in the ipf data set (test 1)
+
+   * $H_0:$ men lift higher weights than women
+   * $H_1:$ men and women lift the same weight
+
+Unpaired t-test
+.tiny[
+```{r read ipf and first test}
+#https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-10-08/ipf_lifts.csv
+set.seed(0)
+ipf <- read_csv("data/ipf_lifts.csv", col_types = cols()) %>% 
+   filter(best3squat_kg > 0) %>% 
+   sample_n(1000)
+   
+t.test(formula = best3squat_kg ~ sex, data = ipf, alternative = "less")
+
+# alternative method to call the function
+#t.test(x = ipf$best3squat_kg[ipf$sex == "F"], y = ipf$best3squat_kg[ipf$sex == "M"], alternative = "less")
+```
+]
+
+---
+
+# Demonstrating tests in the ipf data set (test 2)
+
+Test 2:
+   * $H_0:$ Deadlift and squat weights are the same
+   * $H_1:$ Deadlift weights are higher than squat weights
+   
+Paired t-test, because each athelete is compared to himself
+
+.tiny[
+```{r ipf paired ttest}
+t.test(x = ipf$best3deadlift_kg, y = ipf$best3squat_kg, paired = TRUE, alternative = "greater")
+```
+]
+
+---
+
+# Demonstrating tests in the ipf data set (test 3 and 4)
+
+Test 3 was:
+
+   * $H_0:$ The age of male athletes is normally distributed
+   * $H_1:$ The age of male athletes is not normally distributed
+   
+This is the goodness of fit test that we were discussing last week.
+
+Test 4 was:
+
+   * $H_0:$ The athletes age and gender are statistically independent
+   * $H_1:$ The athletes age and gender are not statistically independet
+
+The fourth test is actually a goodness of fit test for uniform distribution.
+
+---
+
+# Goodness of fit test for independence (contingency table)
+
+When we have two variables and we want to examine independence between them, it is like comparing the contingencies (combinations) of the two variables, against the uniform distribution.
+
+| Age | genderM | genderF | total |
+|--------|---------|---------|--------|
+| group1 | g1m | g1f | $n_{g1}$ |
+| group2 | g2m | g2f | $n_{g2}$ |
+| group3 | g3m | g3f | $n_{g3}$ |
+| total | $n_M$ | $n_F$ | $n$ |
+
+--
+
+   * The observed is the count within the cell, and the expected is the product of the marginal probabilities, i.e.:
+   
+      * The expected of Males in group2 under the null hypothesis is:  $E_{g2m}=(n_{g2}/n)\times(n_M/n)\times n$
+
+   * This is the case when the variables are independent, i.e., $P(X=x,Y_y)=P(X=x)P(Y=y)$
+
+--
+
+This results in a $\chi^2$ test with $(r-1)(c-1)$ degrees of freedom.
+
+---
+
+# Independence between variable via contingency table (example)
+.small[
+```{r contingency table independence test via chi square}
+ipf_new <- ipf %>%
+   filter(!is.na(age)) %>% 
+   mutate(age_group = cut(age, breaks = c(0, 25, 35, 45, 55, 100))) %>% 
+   count(age_group, sex) %>% 
+   pivot_wider(id_cols = age_group, names_from = sex, values_from = n) %>% 
+   select(2:3) %>% 
+   as.matrix()
+   
+ipf_compare_res <- chisq.test(ipf_new)
+ipf_compare_res
+```
+]
 
 ---
 
 # Your turn (class exercise) - do mobile phones impact our health?
 
 In **pairs**, try to devise an experiment plan, that would test whether **mobile phones impact our health**.
-
+.small[
 In your answer relate to the following points:
 
    * What do you consider as an "effect"? (i.e., what kind of health measure?)
@@ -303,11 +470,14 @@ In your answer relate to the following points:
    
    * What would you use as a statistcal measure?
    
-   * What sample size would you need?
+   * Paired or unpaired?
+   
+   * What sample size?
    
    * What would be the hypotheses 8-step procedure of the experiment? reminder:
       * Parameter -> Null hypothesis -> Altermative -> Significance -> Statistic -> Rejection criteria
       * Sample, computation -> Decision
+]
 
 ```{r countdown for experiment designing, echo=FALSE}
 countdown::countdown(minutes = 10)
@@ -315,16 +485,10 @@ countdown::countdown(minutes = 10)
 
 ---
 
-# Effect size and Cohen's d
-
----
-
 # Variance of two proportions (F-test)
 
 We talked about t-test when the variance is unknown and presented two cases (with equal variance and uneqal variance). How would we decide which of the two to use? **a statistical test** of course.
 
----
-
-# Going back for some more "goodness of fit"
-
-We are going to jump back to something we talked about in the previous lecture - the goodness of fit $\chi^2$ test. This time however we will use it to test if two distributions are independent.
+   * We begin by defining a new distribution, the $F$ distribution defined to be the ratio of two independent chi-squarerandom variables, divided by its number of degrees of freedom:
+   
+$$F=\frac{W/u}{Y/v}$$
