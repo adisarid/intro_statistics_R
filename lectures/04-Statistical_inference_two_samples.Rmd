@@ -525,3 +525,145 @@ ggplot(f_dist, aes(x = f, y = f_dense)) +
 
 ```
 ]
+
+---
+
+# Statistical hypothesis test for variance equality
+
+Assuming two independent populations with normal distribution, then $F=\frac{S_1^2/\sigma_1^2}{S_2^2/\sigma_2^2}$ has an $F$ distribution with $u=n_1-1, v=n_2-1$ degrees of freedom.
+
+Null hypothesis: $H_0: \sigma_1^2=\sigma_2^2$
+
+Test statistic: $F_0 = \frac{S_1^2}{S_2^2}$
+
+Alternative hypothesis (rejection criteria):
+
+   * $H_1:\sigma_1^2\neq\sigma_2^2 \quad(f_0>f_{1-\alpha/2, n_1-1, n_2-1} \text{ or } f_0<f_{\alpha/2,n_1-1, n_2-1})$
+   
+   * $H_1:\sigma_1^2>\sigma_2^2 \quad(f_0>f_{1-\alpha,n_1-1, n_2-1})$
+   
+   * $H_1:\sigma_1^2<\sigma_2^2 \quad(f_0<f_{\alpha,n_1-1, n_2-1})$
+
+---
+
+# Example for F statistic variance test
+
+.small[
+```{r exercise variance between genders}
+ipf %>% 
+   group_by(sex) %>% 
+   summarize_at(vars(contains("best3")), ~{(sd(., na.rm = T))^2})
+```
+]
+
+It's pretty clear that males have a much higher variance, lets test this in an F test.
+
+.small[
+```{r test variance between genders}
+var.test(formula = best3squat_kg ~ sex, data = ipf, ratio = 1, alternative = "less")
+```
+]
+
+---
+
+# Inference on two population proportions
+
+We consider the case of two binomial parameters $p_1, p_2$. Let $X_1, X_2$ represent the number of successes in each sample. $\hat{P}_i=X_i/n_i$, have approximately normal distributions.
+
+$$Z=\frac{\hat{P}_1-\hat{P}_2-(p_1-p_2)}{\sqrt{\frac{p_1(1-p_1)}{n_1} + \frac{p_2(1-p_2)}{n_2}}}$$
+Is distributed approximately as $Z\sim\mathcal{N}(0,1)$.
+
+--
+
+Under the null hypothesis $H_0: p_1=p_2=p$ we have:
+
+$$Z = \frac{\hat{P}_1-\hat{P}_2}{\sqrt{p(1-p)(1/n_1 + 1/n_2)}}$$
+
+--
+
+Where an estimator to $p$ is given by:
+
+$$\hat{P}=\frac{X_1+X_2}{n_1+n_2}$$
+
+---
+
+# The test procedure for comparing two population proportions
+
+Null hypothesis: $H_0: p_1=p_2$
+
+Test statistic: $Z_0=\frac{\hat{P}_1-\hat{P}_2}{\sqrt{\hat{P}(1-\hat{P})(1/n_1 + 1/n_2)}}$
+
+Alternative hypothesis (rejection criteria):
+
+   * $H_1:p_1\neq p_2 \quad(z_0>z_{1-\alpha/2} \text{ or } z_0<z_{\alpha/2})$
+   
+   * $H_1:p_1>p_2 \quad (z_0>z_{1-\alpha})$
+   
+   * $H_1:p_1<p_2 \quad (z_0<z_{\alpha})$
+   
+---
+
+# Setting the sample sizes when comparing two population proportions
+
+Very similar to what we've shown in the last lecture for one sample, but with a slightly different computation for the standard deviation under $H_1$. For example, in the two sided case we have:
+
+$$\beta=\Phi\left[\frac{z_{1-\alpha/2}\sqrt{\bar{p}\bar{q}(1/n_1+1/n_2)}-(p_1-p_2)}{\sigma_{\hat{P}_1-\hat{P}_2}}\right]-\Phi\left[\frac{z_{\alpha/2}\sqrt{\bar{p}\bar{q}(1/n_1+1/n_2)}-(p_1-p_2)}{\sigma_{\hat{P}_1-\hat{P}_2}}\right]$$
+
+--
+
+With $\bar{p}=\frac{n_1p_1+n_2p_2}{n_1+n_2}, \bar{q}=\frac{n_1(1-p_1)+n_2(1-p_2)}{n_1+n_2}$ and
+
+$$\sigma_{\hat{P}_1-\hat{P}_2}=\sqrt{\frac{p_1(1-p_1)}{n_1} + \frac{p_2(1-p_2)}{n_2}}$$
+
+--
+
+We can obtain the suggested sample (or power) using `pwr::pwr.2p.test` or `pwr::pwr2p2n.test`.
+
+.small[
+```{r demonstration for sample size using pwr}
+pwr::pwr.2p2n.test(h = pwr::ES.h(p1 = 0.2, p2 = 0.3),
+                   n1 = 150, n2 = NULL,
+                   sig.level = 0.05,
+                   power = 0.8,
+                   alternative = "less")
+```
+]
+
+---
+
+# Effect Size
+
+We discussed p-value as the extent to which a statistical finding is significant. However, it is not the sole measure for the strength of a statistical finding.
+
+--
+
+In this context, see the ASA statement on $p$-Values [here](https://amstat.tandfonline.com/doi/full/10.1080/00031305.2016.1154108)
+
+--
+
+**Effect size** measures the magnitude of a phenomena. Effect size is a generic name for various measures such as:
+
+   * $R^2$ in linear regression
+   
+   * $\rho$ Pearson correlation coefficient between two variables
+   
+   * Cohen's $d$ which relates to the difference between means (which we will now discuss)
+   
+   * Many more
+
+---
+
+# Effect Size - Cohen's $d$
+
+The difference between two means divided by standard deviation, i.e.:
+
+$$d=\frac{\bar{X}_1-\bar{X}_2}{S_p}$$
+
+Where $S_p$ is the pooled standard deviation:
+
+$$S_p=\sqrt{\frac{(n_1-1)S_1^2+(n_2-1)S_2^2}{n_1+n_2-2}}$$
+.small[
+```{r example for cohens d}
+effsize::cohen.d(formula = best3squat_kg ~ sex, data = ipf)
+```
+]
