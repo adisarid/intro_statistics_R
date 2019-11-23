@@ -10,7 +10,7 @@ output:
     nature:
       highlightStyle: github
       highlightLines: true
-      countIncrementalSlides: false
+      countIncrementalSlides: true
       ratio: "16:9"
     css: [metropolis, rutgers-fonts]
 ---
