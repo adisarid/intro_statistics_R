@@ -485,10 +485,43 @@ countdown::countdown(minutes = 10)
 
 ---
 
-# Variance of two proportions (F-test)
+# Variance of two samples (F-test)
 
-We talked about t-test when the variance is unknown and presented two cases (with equal variance and uneqal variance). How would we decide which of the two to use? **a statistical test** of course.
+We talked about t-test when the variance is unknown and presented two cases (with equal variance and uneqal variance). How would we decide which of the two to use? 
 
-   * We begin by defining a new distribution, the $F$ distribution defined to be the ratio of two independent chi-squarerandom variables, divided by its number of degrees of freedom:
+--
+
+We would like to use **a statistical test** to compare the variance. One method to compare two numbers is to divide them, i.e., $\sigma_1/\sigma_2$.
+
+--
+
+The $F$ distribution is the ratio of two independent chi-square random variables, divided by its number of degrees of freedom, i.e.:
    
 $$F=\frac{W/u}{Y/v}$$
+
+The probability density function is given by the expression:
+
+$$f(x)=\frac{\Gamma\left(\frac{u+v}{2}\right)\left(\frac{u}{v}\right)^{u/2}x^{(u/2)-1}}{\Gamma\left(\frac{u}{2}\right)\Gamma\left(\frac{v}{2}\right)\left[\left(\frac{u}{v}\right)x+1\right]^{(u+v)/2}}$$
+
+---
+
+# Illustration of the $F$ distribution
+.small[
+$$F=\frac{W/u}{Y/v}, \quad\mu=v/(v-2), \quad (\text{ for }v>2), \quad \sigma^2=\frac{2v^2(u+v-2)}{u(v-2)^2(v-4)}$$
+]
+.tiny[
+```{r example F distribution, fig.dim=c(7,4)}
+f_dist <- crossing(f = seq(0, 6, by = 0.1), df1 = c(1, 5, 10, 20), df2 = c(1, 5, 10, 20)) %>% 
+   mutate(f_dense = pmap_dbl(.l = list(f, df1, df2), .f = df)) %>% 
+   mutate(v = paste0("v=", df2),
+          u = paste0("u=", df1)) %>% 
+   mutate_at(vars(v,u), fct_inorder)
+
+ggplot(f_dist, aes(x = f, y = f_dense)) + 
+   geom_line() + 
+   facet_grid(rows = vars(u), cols = vars(v)) + 
+   theme_bw() + 
+   guides(color = guide_legend("df"))
+
+```
+]
