@@ -202,20 +202,36 @@ effsize::cohen.d(formula = best3squat_kg ~ sex, data = ipf)
 
 ---
 
-# Non-parametric tests: what and why?
-
----
-
-# Non-parameteric tests: Mann-Whitney U test (comparing means)
-
----
-
-# Non-parametric tests: Kolmogorov-Smirnov test (comparing distributions)
-
----
-
 # Simple Linear Regression: motivation
 
 ---
 
-# The Basic Regression Model
+# The Basic Regression Model: description and assumptions
+
+---
+
+# Properties of the least squares estimators
+
+---
+
+# Hypothesis tests in simple linear regression
+
+---
+
+# Confidence intervals
+
+---
+
+# Predicting new observations
+
+---
+
+# Adequacy of the linear regression model
+
+---
+
+# Transformations
+
+---
+
+# Correlation
