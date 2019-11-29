@@ -244,16 +244,20 @@ A very troubling problem for aviation is bird strikes
 
 What is the relationship between flight height and the number of bird strike events?
 
+--
+
+The data we will be exploring is adopted from tidytuesday (2019-07-23), [here](https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-07-23).
+
+--
+
 .tiny[
 ```{r introducing the bird strike dataset}
 # wildlife_impacts <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-07-23/wildlife_impacts.csv")
-wildlife_mod <- read_csv("data/wildlife_impacts.csv", col_types = cols()) %>% 
+# write_csv(wildlife_impacts %>% count(height), "lectures/data/wildlife_impacts_small.csv")
+wildlife_small <- read_csv("data/wildlife_impacts_small.csv", col_types = cols()) %>% 
   mutate(rounded_height = round(height/1000)*1000) %>% 
-  count(rounded_height)
-ggplot(wildlife_mod, aes(x = rounded_height, y = n)) + 
-   geom_point() + 
-   stat_smooth(method = "lm") + 
-   theme_bw()
+   group_by(rounded_height) %>% 
+   summarize(n = sum(n))
 ```
 ]
 
