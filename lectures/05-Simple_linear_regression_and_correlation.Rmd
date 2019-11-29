@@ -230,7 +230,7 @@ Linear regression is an important modeling technique in statistics. It was devel
 
 ---
 
-# Simple Linear Regression: example - bird strikes
+# Simple Linear Regression: example - bird strikes (1/3)
 
 A very troubling problem for aviation is bird strikes
 
@@ -255,19 +255,233 @@ The data we will be exploring is adopted from tidytuesday (2019-07-23), [here](h
 # wildlife_impacts <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-07-23/wildlife_impacts.csv")
 # write_csv(wildlife_impacts %>% count(height), "lectures/data/wildlife_impacts_small.csv")
 wildlife_small <- read_csv("data/wildlife_impacts_small.csv", col_types = cols()) %>% 
-  mutate(rounded_height = round(height/1000)*1000) %>% 
+  mutate(rounded_height = round(height/1000)) %>% 
    group_by(rounded_height) %>% 
-   summarize(n = sum(n))
+   summarize(n = sum(n)) %>% 
+   filter(!is.na(rounded_height))
 ```
 ]
 
 ---
 
+# Bird strike events example (2/3)
+
+The was categorized to intervals of 1000 feet, i.e., $0-999, 1000-1999,...,25000$.
+
+Note that the data y-axis appears in **log-scale**.
+
+.tiny[
+```{r histogram of bird strike height, fig.dim=c(9, 4)}
+wildlife_hist <- ggplot(wildlife_small, aes(x = rounded_height, y = n)) + 
+   geom_col(fill = "darkorange", color = "black") + scale_y_log10() + theme_bw() + xlab("Height [k feet]")
+wildlife_points <- ggplot(wildlife_small, aes(x = rounded_height, y = n)) + 
+   geom_point() + scale_y_log10() + theme_bw() + 
+   stat_smooth(method = "lm") + xlab("Height [k feet]")
+cowplot::plot_grid(wildlife_hist, wildlife_points)
+```
+]
+
+---
+
+# Bird strike events example (3/3)
+
+```{r bird strike chart smaller, echo = FALSE, fig.dim=c(6,3)}
+cowplot::plot_grid(wildlife_hist, wildlife_points)
+```
+
+It would seem as though each additional $5k$ feet decrease the number of bird strikes by a ratio of $10$, or in other words:
+
+$$\log(\text{Bird strikes}) \approx 3784 - 0.168\times h$$
+
+--
+
+Equivalently, we can also write:
+
+$$\text{Bird strikes} \approx 10^{3784-0.168\times h}$$
+
+--
+
+Even thought this is not exactly a linear equation, it was obtained using linear regression, and we will see later on how we reached this formula. 
+
+---
+
 # The Basic Regression Model: description and assumptions
+
+At the base of linear regression, we describe the relationship between an independent variable $Y$ and a dependent variable $X$ as:
+
+$$E(Y|X=x)=\mu_{Y|x}=\beta_0+\beta_1x$$
+
+The regression coefficient $\beta_0$ is called the **intercept**, and $\beta_1$ is called the **slope** (why?).
+
+--
+
+This relationship is generalized as:
+
+$$Y=\beta_0+\beta_1x + \epsilon$$
+
+Where $\epsilon$ is assumed to be distributed as $\mathcal{N}(0, \sigma_\epsilon)$.
+
+--
+
+This model is called a **simple linear regression model**
+
+   * Only one independent variable (only a single $x$, aka regressor)
+
+--
+
+Note that:
+
+$$E(Y|x)=E(\beta_0 + \beta_1x+\epsilon)=\beta_0+\beta_1x+E\epsilon = \beta_0+\beta_1x$$
+
+$$\operatorname{Var}(Y|x)=\operatorname{Var}(\beta_0+\beta_1x)+\operatorname{Var}(\epsilon)=\sigma^2_\epsilon$$
 
 ---
 
 # Properties of the least squares estimators
+
+The most common method to find the linear relationship is called the least squares estimate. I.e., we are looking for the line which brings to minimum the suqared errors. I.e.: 
+
+   * The $\min\sum_i(\hat{y}_i-y_i)^2$ of the red lines in :
+
+```{r least squares example, echo=FALSE, fig.dim=c(6,5)}
+wildlife_demo <- wildlife_small %>% 
+   mutate(lm_pred = exp(predict(lm(formula = log(n) ~ rounded_height, wildlife_small))))
+wildlife_points <- ggplot(wildlife_demo, aes(x = rounded_height, y = n)) + 
+   geom_point() + scale_y_log10() + theme_bw() + 
+   stat_smooth(method = "lm", se = FALSE) + xlab("Height [k feet]") + 
+   geom_segment(aes(xend = rounded_height, yend = lm_pred), color = "red", size = 1)
+wildlife_points
+```
+
+---
+
+# Finding the coefficients using the least squares method
+
+For each observation $i$, we have: $y_i=\beta_0+\beta_1x_i+\epsilon_i$, $i=1,2,\ldots,n$
+
+--
+
+The sum of squares is given by
+
+$$L = \sum_{i=1}^n{\epsilon_i^2} = \sum_{i=1}^n{(y_i-\beta_0-\beta_1x_i)^2}$$
+
+--
+
+To find the estimators for $\beta_0,\beta_1$ require:
+
+$$\frac{\partial L}{\partial\beta_0}= -2\sum_{i=1}^n\left(y_i-\hat{\beta}_0-\hat{\beta}_1x_i\right)=0$$
+$$\frac{\partial L}{\partial\beta_1}= -2\sum_{i=1}^n\left(y_i-\hat{\beta}_0-\hat{\beta}_1x_i\right)x_i=0$$
+
+---
+
+# Finding the coefficients using the least squares method (2)
+
+Simplifying the equations we obtain:
+
+$$n\hat{\beta_0}+\hat{\beta}_1\sum_{i=1}^n{x_i}=\sum_{i=1}^n{y_i}$$
+and
+
+$$\hat{\beta}_0\sum_{i=1}^n{x_i}+\hat{\beta}_1\sum_{i=1}^n{x_i^2} = \sum_{i=1}^n{y_ix_i}$$
+
+--
+
+The solution to these equations is given by:
+
+$$\hat{\beta}_0=\bar{y}-\hat{\beta}_1\bar{x}$$
+
+$$\hat{\beta}_1=\frac{\sum_i{x_iy_i} - \frac{\sum_i{y_i}\sum_i{x_i}}{n}}{\sum_i{x_i^2}-\frac{(\sum_i{x_i})^2}{n}}$$
+
+--
+
+The fitted line is then $\hat{y} = \hat{\beta}_0 + \hat{\beta}_1x$
+
+---
+
+# Finding the coefficients using the least squares method (3)
+
+Set 
+
+$$S_{xx}=\sum_{i=1}^n{(x_i-\bar{x})^2} = \sum_{i=1}^nx_i^2-\frac{1}{n}\left(\sum_{i=1}^nx_i\right)^2$$
+$$S_{xy}=\sum_{i=1}^n{y_i(x_i-\bar{x})^2} = \sum_{i=1}^nx_iy_i-\frac{1}{n}\left(\sum_{i=1}^nx_i\right)\left(\sum_{i=1}^ny_i\right)$$
+
+Then:
+
+$$\hat{\beta}_0=\hat{y}-\hat{\beta}_1\bar{x}$$
+
+$$\hat{\beta}_1=\frac{S_{xy}}{S_{xx}}$$
+
+---
+
+# The residuals
+
+Each observation satisfies $y_i=\hat{\beta}_0 + \hat{\beta}_1x_i+e_i, \quad i=1,2,\ldots,n$. We call $e_i$ the $i$th residual.
+
+--
+
+We define $SS_E$, the error sum of squares, as:
+
+$$SS_E=\sum_{i=1}^n{e_i^2}=\sum_{i=1}^n{(y_i-\hat{y}_i)^2}$$
+
+--
+
+To estimate $\sigma_\epsilon^2$ we can use $SS_E$:
+
+$$E(SS_E)=(n-2)\sigma_\epsilon^2$$
+
+An unbiased estimator for $\sigma_\epsilon^2$ is therefore:
+
+$$\hat{\sigma}^2=\frac{SS_E}{n-2}$$
+
+--
+
+An alternative formula is given by
+
+$$SS_E = SS_T-\hat{\beta}_1S_{xy}$$
+
+Where $SS_T=\sum_{i=1}^n{(\hat{y}_i-\bar{y})}$
+
+---
+
+# Linear Regression - Demonstration via R (1)
+
+We'll now demonstrate how to run linear regression in R, and then continue the discussion about linear regression.
+
+.small[
+```{r linear regression demonstration}
+mtcars_lm <- lm(formula = mpg ~ disp, data = mtcars)
+summary(mtcars_lm)
+```
+]
+---
+
+# Linear Regression - Demonstration via R (2)
+
+In this example we also use a transformation within the formula of `lm`, i.e. `log(n)`
+
+.small[
+```{r linear regression demonstration 2}
+wildlife_lm <- lm(formula = log(n) ~ rounded_height, data = wildlife_small)
+summary(wildlife_lm)
+```
+]
+---
+
+# Properties of the Least Squares Estimators
+
+The estimators $\hat{\beta}_0$ and $\hat{\beta}_1$ are a result of a computation based on our sample, i.e., $\bar{y},\bar{x}, S_{xx}, S_{xy}$. 
+
+--
+
+Specifically, they depend on the observed $y$'s and hence they are random variables themselves. Both coefficients are unbiased, i.e., $E[\hat{\beta}_0]=\beta_0$ and $E[\hat{\beta}_1]=\beta_1$. 
+
+--
+
+The variance of the coefficients is given by:
+
+$$\operatorname{Var}(\hat{\beta}_1)= \frac{\sigma_\epsilon^2}{S_{xx}}$$
+
+$$\operatorname{Var}({\hat{\beta_0}}) = \sigma_\epsilon^2\left[\frac{1}{n} + \frac{\bar{x}^2}{S_{xx}}\right]$$
+
 
 ---
 
