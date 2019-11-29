@@ -196,13 +196,66 @@ Where $S_p$ is the pooled standard deviation:
 $$S_p=\sqrt{\frac{(n_1-1)S_1^2+(n_2-1)S_2^2}{n_1+n_2-2}}$$
 .small[
 ```{r example for cohens d}
+
+set.seed(0)
+ipf <- read_csv("data/ipf_lifts.csv", col_types = cols()) %>% 
+   filter(best3squat_kg > 0) %>% 
+   sample_n(1000)
+
 effsize::cohen.d(formula = best3squat_kg ~ sex, data = ipf)
 ```
 ]
 
 ---
 
-# Simple Linear Regression: motivation
+# Simple Linear Regression: background
+
+Linear regression is an important modeling technique in statistics. It was developed in the 1800s and is still very common today.
+
+--
+
+   * In essense, it allows us to model the relationship between two or more variables, utilizing some basic assumptions such as linearity, and normality.
+
+--
+
+   * These days, it is less common as a predictive modeling approach, because for predictions we have much better models.
+
+--
+
+   * It is still heavily used in research (e.g., academia) to describe and indicate statistically significant relationships.
+
+--
+
+   * Linear regression is very appealing as one of the "first models to try out" because it is very simple to understand, has a low computational price, it is easy to interpret, and yet very flexible.
+
+---
+
+# Simple Linear Regression: example - bird strikes
+
+A very troubling problem for aviation is bird strikes
+
+   * From a monetary perspective - causing damages to planes
+   
+   * From a safety perspective - endangers the passanges and crew
+   
+   * (Obviously it's not that fun to the birds either)
+   
+--
+
+What is the relationship between flight height and the number of bird strike events?
+
+.tiny[
+```{r introducing the bird strike dataset}
+# wildlife_impacts <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-07-23/wildlife_impacts.csv")
+wildlife_mod <- read_csv("data/wildlife_impacts.csv", col_types = cols()) %>% 
+  mutate(rounded_height = round(height/1000)*1000) %>% 
+  count(rounded_height)
+ggplot(wildlife_mod, aes(x = rounded_height, y = n)) + 
+   geom_point() + 
+   stat_smooth(method = "lm") + 
+   theme_bw()
+```
+]
 
 ---
 
