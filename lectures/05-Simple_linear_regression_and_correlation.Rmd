@@ -530,9 +530,11 @@ $$t_0>t_{1-\alpha/2, n-2} \quad\text{ or }\quad t_0 < t_{\alpha/2,n-2}$$
 # Hypothesis tests in simple linear regression (3)
 .small[
 A similar test can be used for $\beta_0$: $T_0=\frac{\hat{\beta}_0 - 0}{\sqrt{\hat{\sigma}_\epsilon^2\left[\frac{1}{n}+\frac{\bar{x}^2}{S_{xx}}\right]}}$
+]
 
 --
 
+.small[
 Now, we can have another look on the linear regression output.
 ```{r another demonstration of the wildlife regression}
 summary(wildlife_lm)
