@@ -543,14 +543,83 @@ summary(wildlife_lm)
 
 # Analysis of Variance for Regression Significance
 
+So far we treated the coefficients individually, however, we want a different hypothesis test which will examine the regression as a whole. 
+
+--
+
+The variance of the $y_i$ observations can be broken in the following manner:
+
+$$\sum_{i=1}^n{(y_i-\bar{y})^2} = \sum_{i=1}^n{(\hat{y}_i-\bar{y})^2} + \sum_{i=1}^n{(y_i-\hat{y})^2}$$
+
+--
+
+The variability of the data (the LHS) is broken down to the variability explained using the regression line, and the remaining variability (the errors $e_i^2$).
+
+--
+
+This is sometimes noted as
+
+$$SS_T=SS_R + SS_E$$
+
+Where $SS_R$ has 1 degree of freedome, $SS_E$ has $n-2$ degrees of freedom, and $SS_T$ has $n-1$ degrees of freedom.
+
+--
+
+The expectancy of each element is $E[SS_E/(n-2)]=\sigma_\epsilon^2$, $E[SS_R]=\sigma^2_\epsilon+\beta_1^2S_{xx}$.
+
+--
+
+Under a null hypothesis of $H_0: \beta_1=0$ we obtain that both sum of squares are $\chi^2$ distributed.
+
 ---
 
+# Analysis of Variance for Regression Significance (2)
+
+Then, the following statistic would be F-distributed, under the null hypothesis:
+
+$$F_0=\frac{SS_R/1}{SS_E/(n-2)} = \frac{MS_R}{MS_E}$$
+--
+
+The intuition behind the statistic is: 
+
+   * As the mean square error $MS_E$ decreases; and
+--
+
+   * The variance explained by the regression model $MS_R$ increases
+--
+
+   * The model is a good fit to the data 
+--
+
+   * Hence, the null hypothesis of no model, i.e., $\beta_1=0$, is rejected
+
+--
+
+## ANOVA (Analysis of Variance) Table
+
+.small[
+| Source of Variation | Sum of Squares | df | Mean Squares | $F_0$ |
+|----------------------|-----------------|-------|:------------:|---------------------|
+| Regression | $SS_R$ | $1$ | $MS_R$ | $\frac{MS_R}{MS_E}$ |
+| Error | $SS_E$ | $n-2$ | $MS_E$ |  |
+| Total | $SS_T$ | $n-1$ |  |  |
+]
+
+`summary(wildlife_lm)`
+
+---
 
 # Confidence intervals
 
+As with any parameter, we can compute confidence intervals for $\beta_0$ and $\beta_1$:
+
+$$\beta_1\in\hat{\beta}_1\pm t_{\alpha/2,n-1}\sqrt{\frac{\sigma_\epsilon^2}{S_{xx}}}$$
+
+$$\beta_0\in\hat{\beta}_0\pm t_{\alpha/2, n-2}\sqrt{\frac{1}{n} + \frac{\bar{x}^2}{S_{xx}}}$$
+
 ---
 
-# Predicting new observations
+# Prediction intervals
 
 ---
 
@@ -564,10 +633,3 @@ XYZ
 
 # Coefficient of determination $R^2$
 
----
-
-# Transformations
-
----
-
-# Correlation
