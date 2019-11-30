@@ -482,7 +482,69 @@ $$\operatorname{Cov}(\hat{\beta}_0,\hat{\beta}_1) = E(\hat{\beta}_0-E\hat{\beta_
 
 # Hypothesis tests in simple linear regression
 
+Now that we found a relationship $y=\hat{\beta}_0 + \hat{\beta}_1x$, we want to figure out, is this relationship "real"?
+
+--
+
+In other words, we would like to test the hypothesis:
+
+   * $H_0:\beta_0=0$
+   * $H_1:\beta_0\neq0$
+   
+And the hypothesis:
+
+   * $H_0:\beta_1=0$
+   * $H_1:\beta_1\neq0$
+
+If both are rejected (especially $\beta_1$), we can say that the relationship we found is statistically significant.
+
+--
+
+To develop the statistical test for the coefficients we will need the following assumptions:
+
+   * The errors are normally distributed, i.e. $\epsilon_i\sim\mathcal{N}(0,\sigma_\epsilon)$, and
+   
+   * The errors are homoscedastic, i.e., no matter the $x_i$, the error distribution is the same
+
 ---
+
+# Hypothesis tests in simple linear regression (2)
+
+Recall that
+
+$$\hat{\beta}_1=\frac{\sum_i{x_iy_i} - \frac{\sum_i{y_i}\sum_i{x_i}}{n}}{\sum_i{x_i^2}-\frac{(\sum_i{x_i})^2}{n}}$$
+
+Since $Y_i\sim\mathcal{N}(\beta_0+\beta_1x_i, \sigma_\epsilon^2)$, this means that $\hat{\beta}_1$ is also normally distributed (as a linear combination of normal variables).
+
+$$\hat{\beta}_1\sim\mathcal{N}(\beta_1, \sigma_\epsilon^2/S_{xx})$$
+
+The following statistic is distributed student's t, with $n-2$ degrees of freedom
+
+$$T_0=\frac{\hat{\beta}_1 - 0}{\sqrt{\hat{\sigma}_\epsilon^2/S_{xx}}}$$
+
+That is, reject $H_0$ if: 
+$$t_0>t_{1-\alpha/2, n-2} \quad\text{ or }\quad t_0 < t_{\alpha/2,n-2}$$
+
+---
+
+# Hypothesis tests in simple linear regression (3)
+.small[
+A similar test can be used for $\beta_0$: $T_0=\frac{\hat{\beta}_0 - 0}{\sqrt{\hat{\sigma}_\epsilon^2\left[\frac{1}{n}+\frac{\bar{x}^2}{S_{xx}}\right]}}$
+
+--
+
+Now, we can have another look on the linear regression output.
+```{r another demonstration of the wildlife regression}
+summary(wildlife_lm)
+```
+]
+
+---
+
+# Analysis of Variance for Regression Significance
+
+---
+
 
 # Confidence intervals
 
@@ -492,7 +554,15 @@ $$\operatorname{Cov}(\hat{\beta}_0,\hat{\beta}_1) = E(\hat{\beta}_0-E\hat{\beta_
 
 ---
 
-# Adequacy of the linear regression model
+# Would linear regression fit here?
+
+Which of the following relationships between two variables would fit a linear regression model?
+
+XYZ
+
+---
+
+# Coefficient of determination $R^2$
 
 ---
 
