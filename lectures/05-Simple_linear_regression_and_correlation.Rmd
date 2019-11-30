@@ -402,7 +402,7 @@ The fitted line is then $\hat{y} = \hat{\beta}_0 + \hat{\beta}_1x$
 Set 
 
 $$S_{xx}=\sum_{i=1}^n{(x_i-\bar{x})^2} = \sum_{i=1}^nx_i^2-\frac{1}{n}\left(\sum_{i=1}^nx_i\right)^2$$
-$$S_{xy}=\sum_{i=1}^n{y_i(x_i-\bar{x})^2} = \sum_{i=1}^nx_iy_i-\frac{1}{n}\left(\sum_{i=1}^nx_i\right)\left(\sum_{i=1}^ny_i\right)$$
+$$S_{xy}=\sum_{i=1}^n{(y_i-\bar{y})(x_i-\bar{x})} = \sum_{i=1}^nx_iy_i-\frac{1}{n}\left(\sum_{i=1}^nx_i\right)\left(\sum_{i=1}^ny_i\right)$$
 
 Then:
 
@@ -431,14 +431,6 @@ $$E(SS_E)=(n-2)\sigma_\epsilon^2$$
 An unbiased estimator for $\sigma_\epsilon^2$ is therefore:
 
 $$\hat{\sigma}^2=\frac{SS_E}{n-2}$$
-
---
-
-An alternative formula is given by
-
-$$SS_E = SS_T-\hat{\beta}_1S_{xy}$$
-
-Where $SS_T=\sum_{i=1}^n{(\hat{y}_i-\bar{y})}$
 
 ---
 
@@ -482,6 +474,9 @@ $$\operatorname{Var}(\hat{\beta}_1)= \frac{\sigma_\epsilon^2}{S_{xx}}$$
 
 $$\operatorname{Var}({\hat{\beta_0}}) = \sigma_\epsilon^2\left[\frac{1}{n} + \frac{\bar{x}^2}{S_{xx}}\right]$$
 
+The covariance of $\beta_0$ and $\beta_1$ is given by:
+
+$$\operatorname{Cov}(\hat{\beta}_0,\hat{\beta}_1) = E(\hat{\beta}_0-E\hat{\beta_0})(\hat{\beta}_1-E\hat{\beta_1})=-\sigma_\epsilon^2\frac{\bar{x}}{S_{xx}}$$
 
 ---
 
