@@ -621,15 +621,122 @@ $$\beta_0\in\hat{\beta}_0\pm t_{\alpha/2, n-2}\sqrt{\frac{1}{n} + \frac{\bar{x}^
 
 # Prediction intervals
 
+We would like to use the linear regression model for prediction of new values.
+
+--
+
+Given $x_0$, our prediction for $Y_0$ is
+
+$$\hat Y_0 = \hat\beta_0 + \hat\beta_1x_0$$
+
+--
+
+This is a point estimate, however, we are also interested in a **prediction interval**, i.e., where would a new observation lie in probability of 95%.
+
+--
+
+Observe that the error of the new observation is: $e_p=Y_0-\hat Y_0$.
+
+--
+
+The mean of the error is 0 and the variance of the error is:
+
+$$\operatorname{Var}(e_p)=\operatorname{Var}(Y_0-\hat Y_0)=\sigma_\epsilon^2\left[1 + \frac{1}{n} + \frac{(x_0-\bar{x})^2}{S_{xx}}\right]$$
+
+Hence:
+
+$$Y_0\in \hat{y}_0\pm t_{\alpha/2,n-2}\sqrt{\hat\sigma_\epsilon^2\left[1 + \frac{1}{n} + \frac{(x_0-\bar{x})^2}{S_{xx}}\right]}$$
+
+---
+
+# Prediction intervals - illustration
+
+The grey band shows confidence intervals around $Y_0|X=x$ and the outer lines show the prediction intervals
+.small[
+```{r exhibiting prediction intervals, fig.dim=c(6, 4)}
+wildlife_predicted <- predict(wildlife_lm,
+                              newdata = 
+                                 tibble(rounded_height = seq(0, 25, by = 0.25)),
+                               interval = "prediction") %>% 
+   data.frame() %>% 
+   mutate(rounded_height = seq(0, 25, by = 0.25))
+```
+```
+ggplot(wildlife_small, aes(x = rounded_height, y = n)) + 
+   geom_point() + theme_bw() + 
+   xlab("Height [k feet]") + 
+   geom_line(data = wildlife_predicted, 
+             inherit.aes = T, aes(x = rounded_height, y = exp(lwr))) +
+   geom_line(data = wildlife_predicted, 
+             inherit.aes = T, aes(x = rounded_height, y = exp(upr))) +
+   scale_y_log10() +
+   stat_smooth(method = "lm")
+```
+]
+.right-plot[
+```{r the actual plot, echo=FALSE, fig.dim=c(6,6)}
+ggplot(wildlife_small, aes(x = rounded_height, y = n)) + 
+   geom_point() + theme_bw() + 
+   xlab("Height [k feet]") + 
+   geom_line(data = wildlife_predicted, 
+             inherit.aes = T, aes(x = rounded_height, y = exp(lwr)), color = "red") +
+   geom_line(data = wildlife_predicted, 
+             inherit.aes = T, aes(x = rounded_height, y = exp(upr)), color = "red") +
+   scale_y_log10() +
+   stat_smooth(method = "lm")
+```
+]
+
 ---
 
 # Would linear regression fit here?
+.small[
+We mentioned these assumptions to linear regression: 
 
-Which of the following relationships between two variables would fit a linear regression model?
+   * Linear relationship
+   * Normal error $\mathcal{N}(0, \sigma_\epsilon^2)$
+   * Homoscedastity
+]
 
-XYZ
+--
+
+.small[
+Which of the following violates these assumptions? Can you think of a transformation that would fix the problem?
+]
+
+```{r linear regression fits, echo=FALSE, fig.dim=c(7,4)}
+countdown::countdown(minutes = 5)
+linear_reg_examples <- tibble(x = seq(0,10, by = 0.1),
+                              f1 = x + rnorm(NROW(x), mean = 0, 1),
+                              f2 = x + rnorm(NROW(x), mean = 0, sd = x/10),
+                              f3 = 5 + sin(x) + rnorm(NROW(x), mean = 0, sd = 0.3),
+                              f4 = exp(x)/5000 + rnorm(NROW(x), mean = 0, sd = 0.3),
+                              f5 = runif(NROW(x))*10,
+                              f6 = 0.3*(x-5)^2 + rnorm(NROW(x))) %>% 
+   pivot_longer(cols = -x, names_to = "func", values_to = "value")
+
+ggplot(linear_reg_examples, aes(x, value)) + 
+   geom_point() + 
+   facet_wrap(~func) + 
+   theme_bw()
+```
 
 ---
 
 # Coefficient of determination $R^2$
 
+We would like to measure the effect size of the regression. One possibility to measure the effect size is to use $R^2$:
+
+$$R^2=\frac{SS_R}{SS_T}=1-\frac{SS_E}{SS_T}$$
+
+Since $SS_T=SS_R + SS_E$, and all sizes are non negative:
+
+$$0\leq R^2 \leq1$$
+
+As the fit is better, $R^2$ increases.
+
+--
+
+Next week we will also dive a bit deeper into transformations and how to utilize them, and talk about correlation between variables.
+
+We will talk about multiple linear regression, and discuss some cavets of $R^2$, of overfitting, and how to overcome them.
