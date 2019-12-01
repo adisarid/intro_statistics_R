@@ -1,13 +1,13 @@
 ---
-title: 'Introduction to Statistics and Data Analysis with R - Homework #2'
+title: 'Introduction to Statistics and Data Analysis with R - Homework #3'
 author: "Adi Sarid and Afek Adler"
-date: '2019-XXXXXXXXX'
+date: '2019-12-03'
 output:
   html_document: default
   pdf_document: default
 ---
 
-This homework sheet is due on the XXXXXX. You may submit your answers in pairs. Submit a PDF file with the code and results for the R part. Add to the PDF your solution for the other questions.
+This homework sheet is due on the 2019-12- 17. You may submit your answers in pairs. Submit a PDF file with the code and results for the R part. Add to the PDF your solution for the other questions.
 Submission will be performed electronically via Moodle.
 
 We urge you to start solving this sheet as soon as possible and, if you have any questions, come to visit us in reception hours next week.
@@ -15,7 +15,7 @@ We urge you to start solving this sheet as soon as possible and, if you have any
 ## Question 1:
 
 
-Across all the exercise. If not mentioned – use alpha = 0.05.
+Across all the exercise. If not mentioned – use $\alpha$ = 0.05.
 Create a tibble with 100 rows such that:
 
   * Column 1 – samples from normal distribution (mean = 3, std = 1)
@@ -27,14 +27,14 @@ __Your code here: __
 ``` {r data set creation}
 ```
 
-From now on assume that you don’t know nothing about this data frame/tibble except that it is a matrix that contains arbitrary numbers.
+From now on assume that you don’t anything about this data frame/tibble except that it is a matrix that contains arbitrary numbers.
 
 For each column:
 
-  a. plot the PDF (probability density function) for that column.
-  b. Test whether the column is distributed normal
-  c. Test whether the column is distributed exponential 
-  d. Test whether the column is distributed log normal
+  a. Plot the PDF (probability density function) for that column
+  b. Test (hypothesis test) whether the column is distributed normal
+  c. Test (hypothesis test)  whether the column is distributed exponential 
+  d. Test (hypothesis test)  whether the column is distributed log normal
 
 Verify your results with a QQ plot (6 graphs total).
   
@@ -49,7 +49,7 @@ __Your code here: __
 ``` {r scatter plot}
 ```
 
-Do you expect that those column will we independent? prove with an hypothesis test.
+Do you expect that those column will we independent? check yourself with an hypothesis test.
 
 __Your code here: __
 ``` {r hypothesis testing for independence}
@@ -58,51 +58,53 @@ __Your code here: __
 
 ## Question 2:
 
-In this question we will the x.77 data set:
+In this question we will the state.x77 (built-in in R) data set:
 
-  *  Find two variables which you think are not dependent and two which you think are dependent and do a HT for independence. Elaborate on your results.
+  *  Find two variables which you think are independent and two which you think are dependent and do a HT for independence. Elaborate on your results.
   
 
-Separate the countries by their majority choice in the [2016 Presidetnal election](https://en.wikipedia.org/wiki/Political_party_strength_in_U.S._states).
-For each column, perform an hypothesis test of the means (check which one is higher). explain the steps you have done in order to so. 
+Separate the countries by their majority choice in the [2016 Presidetnal election](https://en.wikipedia.org/wiki/Political_party_strength_in_U.S._states)        [1](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=24&cad=rja&uact=8&ved=2ahUKEwidkpqdsJTmAhVQLVAKHQezDkMQFjAXegQIBBAC&url=https%3A%2F%2Ftransition.fec.gov%2Fpubrec%2Ffe2016%2Ffederalelections2016.xlsx&usg=AOvVaw1--QzI7A9J-59UDfplN9SC).
+For each column, perform an hypothesis test of the means (check which one is higher). Explain the steps you have done in order to so. 
 Are there any methodological problems in doing this test as such? explain.
 
 
 ***
-__The next questions should be wiothout R functions that compute the hypothsis test__ 
+__The next questions should be done Both by handwriting\Rmarkdwown (as a prepareation for the exam) and with R functions (as verification).__ 
 
 ***
 
 ## Question 3
 
-here are 50 samples of time between events (can be any events, for example, emergency room entrance in an hospital).
+Here are 50 samples of time between events (can be any events, for example, time between emergency room entrance in an hospital).
 
-(5.2, 16.6, 9.8, 14.9, 1.3, 0.5, 16.6, 16.5, 1, 16.6, 19.3, 10.6, 26.8, 4.5, 2.5, 24.9, 3.4, 9.1, 12.5, 10.6, 27.6, 1.3, 0.4, 2.2, 7.8, 6, 17.6, 10.8, 2.7, 1.3, 1.6, 15.7,10.9, 2.1, 20.1, 1.9, 13.6, 0.4, 18.8, 11.4, 3, 0.3, 5.5, 2.7, 2.2, 9.5, 14.8, 3, 6.3, 11.2)
+```
+time_events <- c(5.2, 16.6, 9.8, 14.9, 1.3, 0.5, 16.6, 16.5, 1, 16.6, 19.3, 10.6, 26.8, 4.5, 2.5, 24.9, 3.4, 9.1, 12.5, 10.6, 27.6, 1.3, 0.4, 2.2, 7.8, 6, 17.6, 10.8, 2.7, 1.3, 1.6, 15.7,10.9, 2.1, 20.1, 1.9, 13.6, 0.4, 18.8, 11.4, 3, 0.3, 5.5, 2.7, 2.2, 9.5, 14.8, 3, 6.3, 11.2)
+```
 
-Test the hypothesis that this sample were taken form an exponential distribution. \
+Test the hypothesis that this sample were taken form an exponential distribution. 
 Guidance - estimate the parameter of the distribution first.
 
 ## Question 4
 
-There is always a line in the coffee station in Yoto. The waiting time is distributed exponential with *\theta*. The cafeteria manager claims that the mean waiting time is 5 m whereas the students claim that the mean waiting time is 10 m (and therefore it takes all the time between two lessons).
+There is always a line in the coffee station in Yoto. The waiting time is distributed exponential with $\theta$. The cafeteria manager claims that the mean waiting time is 5 m whereas the students claim that the mean waiting time is 10 m (and therefore it takes all the time between two lessons).
 
-  a. One student decided to test this claims by going to get coffee. he claims that if he will wait more than 10m, than the mean waiting time is indeed 10m.
-based on this test, write down the null and the alternative hypothesis and calculate *\alpha* and *\beta*.
+  a. One student decided to test this claims by going to get coffee. He claims that if he will wait more than 10m, than the mean waiting time is indeed 10m.
+based on this test, write down the null and the alternative hypothesis and calculate $\alpha$ and $\beta$.
 
-  b. The cafeteria manager claimed that a sample of one student is not enough, and suggested that if and only if the student will wait more than 15m than we can reject the claim that the mean waiting time is 5 m. based on this test, write down the null and the alternative hypothesis and calculate *\alpha* and *\beta*.
+  b. The cafeteria manager claimed that a sample of one student is not enough, and suggested that if and only if the student will wait more than 15m than we can reject the claim that the mean waiting time is 5 m. Based on this test, write down the null and the alternative hypothesis and calculate $\alpha$ and $\beta$.
   
-  c. In order to solve the controversy, it was decided to measure the time of 100 students in line (not in the same time, independent of each other). The test statistic will their mean waiting time, under the requirement that the test power should be 95% (*1 - \beta = 0.95*). 
- based on this test, write down the null and the alternative hypothesis and calculate the critical value and *\alpha*.
+  c. In order to solve the controversy, it was decided to measure the time of 100 students in line (not in the same time, independent of each other). The test statistic will be their mean waiting time, under the requirement that the test power should be 95% ($1 - \beta = 0.95$). 
+ Based on this test, write down the null and the alternative hypothesis and calculate the critical value and $\alpha$.
  
  
 ## Question 5
 
-Two american people (hilli form Colorado and billie from California) argue about whether the amount of brown bears in california is higher than in Colorado. 
-Each of them went to the woods a couple of times and recorded the amount of bears they have seen. Altohugh they agrreed to do it 20 times, hilli decided to stop doing so after a bear attack. 
+Two american people (Hilli form Colorado and Billie from California) argue about whether the amount of brown bears in california is higher than in Colorado. 
+Each of them went to the woods a couple of times and recorded the amount of bears they have seen. Altohugh they agrreed to do it 20 times, Hilli decided that he can't bear it no more after a bear attack. 
  
 |               | Sample Size   | Mean  | Std
 | ------------- |:-----------:| -----:| -----: |
 | Colorado      | 15            | 7.2  | 4.1     |
 | California    | 20            |12.5  | 5.5     |
   
-With a confidense level of 10%, is it possible to say that the mean number of brown bears in California is bigger in more than onethan the mean number of brown bears in Colorado?
+With a confidense level of 10%, is it possible to say that the mean number of brown bears in California is bigger in more than one than the mean number of brown bears in Colorado?
