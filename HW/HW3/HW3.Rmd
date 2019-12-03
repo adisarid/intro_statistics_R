@@ -7,7 +7,7 @@ output:
   pdf_document: default
 ---
 
-This homework sheet is due on the 2019-12- 17. You may submit your answers in pairs. Submit a PDF file with the code and results for the R part. Add to the PDF your solution for the other questions.
+This homework sheet is due on the 2019-12-17. You may submit your answers in pairs. Submit a PDF file with the code and results for the R part. Add to the PDF your solution for the other questions.
 Submission will be performed electronically via Moodle.
 
 We urge you to start solving this sheet as soon as possible and, if you have any questions, come to visit us in reception hours next week.
@@ -69,7 +69,7 @@ Are there any methodological problems in doing this test as such? explain.
 
 
 ***
-__The next questions should be done Both by handwriting\Rmarkdwown (as a prepareation for the exam) and with R functions (as verification).__ 
+__The next questions should be done Both by handwriting (as a prepareation for the exam) and with R functions (as verification).__ 
 
 ***
 
