@@ -1,0 +1,125 @@
+---
+title: "Multiple Linear Regression and Correlation"
+subtitle: "Lecture #7"
+author: "Adi Sarid"
+institute: "Tel-Aviv University"
+date: "updated: `r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "16:9"
+    css: [metropolis, rutgers-fonts]
+---
+
+```{css, echo = FALSE}
+
+.remark-code {
+  font-size: 24px;
+}
+
+.huge { 
+  font-size: 200%;
+}
+.tiny .remark-code {
+  font-size: 50%;
+}
+
+.small .remark-code{
+   font-size: 85% !important;
+}
+
+.small {
+   font-size: 85% !important;
+}
+
+.remark-slide-content {
+    font-size: 20px;
+    padding: 1em 4em 1em 4em;
+}
+
+table { display: inline-block; }
+
+th, td {
+   padding: 5px;
+}
+
+.small-slide {
+   font-size: 70% !important;
+}
+
+.image-50 img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
+.right-plot {
+   width: 60%;
+   float: right;
+   padding-left: 1%;
+   bottom: 0px;
+   right: 0px;
+   position: absolute;
+}
+
+
+
+```
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE, fig.width = 3, fig.height = 3)
+knitr::opts_chunk$set(fig.dim=c(3, 3), fig.align = "center")
+library(tidyverse)
+library(countdown)
+```
+
+# Reminder from previous lecture
+
+We focused on simple linear regression.
+
+   * We saw how simple linear regression can be used to find the relationship between two variables
+   
+   * For example, flight height and the number of bird strikes (or `log` or bird strikes)
+   
+--
+   
+We discussed the base assumptions in linear regression:
+
+   * Linearity $Y=\beta_0+\beta_1x + \epsilon$
+   
+   * $\epsilon \sim \mathcal{N}(0,\sigma_\epsilon)$
+   
+   * For hypothesis testing on $\beta$ we also require hetroscedastity
+   
+--
+
+We discussed the objective function: the least squares $L$
+
+--
+
+We have shown how to find $\beta_0$ and $\beta_1$ from the partial derivative of $\partial L/\partial \beta_i$
+   
+---
+
+# Coefficient of determination $R^2$
+
+We would like to measure the effect size of the regression. One possibility to measure the effect size is to use $R^2$:
+
+$$R^2=\frac{SS_R}{SS_T}=1-\frac{SS_E}{SS_T}$$
+
+Since $SS_T=SS_R + SS_E$, and all sizes are non negative:
+
+$$0\leq R^2 \leq1$$
+
+As the fit is better, $R^2$ increases.
+
+--
+
+Next week we will also dive a bit deeper into transformations and how to utilize them, and talk about correlation between variables.
+
+We will talk about multiple linear regression, and discuss some cavets of $R^2$, of overfitting, and how to overcome them.
