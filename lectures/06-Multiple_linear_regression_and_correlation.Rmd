@@ -417,7 +417,7 @@ Is an unbiased estimate of $\sigma_\epsilon^2$
 
 ---
 
-# Least Squares Estimation of the Parameters (3)
+# Hypothesis Tests
 
 The vector $\hat\beta$ is an unbiased estimate:
 
@@ -441,11 +441,39 @@ We are going to use the following set of hypothesis:
 
 --
 
-Under the null hypothesis, $SS_R/\sigma^2$ is $\chi^2_{\text{df}=k}$, and $SS_E/\sigma^2$ is $\chi^2_{\text{df}=n-p}$.
+Under the null hypothesis, $SS_R/\sigma^2$ is $\chi^2_{\text{df}=k}$, and $SS_E/\sigma^2$ is $\chi^2_{\text{df}=n-k-1}$.
+
+--
+
+Our statistic is:
+
+$$F_0=\frac{SS_R/k}{SS_E/(n-k-1)}=\frac{MS_R}{MS_E}$$
+
+We reject $H_0$ if the computed value of the statistic $f_0>f_{1-\alpha,k,n-k}$
 
 ---
 
-# Hypothesis Tests
+# Hypothesis Tests - ANOVA table
+
+The process is summarized in an analysis of variance table, as follows:
+
+.small[
+| Source of Variation | Sum of Squares | df | Mean Squares | $F_0$ |
+|----------------------|-----------------|:-----:|:------------:|---------------------|
+| Regression | $SS_R$ | $k$ | $MS_R$ | $\frac{MS_R}{MS_E}$ |
+| Error | $SS_E$ | $n-k-1$ | $MS_E$ |  |
+| Total | $SS_T$ | $n-1$ |  |  |
+]
+
+--
+
+## Adjusted $R^2$
+
+We discussed $R^2 = 1-\frac{SS_E}{SS_T}$ however, as the number of parameters increases, the error always decreases.
+
+To mitigate this phenomena, another measure is suggested: the adjusted $R^2$ statistic.
+
+$R^2_{\text{adj}} = 1 - \frac{SS_E}{n-p}/\frac{SS_T}{n-1}$$
 
 ---
 
