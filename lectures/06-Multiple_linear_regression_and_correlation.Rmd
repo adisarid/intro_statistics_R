@@ -284,11 +284,164 @@ ggcorrplot::ggcorrplot(genres_corr, type = "upper", hc.order = T, hc.method = "c
 ]
 ---
 
-# Multiple Linear Regression - Motivation 
+# Multiple Linear Regression - Background 
+
+.small[So far we treated regression with only two variable (one dependent, $Y$ and one independent $X$).]
+
+--
+
+.small[
+In most cases, we will have more than one independent variable, i.e., $X_1,\ldots,X_p$. Our model becomes:
+
+$$Y=\beta_0 + \beta_1X_1 + \beta_2X_2 + \ldots + \beta_pX_p + \epsilon$$
+]
+
+--
+
+.small[
+This can also be extended to accomodate for more complex relationships such as:
+
+$$Y = \beta_0 + \beta_1X_1 + \beta_2X_2 + \beta_{12}X_{1}X_2 + \epsilon$$
+]
+
+--
+
+.small[
+or
+
+$$Y = \sin(X_1) + \cos(X_1X_2) + \epsilon$$
+]
+
+--
+
+.small[
+The principles and assumptions we discussed still hold, but some careful handling is needed, and this is what we will discuss today.
+]
+
+.tiny[
+```{r some complex relationship}
+ex1 <- crossing(x1 = seq(0, 5, 0.05),
+         x2 = seq(0, 5, 0.05)) %>% 
+  mutate(y = sin(x1) + cos(x2*x1) + rnorm(NROW(x1), sd = 0.05))
+p1 <- ggplot(ex1, aes(x = x1, y = x2, z = y)) + 
+  geom_contour() + 
+  theme_bw()
+p2 <- ggplot(ex1, aes(x = x1, y = x2, fill = y)) + 
+  geom_tile() + 
+  theme_bw()
+#cowplot::plot_grid(p1, p2)
+```
+]
+
+.right-plot[
+```{r some complex relationship the plot, fig.dim=c(8,3), echo = FALSE}
+cowplot::plot_grid(p1, p2)
+```
+]
 
 ---
 
-# The Multiple Linear Regression Model
+# Motivation
+
+Let's analyze the example from last lecture (planes and birds), only this time, enrich the problem.
+
+--
+
+.tiny[
+```{r}
+wildlife_medium <- read_csv("data/wildlife_impacts_medium.csv", col_types = cols())
+lm(formula = log(n) ~ ., data = wildlife_medium) %>% 
+  summary()
+```
+]
+
+--
+
+Can you say what's the problem of examining this dataset, in this context? (think about possible biases)
+
+---
+
+# Least Squares Estimation of the Parameters
+
+We will use matrix notation.  For each observation $i$ we have:
+
+$$y_i = \beta_0 + \beta_1x_{i1} + \ldots + \beta_kx_{ik} + \epsilon_i, \quad i = 1,\ldots,n$$
+
+This can be represented as:
+
+$$y = X\beta+\epsilon$$
+
+Where:
+
+$$y = \left[\begin{array}{c}y_1\\\vdots\\y_n\end{array}\right], \quad X=\left[\begin{array}{cccc}1 & x_{11} & \ldots & x_{1k}\\\vdots & \vdots & \ddots & \vdots\\1 & x_{n1} & \ldots & x_{nk}\end{array}\right], \quad \beta = \left[\begin{array}{c}\beta_0\\\vdots\\\beta_k\end{array}\right],\quad \epsilon=\left[\begin{array}{c}\epsilon_1\\\vdots\\\epsilon_n\end{array}\right]$$
+
+--
+
+We are looking for $\beta$ which minimizes $L = \epsilon^t\epsilon=(y-X\beta)(y-X\beta)$
+
+$$\frac{\partial L}{\partial\beta}=0$$
+
+---
+
+# Least Squares Estimation of the Parameters (2)
+
+The resulting equations are given by:
+
+$$X^tX\hat\beta=X^ty$$
+
+--
+
+In case that $X^tX$ is a non-singular matrix (i.e., invertible), the solution is unique and equals
+
+$$\hat\beta = (X^tX)^{-1}X^ty$$
+
+--
+
+Once $\hat{\beta}$ is found, we can use it to predict our values:
+
+$$\hat{y} = X\hat{\beta}$$
+
+--
+
+We can also compute the residuals:
+
+$$e = y-\hat{y}$$
+
+--
+
+Let $p=k+1$ (the number of parameters including the constant $\beta_0$), then:
+
+$$\hat\sigma^2=\frac{\sum{e_i^2}}{n-p}=\frac{SS_E}{n-p}$$
+
+Is an unbiased estimate of $\sigma_\epsilon^2$
+
+---
+
+# Least Squares Estimation of the Parameters (3)
+
+The vector $\hat\beta$ is an unbiased estimate:
+
+$$E\hat\beta = E[(X^tX)^{-1}X^ty]=E[(X^tX)^{-1}X^t(X\beta+\epsilon)]=E[I\beta + (X^tX)^{-1}X^t\epsilon] = \beta$$
+
+--
+
+The $\beta$ coefficients' variance is given by diagonal elements of $(X^tX)^{-1}$ times $\sigma^2$.
+
+--
+
+Now that we have found the expected value and the variance, we are ready for some hypothesis tests.
+
+--
+
+We are going to use the following set of hypothesis:
+
+   * $H_0:\beta_1=\beta_2=\ldots=\beta_k=0$
+   
+   * $H_1: \exists i \text{ such that } \beta_i\neq0$
+
+--
+
+Under the null hypothesis, $SS_R/\sigma^2$ is $\chi^2_{\text{df}=k}$, and $SS_E/\sigma^2$ is $\chi^2_{\text{df}=n-p}$.
 
 ---
 
