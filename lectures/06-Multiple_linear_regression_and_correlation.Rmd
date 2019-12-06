@@ -94,7 +94,7 @@ We discussed the base assumptions in linear regression:
    
    * $\epsilon \sim \mathcal{N}(0,\sigma_\epsilon)$
    
-   * For hypothesis testing on $\beta$ we also require hetroscedastity
+   * For hypothesis testing on $\beta$ we also require homoscedastity
    
 --
 
@@ -104,6 +104,92 @@ We discussed the objective function: the least squares $L$
 
 We have shown how to find $\beta_0$ and $\beta_1$ from the partial derivative of $\partial L/\partial \beta_i$
    
+---
+
+# Reminder from previous lecture (2)
+
+$$\hat{\beta}_0=\bar{y}-\hat{\beta}_1\bar{x}, \quad \hat{\beta}_1=\frac{S_{xy}}{S_{xx}}$$
+
+Where:
+
+$$S_{xx}=\sum_{i=1}^n{(x_i-\bar{x})^2}, \quad S_{xy}=\sum_{i=1}^n{(y_i-\bar{y})(x_i-\bar{x})}$$
+
+--
+
+We discussed the importance of $SS_E = \sum_{i=1}^n(y_i-\hat{y})^2$, and talked about its role in estimating $\sigma_\epsilon$:
+
+$$\hat{\sigma}_\epsilon^2=\frac{SS_E}{(n-2)}$$
+
+--
+
+The variance of the coefficients is given by:
+
+$$\operatorname{Var}(\hat{\beta}_1)= \frac{\sigma_\epsilon^2}{S_{xx}}$$
+
+$$\operatorname{Var}({\hat{\beta_0}}) = \sigma_\epsilon^2\left[\frac{1}{n} + \frac{\bar{x}^2}{S_{xx}}\right]$$
+
+---
+
+# Reminder from previous lecture (3)
+
+The variance of $\beta_0, \beta_1$ helped us devise a statistic and a hypothesis test for the parameters, i.e.:
+
+$$T_0=\frac{\hat{\beta}_1 - 0}{\sqrt{\hat{\sigma}_\epsilon^2/S_{xx}}}$$
+
+--
+
+We've also seen the decomposition of the overall variance to the regression variance and error variance, i.e.:
+
+$$\sum_{i=1}^n{(y_i-\bar{y})^2} = \sum_{i=1}^n{(\hat{y}_i-\bar{y})^2} + \sum_{i=1}^n{(y_i-\hat{y})^2}$$
+
+--
+
+$$SS_T=SS_R + SS_E$$
+
+Where $SS_R$ has 1 degree of freedome, $SS_E$ has $n-2$ degrees of freedom, and $SS_T$ has $n-1$ degrees of freedom.
+
+--
+
+Under a null hypothesis of $H_0: \beta_1=0$, both $SS_R, SS_E$  are $\chi^2$ distributed, with $1, n-2$ degrees of freedom respectively.
+
+--
+
+This led us to an additional test, using analysis of variance.
+
+---
+
+# Analysis of Variance for Regression Significance
+
+Then, the following statistic would be F-distributed, under the null hypothesis:
+
+$$F_0=\frac{SS_R/1}{SS_E/(n-2)} = \frac{MS_R}{MS_E}$$
+--
+
+The intuition behind the statistic is: 
+
+   * As the mean square error $MS_E$ decreases; and
+--
+
+   * The variance explained by the regression model $MS_R$ increases
+--
+
+   * The model is a good fit to the data 
+--
+
+   * Hence, the null hypothesis of no model, i.e., $\beta_1=0$, is rejected
+
+--
+
+## ANOVA (Analysis of Variance) Table
+
+.small[
+| Source of Variation | Sum of Squares | df | Mean Squares | $F_0$ |
+|----------------------|-----------------|-------|:------------:|---------------------|
+| Regression | $SS_R$ | $1$ | $MS_R$ | $\frac{MS_R}{MS_E}$ |
+| Error | $SS_E$ | $n-2$ | $MS_E$ |  |
+| Total | $SS_T$ | $n-1$ |  |  |
+]
+
 ---
 
 # Coefficient of determination $R^2$
@@ -118,8 +204,120 @@ $$0\leq R^2 \leq1$$
 
 As the fit is better, $R^2$ increases.
 
+---
+
+# Correlation
+
+In probability, the correlation coefficient between two variables $X$ and $Y$ is defined as:
+
+$$\rho=\frac{\sigma_{XY}}{\sigma_X\sigma_Y}$$
+
+Where $\sigma_{XY}^2=\operatorname{Cov}(X,Y)=E[(X-\mu_x)(Y-\mu_Y)]=E[XY]-E[X]E[Y]$
+
+The correlation $\rho\in[-1, 1]$. When $\rho=1 \text{ or } -1$, this means that the two variables have a linear relationship between them, and if it is 0 then the covariance is 0 and the two variables are independent.
+
+We would like to see the relationship between $\rho$ and $R^2$.
+
 --
 
-Next week we will also dive a bit deeper into transformations and how to utilize them, and talk about correlation between variables.
+We can estimate $\rho$ using:
 
-We will talk about multiple linear regression, and discuss some cavets of $R^2$, of overfitting, and how to overcome them.
+$$\hat{\rho} = \frac{S_{xy}}{\sqrt{S_{xx}S_{yy}}}$$
+
+
+---
+
+# Correlation (2)
+
+We have defined $SS_T = \sum(y_i-\bar{y})^2=S_{yy}$
+
+--
+
+Remember that:
+
+   * $\hat{\beta}_0 = \bar{y}-\hat{\beta}_1\bar{x}$
+   
+   * $\hat{\beta}_1 = \frac{S_{xy}}{S_{xx}} = \hat{\rho}\sqrt{\frac{S_{yy}}{S_{xx}}}$, which demonstrates the relationship between $\hat{\rho}$ and $\beta_1$. 
+
+--
+
+Also note that: 
+
+$$SS_E=\sum(y_i-\hat{y}_i)^2=S_{yy}-\beta_1S_{xy}$$
+
+To see this use the above formulas for $\beta_0$ and $\beta_1$:
+
+$$SS_E=\sum(y_i-\hat{y}_i)^2=\sum(y_i-\hat\beta_0-\hat\beta_1x_i)^2=\sum\left((y_i-\bar y)-\beta_1(x_i-\bar x)\right)^2=\\ S_{yy}-2\beta_1S_{xy}+\beta_1^2S_{xx} = S_{yy}-\beta_1S_{xy}$$
+
+$$1-R^2 = 1-SS_R/SS_T = SS_E/S_{yy} = SS_E/SS_T = 1-\beta_1S_{xy}/S_{yy} = 1-\frac{S_{xy}^2}{S_{xx}S_{yy}} = 1-\hat\rho^2$$
+
+---
+
+# Correlation (3)
+.small[
+Hence, we have proven that coefficient of determination $R^2$ is in fact the estimate for the square of the correlation coefficient $\hat\rho^2$ of $X$ and $Y$. 
+]
+
+--
+
+.small[
+In general, correlation is interesting because it can help us find simple association rules between variables. Let's see an example with movies genres. Adopted from a [scraped imdb](https://github.com/sundeepblue/movie_rating_prediction) source.
+]
+
+--
+
+.tiny[
+```{r load genres compute cor}
+library(tidyverse)
+# "https://raw.githubusercontent.com/sarid-ins/statistical_learning_course/master/datasets/scraped_imdb/movie_db_clean.csv")
+movies <- suppressWarnings(read_csv("data/movie_db_clean.csv", col_types = cols()) %>% 
+  janitor::clean_names() %>% select(adventure:western) %>%  mutate_all(~.*1))
+genres_corr <- cor(movies)
+#ggcorrplot::ggcorrplot(genres_corr, type = "upper", hc.order = T, hc.method = "complete")
+```
+]
+.right-plot[
+```{r do the genres plot, echo=FALSE, fig.dim=c(6,6)}
+ggcorrplot::ggcorrplot(genres_corr, type = "upper", hc.order = T, hc.method = "complete", tl.cex = 9)
+   
+```
+]
+---
+
+# Multiple Linear Regression - Motivation 
+
+---
+
+# The Multiple Linear Regression Model
+
+---
+
+# Hypothesis Tests
+
+---
+
+# Confidence Intervals
+
+---
+
+# Prediction Intervals
+
+---
+
+# How are Types of Variables Used in Regression?
+
+---
+
+# Multicolinearity
+
+---
+
+# Model Selection (Stepwise)
+
+---
+
+# Example 1 - Overfitting
+
+---
+
+# Example 2 - Outliers' Influence
