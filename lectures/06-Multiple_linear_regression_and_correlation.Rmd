@@ -505,7 +505,7 @@ countdown::countdown(minutes = 3)
 
 --
 
-See demonstration [here](https://github.com/adisarid/intro_to_data_science_R/blob/master/exercises/10-A_note_about_overfitting.Rmd).
+See demonstration [here](https://github.com/adisarid/intro_statistics_R/blob/master/lectures/06-Note_about_overfitting.Rmd).
 
 ---
 
