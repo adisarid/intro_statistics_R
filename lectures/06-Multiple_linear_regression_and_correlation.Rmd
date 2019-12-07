@@ -449,7 +449,7 @@ Our statistic is:
 
 $$F_0=\frac{SS_R/k}{SS_E/(n-k-1)}=\frac{MS_R}{MS_E}$$
 
-We reject $H_0$ if the computed value of the statistic $f_0>f_{1-\alpha,k,n-k}$
+We reject $H_0$ if the computed value of the statistic $f_0>f_{1-\alpha,k,n-k}$ (the right tail of $F$ distribution)
 
 ---
 
@@ -469,11 +469,43 @@ The process is summarized in an analysis of variance table, as follows:
 
 ## Adjusted $R^2$
 
-We discussed $R^2 = 1-\frac{SS_E}{SS_T}$ however, as the number of parameters increases, the error always decreases.
+We discussed $R^2 = 1-\frac{SS_E}{SS_T}$ however, as the number of parameters increases, the error always decreases, and the $R^2$ increases. This is prone to over-fitting (demonstration coming up).
 
-To mitigate this phenomena, another measure is suggested: the adjusted $R^2$ statistic.
+--
 
-$R^2_{\text{adj}} = 1 - \frac{SS_E}{n-p}/\frac{SS_T}{n-1}$$
+To mitigate this phenomena we adjust the $R^2$.
+
+$$R^2_{\text{adj}} = 1 - \frac{SS_E/(n-p)}{SS_T/(n-1)}$$
+
+--
+
+As the number of parameters increases the numerator increases, which makes the overall $R^2_\text{adj}$ decrease.
+
+---
+
+# Overfitting a Regression Model: $R^2$ and adjusted $R^2$
+
+Overfitting is a phenomena which occurrs when the number of parameters, $p$ is very large compared to $n$
+
+   * In such a case a model is able to fit very well on the data
+   
+   * On new observations, the model will suffer large errors
+   
+--
+
+Various methods exist to handle and avoid this phenomena, such as train/test splits.
+
+--
+
+How would you devise an experiment to demonstrate overfitting?
+
+```{r, echo=FALSE}
+countdown::countdown(minutes = 3)
+```
+
+--
+
+See demonstration [here](https://github.com/adisarid/intro_to_data_science_R/blob/master/exercises/10-A_note_about_overfitting.Rmd).
 
 ---
 
@@ -494,10 +526,6 @@ $R^2_{\text{adj}} = 1 - \frac{SS_E}{n-p}/\frac{SS_T}{n-1}$$
 ---
 
 # Model Selection (Stepwise)
-
----
-
-# Example 1 - Overfitting
 
 ---
 
