@@ -788,13 +788,29 @@ cowplot::plot_grid(p1, p2)
 
 # How are Types of Variables Used in Regression?
 
----
+As you have probably noticed, in the bird-planes example, we used a `sky` variable which has three values (factor). The regression model is linear, if so, how are factor variables treated?
 
-# Multicolinearity
+   * Factors are turned into dummy variables (0/1). 
+   
+      * How many dummies are needed for a 3-level factor? why?
+      
+   * Characters are treated the same
+   
+   * Ordinals - depending on definition, might be entered as polynomials, factors, or continuous
+   
+   * Logicals - as a 0/1 variable
 
----
 
-# Model Selection (Stepwise)
+--
 
----
 
+```{r some questions on the meaning of coefficients, echo = FALSE}
+countdown::countdown(3)
+```
+Questions:
+
+   * What is the meaning of the coefficient $\beta$ of a logical variable?
+   
+   * What is the meaning of the coefficient $\beta$ of a factor?
+   
+   * How would you consider a date type variable?
