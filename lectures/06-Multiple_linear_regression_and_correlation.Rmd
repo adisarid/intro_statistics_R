@@ -350,7 +350,7 @@ Let's analyze the example from last lecture (planes and birds), only this time, 
 .tiny[
 ```{r}
 wildlife_medium <- read_csv("data/wildlife_impacts_medium.csv", col_types = cols())
-lm(formula = log(n) ~ ., data = wildlife_medium) %>% 
+lm(formula = log10(n) ~ ., data = wildlife_medium) %>% 
   summary()
 ```
 ]
@@ -483,6 +483,34 @@ As the number of parameters increases the numerator increases, which makes the o
 
 ---
 
+# Some Formulas for $SS_E, SS_R, SS_T$
+
+Some formulas that we will use later on today. However, in practice the computer will calculate all the sizes we need.
+
+$$SS_E = \sum(y_i-\hat y_i)^2=e^te$$
+
+Substitute $e = y-\hat y = y- X\hat\beta$ we obtain:
+
+$$SS_E = e^te = (y-X\hat\beta)^t(y-X\beta)=y^ty-2\hat\beta^t X^ty+\hat\beta^t(X^tX)\hat\beta=y^ty-2\hat\beta^t X^ty + \beta^t(X^tX)(X^tX)^{-1}X^ty=y^ty-\hat\beta^t X^ty$$
+
+--
+
+Since $SS_T = \sum(y_i-\bar{y})^2 = \sum y_i^2 - (\sum y_i)^2/n = y^ty - (\sum y_i)^2/n$ we get:
+
+$$y^ty - (\sum y_i)^2/n = SS_T = SS_R + SS_E = SS_R + y^ty-\hat\beta^t X^ty$$
+
+--
+
+Hence,
+
+$$SS_R = \hat\beta^tX^ty-\left(\sum_{i=1}^n y_i\right)^2/n$$
+
+--
+
+Remember these for later!
+
+---
+
 # Overfitting a Regression Model: $R^2$ and adjusted $R^2$
 
 Overfitting is a phenomena which occurrs when the number of parameters, $p$ is very large compared to $n$
@@ -509,11 +537,252 @@ See demonstration [here](https://github.com/adisarid/intro_statistics_R/blob/mas
 
 ---
 
-# Confidence Intervals
+# Hypothesis Tests on Individual Coefficients
+
+Sometimes, we are interested in the significance of a specific variable. I.e.,
+
+   * $H_0: \beta_j=0$
+   
+   * $H_1: \beta_j\neq0$
+
+First, remember that we noted that the $j$-th element on the diagonal of $\sigma^2(X^tX)^{-1}$ contains the variance of of the $\hat\beta_j$ (for an intuitive explanation see [here](https://stats.stackexchange.com/questions/267948/intuitive-explanation-of-the-xtx-1-term-in-the-variance-of-least-square)).
+
+Set $C=(X^tX)^{-1}$ then under the null hypothesis, we have the following student's-t statistic:
+
+$$T_0=\frac{\hat\beta_j}{\sqrt{\hat\sigma^2C_{jj}}}=\frac{\hat\beta_j}{\operatorname{se}(\hat\beta_j)}$$
+
+--
+
+The null hypothesis is rejected when $|t_0|>t_{1-\alpha/2, n-p}$
 
 ---
 
-# Prediction Intervals
+# Hypothesis Testing - Subset of Coefficients
+
+We now want to generalize the previous approach, which treated the null hypothsis of one variable into an arbitrary **subset** of variables.
+
+Let $\vec{\beta}_1$ be a coefficient vector of $(r\times1)$ and $\vec{\beta}_2$ a coefficient vector of $[(p-r)\times1]$, i.e.:
+
+$$\beta = \left[\begin{array}{c}\vec\beta_1\\\vec\beta_2\end{array}\right]$$
+
+--
+
+We want to test the hypothesis:
+
+   * $H_0: \vec\beta_1=\vec0$
+   
+   * $H_1: \vec\beta_1\neq\vec0$
+
+--
+
+This yields two models: 
+
+The reduced null model: $y = X_2\vec\beta_2 + \epsilon\quad$   (the $\vec\beta_1$ variables are all $0$).
+
+The alternative full model $y = X\beta + \epsilon$.
+
+---
+
+# Hypothesis Testing - Subset of Coefficients (2)
+
+Compute $SS_R(\cdot)$ for each of the models (the full model, the reduced model), also compute the contribution of the addition of $\vec\beta_1$:
+
+$$SS_R(\beta) = \hat\beta^tX^ty, \quad \text{ with } p=k+1 \text{ degrees of freedom}$$
+
+--
+
+$$SS_R(\vec\beta_2)=\vec\beta_2^tX^t_2y, \quad \text{ with } p-r \text{ degrees of freedom}$$
+
+--
+
+The regression sum of squares due to $\vec\beta_1$ given that $\vec\beta_2$ is already in the model, is:
+
+$$SS_R(\vec\beta_1|\vec\beta_2) = SS_R(\beta) - SS_R(\vec\beta_2), \quad \text{ with } r \text{ degrees of freedom}$$
+
+--
+
+Our test statistic uses the partial $F$ test (with $df=r, n-p$), i.e.,
+
+$$F_0 = \frac{SS_R(\vec\beta_1|\vec\beta_2)/r}{MS_E}$$
+
+--
+
+Reject the null hypothesis if $f_0 > f_{1-\alpha, r,n-p}$ (the right tail of the $F$-distribution).
+
+--
+
+Later we will discuss the stepwise algorithm, which aims to find good $\left\{\beta_i\right\}_i$ subsets, for improving the model.
+
+---
+
+# Hypothesis Testing - Subset of Coefficients - Example
+
+Demonstration for a subset hypothesis test:
+
+.small[
+```{r subset of coefficients example}
+full_model <- lm(formula = log10(n) ~ ., data = wildlife_medium)
+partial_model <- lm(formula = log10(n) ~ rounded_height + num_engs, data = wildlife_medium) # omitted sky, rounded_speed
+SS_T <- sum((log10(wildlife_medium$n) - mean(log10(wildlife_medium$n)))^2)
+
+aov_full <- anova(full_model)
+aov_part <- anova(partial_model)
+
+SS_R_full <- sum(aov_full$`Sum Sq`[1:4])
+SS_E_full <- SS_T - SS_R_full
+SS_R_part <- sum(aov_part$`Sum Sq`[1:2])
+SS_R_add <- SS_R_full - SS_R_part
+
+F_0 <- (SS_R_add/3)/(SS_E_full/(698))
+
+df(F_0, df1 = 3, df2=698)
+qf(0.95, df1 = 3, df2 = 698)
+```
+]
+
+--
+
+We reject the null hypothesis with a p-value=$`r df(F_0, df1 = 3, df2=698)`$.
+
+---
+
+# Confidence Intervals
+
+For a coefficient's confidence interval, we can use the statistic:
+
+$$T=\frac{\hat\beta_j-\beta_j}{\sqrt{\hat\sigma^2C_{jj}}}$$
+
+--
+
+Therefore, the two sided confidence interval is:
+
+$$\hat\beta_j + t_{\alpha/2,n-p}\sqrt{\hat\sigma^2C_{jj}}\leq\beta_j\leq\hat\beta_j + t_{1-\alpha/2,n-p}\sqrt{\hat\sigma^2C_{jj}}$$
+
+--
+
+.tiny[
+```{r confidence interval example}
+deg_f <- NROW(wildlife_medium) - 6
+t_val <- qt(p = 0.975, df = deg_f)
+full_model_sum <- summary(full_model)
+ci <- tibble(coef = full_model$coefficients) %>% 
+   mutate(lb = coef - t_val*full_model_sum$coefficients[,2],
+          ub = coef + t_val*full_model_sum$coefficients[,2] )
+ci
+```
+]
+
+---
+
+# Mean Response Confidence Interval
+
+The point estimate for a new response at a point $x_0=[1, x_{01}, \dots, x_{0k}]^t$ is:
+
+$$\hat\mu_{Y|x_0} = x_0^t\hat\beta$$
+
+--
+
+The estimator is unbiased and its variance is:
+
+$$\operatorname{Var}(\hat\mu_{Y|x_0}) = \sigma^2x_0^t(X^tX)^{-1}x_0$$
+
+--
+
+Hence, we can use the following statistic for building our confidence interval:
+
+$$\frac{\hat\mu_{Y|x_0} - \mu_{Y|x_0}}{\sqrt{\hat\sigma^2x_0^t(X^tX)^{-1}x_0}}$$
+
+--
+
+$$\hat\mu_{Y|x_0} + t_{\alpha/2, n-p}\sqrt{\hat\sigma^2x_0^t(X^tX)^{-1}x_0} \leq \mu_{Y|x_0} \leq \hat\mu_{Y|x_0} + t_{1-\alpha/2, n-p}\sqrt{\hat\sigma^2x_0^t(X^tX)^{-1}x_0}$$
+
+---
+
+# Prediction Intervals for New Observations
+
+In case of a prediction interval for a new observation, the point estimate remains the same:
+
+$\hat y_0 = x_0^t\hat\beta$
+
+And the prediction interval is given by:
+
+$$\hat y_0 + t_{\alpha/2, n-p}\sqrt{\hat\sigma^2(1+x_0^t(X^tX)^{-1}x_0)} \leq Y_0 \leq \hat y_0 + t_{1-\alpha/2, n-p}\sqrt{\hat\sigma^2(1+x_0^t(X^tX)^{-1}x_0)}$$
+
+---
+
+# Example: prediction and mean response confidence intervals
+.tiny[
+```{r prediction and confidence intervals, fig.dim=c(8,3)}
+wildlife_new <- crossing(sky = c("No Cloud", "Some Cloud", "Overcast"),
+                         rounded_height = 0:25,
+                         num_engs = 2,
+                         rounded_speed = 200)
+new_responses_ci <- predict(full_model, newdata = wildlife_new, interval = "confidence") %>% as_tibble() %>% 
+   rename_at(vars(2:3), ~{paste0(., "_ci")})
+new_responses_pi <- predict(full_model, newdata = wildlife_new, interval = "prediction") %>% as_tibble() %>% 
+   select(-fit) %>% 
+   rename_all(~{paste0(., "_pi")})
+wildlife_tib <- wildlife_new %>% 
+   bind_cols(new_responses_ci,
+             new_responses_pi) %>% 
+   mutate_at(vars(fit:upr_pi), ~10^(.)) %>% 
+   pivot_longer(cols = fit:upr_pi, names_to = "type", values_to = "value")
+ggplot(wildlife_tib, aes(x = rounded_height, y = value, color = type, linetype = type)) + 
+   geom_line(size = 1) +
+   facet_wrap(~sky) + 
+   scale_color_manual(values = c("blue", "red", "brown", "red", "brown")) +
+   scale_linetype_manual(values = c(1, 2, 5, 2, 5)) +
+   theme_bw()
+
+```
+]
+
+---
+
+# Note About Extrapolation - Thought Experiment
+
+What do you think is the problem with trying to provide an extrapolation (fit) and intervals (confidence for mean and prediction for a new observation) for the number of bird strikes with the following parameters:
+
+   * Flight height = 22 thousand feet
+   
+   * Flight speed = 42 kts
+   
+   * Sky = "No Cloud"
+   
+   * Number of engines = $2$
+
+Can you think of a similar example but from a different domain?
+   
+```{r timer for extrapolation think, echo=FALSE}
+countdown::countdown(3)
+```
+
+---
+
+# Example - Outliers' Influence
+
+Another "danger" in linear regression is what happens when the data contains outliers. Linear regression is very sensitive in this sense.
+
+```{r example for outliers}
+# wildlife_impacts <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-07-23/wildlife_impacts.csv")
+# write_csv(wildlife_impacts %>% count(height), "lectures/data/wildlife_impacts_small.csv")
+wildlife_small <- read_csv("data/wildlife_impacts_small.csv", col_types = cols()) %>% 
+  mutate(rounded_height = round(height/1000)) %>% 
+   group_by(rounded_height) %>% 
+   summarize(n = sum(n)) %>% 
+   filter(!is.na(rounded_height))
+
+wildlife_err <- wildlife_small
+wildlife_err[19, 2] <- 600000 # instead of 6 we multiplied this observation by 1000
+
+p1 <- ggplot(wildlife_small, aes(x = rounded_height, y = log10(n))) + 
+   geom_point() + 
+   stat_smooth(method = "lm") + coord_cartesian(ylim = c(-1, 5)) + theme_bw()
+p2 <- ggplot(wildlife_err, aes(x = rounded_height, y = log10(n))) + 
+   geom_point() + 
+   stat_smooth(method = "lm") + coord_cartesian(ylim = c(-1, 5)) + theme_bw()
+cowplot::plot_grid(p1, p2)
+```
 
 ---
 
@@ -529,4 +798,3 @@ See demonstration [here](https://github.com/adisarid/intro_statistics_R/blob/mas
 
 ---
 
-# Example 2 - Outliers' Influence
