@@ -642,7 +642,7 @@ qf(0.95, df1 = 3, df2 = 698)
 
 --
 
-We reject the null hypothesis with a p-value=$`r df(F_0, df1 = 3, df2=698)`$.
+We reject the null hypothesis with a p-value of $`r df(F_0, df1 = 3, df2=698)`$.
 
 ---
 
