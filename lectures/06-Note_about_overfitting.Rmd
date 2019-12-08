@@ -1,0 +1,79 @@
+---
+title: "A note about overfitting"
+author: "Adi Sarid"
+date: "12/7/2019"
+output: html_document
+---
+
+When the number of features $p$ is very big compared to the sample size $n$, we are prone to undesired effects, also termed "the curse of dimensionality". Mainly, when the number of features is as big as we want we can explain any observed phenomena in the train set, but not for a good reason, it is simply due to an excess in degrees of freedom.
+
+For example
+
+   * Take $y$ completely random with 100 observations.
+   * Take 95 parameters $x_1,\ldots,x_{95}$ and set their values randomly also.
+   * Build a model, any model (we'll use linear regression here).
+   * Analyze the model's fit.
+   * Do the process only this time with a train/test split.
+   
+```{r overfitting in action, message=FALSE, warning=FALSE}
+library(tidyverse)
+set.seed(0)
+xvars <- data.frame(matrix(runif(100*95), ncol=95))
+overfitting <- tibble(y = runif(100)) %>%
+  bind_cols(xvars)
+glimpse(overfitting)
+ggplot(overfitting, aes(y)) + 
+  geom_histogram() + 
+  theme_bw()
+
+# these are just uniformly distributed numbers, should have no kind of relationship between variables
+# here's a model with just a few X's, and no overfit. The model is insignificant.
+# the only significant coefficient beta is the intercept (which is roughly equal to the average of y)
+
+lm_no_overfit <- lm(data = overfitting,
+                    formula = y ~ X1 + X2 + X3)
+summary(lm_no_overfit)
+
+# now, see what happens when we add all the 95 features
+# mostly, look at the R^2. It's almost 1!
+lm_overfit <- lm(data = overfitting,
+                 formula = y ~ .)
+summary(lm_overfit)
+
+# now, see the errors of each model
+overfitting <- overfitting %>% 
+  mutate(res_no_overfit = y - predict(lm_no_overfit, newdata = overfitting),
+         res_overfit = y - predict(lm_overfit, newdata = overfitting))
+overfitting %>%
+  summarize(mean((res_no_overfit)^2),
+            mean((res_overfit)^2))
+# 80%+ reduction in mean absolute residual error!
+```
+
+It looks as if the over fit model is amazing, but this is a bluff. Let's do this again, only this time with a train/test split.
+
+```{r overfitting detection with test set}
+overfitting <- overfitting %>%
+  mutate(is_train = runif(nrow(overfitting)) < 0.8)
+
+lm_overfit_train <- lm(data = overfitting %>% filter(is_train),
+                       formula = y ~ .)
+
+overfitting <- overfitting %>%
+  mutate(res_overfit_train = y - predict(lm_overfit_train, newdata = overfitting))
+
+overfitting %>%
+  filter(!is_train) %>%
+  summarize(mean((res_no_overfit)^2),
+            mean((res_overfit)^2),
+            mean((res_overfit_train)^2))
+
+# Now the "true face" of the model is discovered. See how high the error rate of the test set is!
+# Beware of overfitting models. Always use train/test. Watch out for n and p.
+```
+
+## To sum up
+
+   * Beware of overfitting.
+   * Always use a train/test split (also possible train/test/validate or cross-validation).
+   * Consider the number of parameters $p$ versus the sample size $n$. There is no "iron rule" here but the test set error will help guide you, and also, comparing a nominal model to your model will show you the contribution of your model.

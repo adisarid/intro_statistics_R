@@ -1,0 +1,705 @@
+sky,rounded_height,rounded_speed,num_engs,n
+No Cloud,0,0,2,3
+No Cloud,0,10,2,6
+No Cloud,0,20,2,5
+No Cloud,0,30,2,2
+No Cloud,0,30,4,1
+No Cloud,0,40,2,5
+No Cloud,0,40,3,1
+No Cloud,0,50,2,10
+No Cloud,0,60,2,47
+No Cloud,0,60,3,1
+No Cloud,0,70,2,19
+No Cloud,0,80,2,111
+No Cloud,0,80,3,4
+No Cloud,0,80,4,1
+No Cloud,0,90,2,92
+No Cloud,0,90,3,5
+No Cloud,0,90,4,2
+No Cloud,0,100,2,535
+No Cloud,0,100,3,25
+No Cloud,0,100,4,1
+No Cloud,0,110.00000000000001,2,300
+No Cloud,0,110.00000000000001,3,20
+No Cloud,0,120,2,921
+No Cloud,0,120,3,60
+No Cloud,0,120,4,1
+No Cloud,0,130,2,1290
+No Cloud,0,130,3,65
+No Cloud,0,130,4,2
+No Cloud,0,140,2,2774
+No Cloud,0,140,3,167
+No Cloud,0,140,4,1
+No Cloud,0,150,2,834
+No Cloud,0,150,3,48
+No Cloud,0,150,4,2
+No Cloud,0,160,2,525
+No Cloud,0,160,3,34
+No Cloud,0,160,4,1
+No Cloud,0,170,2,152
+No Cloud,0,170,3,7
+No Cloud,0,180,2,156
+No Cloud,0,180,3,1
+No Cloud,0,190,2,33
+No Cloud,0,200,2,34
+No Cloud,0,200,3,1
+No Cloud,0,210,2,16
+No Cloud,0,220.00000000000003,2,3
+No Cloud,0,229.99999999999997,2,1
+No Cloud,0,250,2,7
+No Cloud,0,260,2,1
+No Cloud,1,100,2,2
+No Cloud,1,110.00000000000001,2,5
+No Cloud,1,120,2,42
+No Cloud,1,120,3,4
+No Cloud,1,130,2,191
+No Cloud,1,130,3,6
+No Cloud,1,140,2,733
+No Cloud,1,140,3,27
+No Cloud,1,150,2,204
+No Cloud,1,150,3,9
+No Cloud,1,160,2,137
+No Cloud,1,160,3,12
+No Cloud,1,170,2,78
+No Cloud,1,170,3,4
+No Cloud,1,180,2,94
+No Cloud,1,180,3,9
+No Cloud,1,190,2,37
+No Cloud,1,190,3,1
+No Cloud,1,200,2,53
+No Cloud,1,200,3,7
+No Cloud,1,210,2,26
+No Cloud,1,210,3,2
+No Cloud,1,220.00000000000003,2,5
+No Cloud,1,229.99999999999997,2,1
+No Cloud,1,240,2,1
+No Cloud,1,250,2,4
+No Cloud,1,300,2,1
+No Cloud,2,80,2,1
+No Cloud,2,100,2,1
+No Cloud,2,120,1,1
+No Cloud,2,120,2,5
+No Cloud,2,130,2,29
+No Cloud,2,140,2,183
+No Cloud,2,140,3,1
+No Cloud,2,150,2,175
+No Cloud,2,150,3,6
+No Cloud,2,150,4,1
+No Cloud,2,160,2,145
+No Cloud,2,160,3,11
+No Cloud,2,170,2,169
+No Cloud,2,170,3,5
+No Cloud,2,180,2,243
+No Cloud,2,180,3,8
+No Cloud,2,190,2,64
+No Cloud,2,190,3,1
+No Cloud,2,200,2,153
+No Cloud,2,200,3,7
+No Cloud,2,210,2,188
+No Cloud,2,210,3,12
+No Cloud,2,220.00000000000003,2,39
+No Cloud,2,229.99999999999997,2,28
+No Cloud,2,229.99999999999997,3,1
+No Cloud,2,240,2,11
+No Cloud,2,250,2,36
+No Cloud,2,330,3,1
+No Cloud,3,120,2,2
+No Cloud,3,130,2,1
+No Cloud,3,140,2,10
+No Cloud,3,150,2,15
+No Cloud,3,160,2,18
+No Cloud,3,160,3,1
+No Cloud,3,170,2,40
+No Cloud,3,170,3,3
+No Cloud,3,180,2,100
+No Cloud,3,180,3,5
+No Cloud,3,190,2,38
+No Cloud,3,190,3,1
+No Cloud,3,200,2,64
+No Cloud,3,200,3,4
+No Cloud,3,210,2,186
+No Cloud,3,210,3,7
+No Cloud,3,220.00000000000003,2,47
+No Cloud,3,229.99999999999997,2,40
+No Cloud,3,229.99999999999997,3,1
+No Cloud,3,240,2,22
+No Cloud,3,250,2,67
+No Cloud,3,250,3,3
+No Cloud,3,280,2,1
+No Cloud,4,100,2,1
+No Cloud,4,120,2,1
+No Cloud,4,130,2,1
+No Cloud,4,140,2,6
+No Cloud,4,150,2,5
+No Cloud,4,160,2,2
+No Cloud,4,160,3,1
+No Cloud,4,170,2,20
+No Cloud,4,170,3,1
+No Cloud,4,180,2,54
+No Cloud,4,180,3,2
+No Cloud,4,190,2,26
+No Cloud,4,190,3,3
+No Cloud,4,200,2,46
+No Cloud,4,200,3,4
+No Cloud,4,210,2,155
+No Cloud,4,210,3,7
+No Cloud,4,220.00000000000003,2,49
+No Cloud,4,220.00000000000003,3,1
+No Cloud,4,229.99999999999997,2,52
+No Cloud,4,229.99999999999997,3,4
+No Cloud,4,240,2,38
+No Cloud,4,250,2,162
+No Cloud,4,250,3,7
+No Cloud,4,260,2,1
+No Cloud,4,280,2,1
+No Cloud,4,280,3,1
+No Cloud,4,300,2,1
+No Cloud,5,140,2,3
+No Cloud,5,150,2,1
+No Cloud,5,150,3,1
+No Cloud,5,160,2,1
+No Cloud,5,170,2,8
+No Cloud,5,180,2,9
+No Cloud,5,190,2,5
+No Cloud,5,200,2,20
+No Cloud,5,200,3,2
+No Cloud,5,210,2,79
+No Cloud,5,210,3,2
+No Cloud,5,220.00000000000003,2,8
+No Cloud,5,220.00000000000003,3,1
+No Cloud,5,229.99999999999997,2,23
+No Cloud,5,229.99999999999997,3,2
+No Cloud,5,240,2,18
+No Cloud,5,240,3,3
+No Cloud,5,250,2,164
+No Cloud,5,250,3,7
+No Cloud,5,260,2,1
+No Cloud,5,270,2,2
+No Cloud,5,280,2,2
+No Cloud,6,120,3,1
+No Cloud,6,130,2,1
+No Cloud,6,150,2,4
+No Cloud,6,160,2,2
+No Cloud,6,170,2,3
+No Cloud,6,180,2,7
+No Cloud,6,180,3,1
+No Cloud,6,190,2,5
+No Cloud,6,200,2,8
+No Cloud,6,210,2,52
+No Cloud,6,210,3,1
+No Cloud,6,220.00000000000003,2,13
+No Cloud,6,220.00000000000003,3,1
+No Cloud,6,229.99999999999997,2,14
+No Cloud,6,240,2,26
+No Cloud,6,240,3,1
+No Cloud,6,250,2,154
+No Cloud,6,250,3,5
+No Cloud,6,260,2,1
+No Cloud,6,270,2,3
+No Cloud,6,280,2,1
+No Cloud,6,280,3,1
+No Cloud,6,350,2,1
+No Cloud,7,150,2,2
+No Cloud,7,170,2,2
+No Cloud,7,180,2,2
+No Cloud,7,190,2,1
+No Cloud,7,200,2,2
+No Cloud,7,210,2,23
+No Cloud,7,220.00000000000003,2,2
+No Cloud,7,229.99999999999997,2,7
+No Cloud,7,240,2,13
+No Cloud,7,240,3,1
+No Cloud,7,250,2,89
+No Cloud,7,250,3,2
+No Cloud,7,270,2,1
+No Cloud,7,280,2,2
+No Cloud,8,180,2,1
+No Cloud,8,190,2,2
+No Cloud,8,200,2,2
+No Cloud,8,210,2,25
+No Cloud,8,220.00000000000003,2,8
+No Cloud,8,229.99999999999997,2,12
+No Cloud,8,240,2,9
+No Cloud,8,240,3,1
+No Cloud,8,250,2,102
+No Cloud,8,250,3,7
+No Cloud,8,270,2,2
+No Cloud,8,280,2,1
+No Cloud,8,290,2,1
+No Cloud,9,190,2,1
+No Cloud,9,210,2,4
+No Cloud,9,220.00000000000003,2,3
+No Cloud,9,229.99999999999997,2,2
+No Cloud,9,240,2,2
+No Cloud,9,250,2,29
+No Cloud,9,280,2,2
+No Cloud,9,300,2,1
+No Cloud,9,320,2,2
+No Cloud,10,180,2,1
+No Cloud,10,190,2,1
+No Cloud,10,200,2,2
+No Cloud,10,210,2,8
+No Cloud,10,220.00000000000003,2,1
+No Cloud,10,240,2,4
+No Cloud,10,250,2,67
+No Cloud,10,250,3,2
+No Cloud,10,260,2,6
+No Cloud,10,270,2,1
+No Cloud,10,280,2,9
+No Cloud,10,280,3,1
+No Cloud,10,300,2,4
+No Cloud,10,310,3,1
+No Cloud,10,320,2,1
+No Cloud,10,320,3,1
+No Cloud,11,210,3,1
+No Cloud,11,220.00000000000003,2,3
+No Cloud,11,240,2,2
+No Cloud,11,250,2,21
+No Cloud,11,250,3,2
+No Cloud,11,260,2,3
+No Cloud,11,260,3,1
+No Cloud,11,280,2,6
+No Cloud,11,280,3,2
+No Cloud,11,300,2,5
+No Cloud,11,310,2,3
+No Cloud,11,320,2,1
+No Cloud,12,210,2,1
+No Cloud,12,229.99999999999997,2,1
+No Cloud,12,250,2,1
+No Cloud,12,270,2,4
+No Cloud,12,280,2,9
+No Cloud,12,290,2,4
+No Cloud,12,290,3,1
+No Cloud,12,300,2,3
+No Cloud,12,300,3,1
+No Cloud,12,310,2,2
+No Cloud,12,320,2,1
+No Cloud,12,320,3,1
+No Cloud,12,350,2,1
+No Cloud,13,250,2,2
+No Cloud,13,260,2,1
+No Cloud,13,270,2,2
+No Cloud,13,270,3,1
+No Cloud,13,280,2,5
+No Cloud,13,300,2,3
+No Cloud,13,320,2,2
+No Cloud,13,350,3,1
+No Cloud,14,250,2,2
+No Cloud,14,300,2,2
+No Cloud,14,300,3,1
+No Cloud,14,310,2,3
+No Cloud,14,310,3,1
+No Cloud,14,320,2,2
+No Cloud,14,330,2,1
+No Cloud,15,140,2,1
+No Cloud,15,150,3,1
+No Cloud,15,210,2,1
+No Cloud,15,260,2,1
+No Cloud,15,270,3,1
+No Cloud,15,280,3,1
+No Cloud,15,300,3,1
+No Cloud,15,310,2,1
+No Cloud,15,320,2,1
+No Cloud,16,250,2,1
+No Cloud,16,280,2,1
+No Cloud,16,300,2,2
+No Cloud,16,300,3,1
+No Cloud,18,280,2,1
+No Cloud,18,320,2,1
+No Cloud,19,350,2,1
+No Cloud,20,210,2,1
+No Cloud,20,300,2,2
+No Cloud,21,300,2,1
+No Cloud,22,300,2,1
+No Cloud,25,270,2,1
+Overcast,0,0,2,2
+Overcast,0,10,2,1
+Overcast,0,20,2,1
+Overcast,0,30,2,2
+Overcast,0,40,2,4
+Overcast,0,50,2,3
+Overcast,0,60,2,12
+Overcast,0,60,3,1
+Overcast,0,70,2,9
+Overcast,0,70,4,1
+Overcast,0,80,2,47
+Overcast,0,80,3,2
+Overcast,0,90,2,38
+Overcast,0,100,2,167
+Overcast,0,100,3,14
+Overcast,0,100,4,1
+Overcast,0,110.00000000000001,2,93
+Overcast,0,110.00000000000001,3,7
+Overcast,0,120,2,326
+Overcast,0,120,3,25
+Overcast,0,130,2,351
+Overcast,0,130,3,23
+Overcast,0,140,2,862
+Overcast,0,140,3,59
+Overcast,0,140,4,2
+Overcast,0,150,2,244
+Overcast,0,150,3,18
+Overcast,0,150,4,2
+Overcast,0,160,2,123
+Overcast,0,160,3,16
+Overcast,0,160,4,2
+Overcast,0,170,2,46
+Overcast,0,170,3,3
+Overcast,0,170,4,1
+Overcast,0,180,2,40
+Overcast,0,180,3,2
+Overcast,0,190,2,8
+Overcast,0,200,2,15
+Overcast,0,200,3,2
+Overcast,0,210,2,4
+Overcast,0,250,2,1
+Overcast,1,100,2,1
+Overcast,1,110.00000000000001,2,1
+Overcast,1,120,2,7
+Overcast,1,120,3,1
+Overcast,1,130,2,38
+Overcast,1,130,3,2
+Overcast,1,140,2,121
+Overcast,1,140,3,3
+Overcast,1,150,2,38
+Overcast,1,150,3,6
+Overcast,1,160,2,36
+Overcast,1,160,3,2
+Overcast,1,170,2,17
+Overcast,1,180,2,24
+Overcast,1,190,2,8
+Overcast,1,200,2,10
+Overcast,1,210,2,4
+Overcast,1,220.00000000000003,2,2
+Overcast,1,240,2,1
+Overcast,1,250,2,2
+Overcast,2,100,2,1
+Overcast,2,120,2,2
+Overcast,2,130,2,7
+Overcast,2,140,2,33
+Overcast,2,150,2,20
+Overcast,2,150,3,1
+Overcast,2,160,2,17
+Overcast,2,160,3,1
+Overcast,2,170,2,38
+Overcast,2,170,3,2
+Overcast,2,180,2,53
+Overcast,2,180,3,4
+Overcast,2,190,2,13
+Overcast,2,190,3,1
+Overcast,2,200,2,31
+Overcast,2,200,3,2
+Overcast,2,210,2,38
+Overcast,2,210,3,1
+Overcast,2,220.00000000000003,2,8
+Overcast,2,229.99999999999997,2,5
+Overcast,2,250,2,4
+Overcast,3,140,2,2
+Overcast,3,150,2,4
+Overcast,3,160,2,3
+Overcast,3,170,2,14
+Overcast,3,180,2,12
+Overcast,3,180,3,1
+Overcast,3,190,2,7
+Overcast,3,190,3,1
+Overcast,3,200,2,12
+Overcast,3,210,2,30
+Overcast,3,210,3,1
+Overcast,3,220.00000000000003,2,6
+Overcast,3,220.00000000000003,3,1
+Overcast,3,229.99999999999997,2,7
+Overcast,3,229.99999999999997,3,1
+Overcast,3,240,2,3
+Overcast,3,250,2,12
+Overcast,4,120,2,1
+Overcast,4,170,2,4
+Overcast,4,180,2,10
+Overcast,4,190,2,3
+Overcast,4,200,2,2
+Overcast,4,210,2,19
+Overcast,4,210,3,1
+Overcast,4,220.00000000000003,2,9
+Overcast,4,229.99999999999997,2,8
+Overcast,4,240,2,3
+Overcast,4,250,2,18
+Overcast,4,250,3,3
+Overcast,4,350,2,1
+Overcast,5,170,2,2
+Overcast,5,180,2,2
+Overcast,5,190,2,1
+Overcast,5,200,2,1
+Overcast,5,210,2,7
+Overcast,5,220.00000000000003,2,2
+Overcast,5,229.99999999999997,2,3
+Overcast,5,240,2,3
+Overcast,5,250,2,20
+Overcast,5,270,2,1
+Overcast,6,170,2,2
+Overcast,6,180,2,1
+Overcast,6,200,2,1
+Overcast,6,210,2,8
+Overcast,6,220.00000000000003,2,1
+Overcast,6,229.99999999999997,2,2
+Overcast,6,240,2,1
+Overcast,6,250,2,17
+Overcast,6,250,3,1
+Overcast,7,170,2,1
+Overcast,7,210,2,1
+Overcast,7,229.99999999999997,2,2
+Overcast,7,240,2,2
+Overcast,7,250,2,7
+Overcast,7,300,2,1
+Overcast,8,190,2,1
+Overcast,8,210,2,2
+Overcast,8,229.99999999999997,2,1
+Overcast,8,240,2,1
+Overcast,8,250,2,4
+Overcast,10,250,2,5
+Overcast,10,260,2,1
+Overcast,10,300,2,1
+Overcast,10,310,2,1
+Overcast,11,229.99999999999997,3,1
+Overcast,11,250,2,2
+Overcast,11,280,2,1
+Overcast,11,300,2,1
+Overcast,12,250,2,2
+Overcast,12,280,2,1
+Overcast,14,260,2,1
+Overcast,14,280,2,2
+Overcast,20,280,2,1
+Some Cloud,0,10,2,3
+Some Cloud,0,10,3,2
+Some Cloud,0,20,2,6
+Some Cloud,0,30,2,10
+Some Cloud,0,40,2,6
+Some Cloud,0,40,3,1
+Some Cloud,0,50,2,11
+Some Cloud,0,60,2,22
+Some Cloud,0,60,3,2
+Some Cloud,0,70,2,13
+Some Cloud,0,80,2,86
+Some Cloud,0,80,3,5
+Some Cloud,0,90,2,71
+Some Cloud,0,90,3,8
+Some Cloud,0,100,2,371
+Some Cloud,0,100,3,29
+Some Cloud,0,100,4,1
+Some Cloud,0,110.00000000000001,2,256
+Some Cloud,0,110.00000000000001,3,14
+Some Cloud,0,110.00000000000001,4,1
+Some Cloud,0,120,2,563
+Some Cloud,0,120,3,43
+Some Cloud,0,130,2,712
+Some Cloud,0,130,3,45
+Some Cloud,0,140,2,1639
+Some Cloud,0,140,3,95
+Some Cloud,0,140,4,1
+Some Cloud,0,150,2,473
+Some Cloud,0,150,3,29
+Some Cloud,0,160,2,320
+Some Cloud,0,160,3,18
+Some Cloud,0,160,4,1
+Some Cloud,0,170,2,88
+Some Cloud,0,170,3,6
+Some Cloud,0,180,2,82
+Some Cloud,0,180,3,6
+Some Cloud,0,180,4,1
+Some Cloud,0,190,2,9
+Some Cloud,0,200,2,25
+Some Cloud,0,210,2,4
+Some Cloud,0,220.00000000000003,2,2
+Some Cloud,0,229.99999999999997,2,2
+Some Cloud,0,240,2,1
+Some Cloud,0,250,2,3
+Some Cloud,1,100,2,1
+Some Cloud,1,120,2,13
+Some Cloud,1,120,3,2
+Some Cloud,1,130,2,78
+Some Cloud,1,130,3,1
+Some Cloud,1,140,2,314
+Some Cloud,1,140,3,14
+Some Cloud,1,150,2,109
+Some Cloud,1,150,3,6
+Some Cloud,1,160,2,76
+Some Cloud,1,160,3,5
+Some Cloud,1,170,2,40
+Some Cloud,1,170,3,4
+Some Cloud,1,180,2,40
+Some Cloud,1,180,3,3
+Some Cloud,1,190,2,17
+Some Cloud,1,190,3,3
+Some Cloud,1,200,2,31
+Some Cloud,1,200,3,1
+Some Cloud,1,210,2,14
+Some Cloud,1,220.00000000000003,2,3
+Some Cloud,1,229.99999999999997,2,4
+Some Cloud,1,240,2,1
+Some Cloud,1,250,2,2
+Some Cloud,2,120,2,3
+Some Cloud,2,130,2,9
+Some Cloud,2,140,2,76
+Some Cloud,2,140,3,1
+Some Cloud,2,150,2,72
+Some Cloud,2,150,3,2
+Some Cloud,2,160,2,64
+Some Cloud,2,160,3,6
+Some Cloud,2,170,2,70
+Some Cloud,2,170,3,5
+Some Cloud,2,180,2,134
+Some Cloud,2,180,3,5
+Some Cloud,2,190,2,38
+Some Cloud,2,200,2,78
+Some Cloud,2,200,3,7
+Some Cloud,2,210,2,96
+Some Cloud,2,210,3,2
+Some Cloud,2,220.00000000000003,2,28
+Some Cloud,2,220.00000000000003,3,1
+Some Cloud,2,229.99999999999997,2,18
+Some Cloud,2,229.99999999999997,3,1
+Some Cloud,2,240,2,9
+Some Cloud,2,250,2,14
+Some Cloud,2,300,2,2
+Some Cloud,3,120,2,1
+Some Cloud,3,130,2,1
+Some Cloud,3,140,2,3
+Some Cloud,3,150,2,7
+Some Cloud,3,160,2,8
+Some Cloud,3,170,2,22
+Some Cloud,3,180,2,50
+Some Cloud,3,180,3,3
+Some Cloud,3,190,2,14
+Some Cloud,3,200,2,37
+Some Cloud,3,200,3,5
+Some Cloud,3,210,2,76
+Some Cloud,3,210,3,2
+Some Cloud,3,220.00000000000003,2,19
+Some Cloud,3,229.99999999999997,2,14
+Some Cloud,3,229.99999999999997,3,3
+Some Cloud,3,240,2,12
+Some Cloud,3,240,3,2
+Some Cloud,3,250,2,57
+Some Cloud,3,250,3,3
+Some Cloud,3,260,2,2
+Some Cloud,3,300,2,2
+Some Cloud,4,140,2,2
+Some Cloud,4,150,2,3
+Some Cloud,4,160,2,4
+Some Cloud,4,170,2,7
+Some Cloud,4,180,2,15
+Some Cloud,4,190,2,3
+Some Cloud,4,200,2,23
+Some Cloud,4,200,3,1
+Some Cloud,4,210,2,71
+Some Cloud,4,210,3,3
+Some Cloud,4,220.00000000000003,2,25
+Some Cloud,4,229.99999999999997,2,28
+Some Cloud,4,229.99999999999997,3,1
+Some Cloud,4,240,2,22
+Some Cloud,4,250,2,81
+Some Cloud,4,250,3,4
+Some Cloud,5,150,2,3
+Some Cloud,5,170,2,1
+Some Cloud,5,170,3,1
+Some Cloud,5,180,2,7
+Some Cloud,5,190,2,2
+Some Cloud,5,200,2,7
+Some Cloud,5,210,2,33
+Some Cloud,5,220.00000000000003,2,5
+Some Cloud,5,220.00000000000003,3,1
+Some Cloud,5,229.99999999999997,2,8
+Some Cloud,5,229.99999999999997,3,1
+Some Cloud,5,240,2,10
+Some Cloud,5,250,2,73
+Some Cloud,5,250,3,4
+Some Cloud,5,250,4,1
+Some Cloud,6,150,2,1
+Some Cloud,6,160,2,2
+Some Cloud,6,170,2,1
+Some Cloud,6,180,2,3
+Some Cloud,6,190,2,1
+Some Cloud,6,190,3,1
+Some Cloud,6,200,2,3
+Some Cloud,6,210,2,25
+Some Cloud,6,220.00000000000003,2,7
+Some Cloud,6,229.99999999999997,2,11
+Some Cloud,6,240,2,8
+Some Cloud,6,240,3,1
+Some Cloud,6,250,2,63
+Some Cloud,6,250,3,4
+Some Cloud,6,280,2,1
+Some Cloud,7,140,2,1
+Some Cloud,7,150,2,1
+Some Cloud,7,190,2,1
+Some Cloud,7,200,2,2
+Some Cloud,7,210,2,5
+Some Cloud,7,210,3,1
+Some Cloud,7,220.00000000000003,2,4
+Some Cloud,7,229.99999999999997,2,3
+Some Cloud,7,229.99999999999997,3,1
+Some Cloud,7,240,2,4
+Some Cloud,7,250,2,51
+Some Cloud,7,250,3,1
+Some Cloud,7,260,2,1
+Some Cloud,7,280,4,1
+Some Cloud,7,320,2,1
+Some Cloud,8,140,2,1
+Some Cloud,8,150,2,1
+Some Cloud,8,170,2,1
+Some Cloud,8,180,2,2
+Some Cloud,8,210,2,7
+Some Cloud,8,220.00000000000003,2,2
+Some Cloud,8,229.99999999999997,2,3
+Some Cloud,8,240,2,4
+Some Cloud,8,250,2,40
+Some Cloud,8,250,3,1
+Some Cloud,9,200,2,1
+Some Cloud,9,210,2,1
+Some Cloud,9,229.99999999999997,2,1
+Some Cloud,9,240,2,1
+Some Cloud,9,250,2,18
+Some Cloud,9,250,3,4
+Some Cloud,9,300,2,1
+Some Cloud,10,180,2,1
+Some Cloud,10,210,2,3
+Some Cloud,10,220.00000000000003,2,1
+Some Cloud,10,229.99999999999997,2,2
+Some Cloud,10,240,2,1
+Some Cloud,10,250,2,26
+Some Cloud,10,250,3,5
+Some Cloud,10,260,2,3
+Some Cloud,10,270,2,1
+Some Cloud,10,280,2,8
+Some Cloud,10,280,3,1
+Some Cloud,10,300,2,2
+Some Cloud,10,310,2,1
+Some Cloud,10,320,2,1
+Some Cloud,11,150,2,1
+Some Cloud,11,180,2,1
+Some Cloud,11,210,3,1
+Some Cloud,11,250,2,8
+Some Cloud,11,260,2,3
+Some Cloud,11,270,2,2
+Some Cloud,11,280,2,2
+Some Cloud,11,280,3,1
+Some Cloud,11,290,2,1
+Some Cloud,11,300,2,1
+Some Cloud,11,300,3,1
+Some Cloud,12,190,2,1
+Some Cloud,12,210,2,1
+Some Cloud,12,250,2,3
+Some Cloud,12,260,2,2
+Some Cloud,12,270,2,2
+Some Cloud,12,280,2,5
+Some Cloud,12,300,2,1
+Some Cloud,12,300,3,1
+Some Cloud,13,280,2,1
+Some Cloud,13,290,2,1
+Some Cloud,13,300,2,3
+Some Cloud,14,280,2,2
+Some Cloud,14,300,2,1
+Some Cloud,14,310,2,2
+Some Cloud,15,290,2,1
+Some Cloud,15,310,2,1
+Some Cloud,16,250,2,1
+Some Cloud,16,300,2,1
+Some Cloud,16,330,2,1
