@@ -762,8 +762,8 @@ countdown::countdown(3)
 # Example - Outliers' Influence
 
 Another "danger" in linear regression is what happens when the data contains outliers. Linear regression is very sensitive in this sense.
-
-```{r example for outliers}
+.tiny[
+```{r example for outliers, fig.dim=c(8,3)}
 # wildlife_impacts <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-07-23/wildlife_impacts.csv")
 # write_csv(wildlife_impacts %>% count(height), "lectures/data/wildlife_impacts_small.csv")
 wildlife_small <- read_csv("data/wildlife_impacts_small.csv", col_types = cols()) %>% 
@@ -783,7 +783,7 @@ p2 <- ggplot(wildlife_err, aes(x = rounded_height, y = log10(n))) +
    stat_smooth(method = "lm") + coord_cartesian(ylim = c(-1, 5)) + theme_bw()
 cowplot::plot_grid(p1, p2)
 ```
-
+]
 ---
 
 # How are Types of Variables Used in Regression?
