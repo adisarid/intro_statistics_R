@@ -496,6 +496,10 @@ Experiments invlove:
    
 The process is iterated: to improve the experiment (e.g., add new variables or change the methods) and learn more.
 
+--
+
+.small[The following material is covered in Montgomery chapter 13.]
+
 ---
 
 # Experiment Design - Motivation (3)
@@ -518,4 +522,180 @@ Question: How would you use linear regression to examine this relationship?
 
 ---
 
-# The Analysis of Variance ANOVA
+# The Completely Randomized Single-Factor Experiment
+
+Each factor level is called a *treatment* (i.e., for different treatments administered in an experiment).
+
+--
+
+The experimenter randomely samples subjects (either of equally sized groups or varying sized groups).
+
+--
+
+We describe the observations for a **completely randomized design** by a linear statistical model:
+
+$$Y_{ij} = \mu + \tau_i + \epsilon_{ij}, \quad i = 1,\ldots,\ j=1,\ldots n$$
+
+The value $\mu_i=\mu+\tau_i$ is the mean value of the $i$th treatment.
+
+--
+
+We assume that the errors $\epsilon_{i,j}$ are normally and independently distributed $\mathcal{N}(0, \sigma^2)$.
+
+--
+
+Two methods to select the treatments:
+
+   * **Fixed-effects model**: the $a$ treatments were chosen specifically.
+   
+   * **Random-effects model** (components of variance): the $a$ treatments were a random sample from a larger population of treatments. We would like to extend the conclusions for additional treatments.
+
+--
+
+For now, we are going to focus on the **fixed effects model**.
+
+---
+
+# The Fixed-Effects Model
+
+The treatments $\tau_i$ are defined as deviations from the overall mean $\mu$ such that: 
+
+$$\sum_{i=1}^a{\tau_i}=0$$
+
+--
+
+Define:
+
+$$y_{i\cdot}=\sum_{j=1}^n{y_{ij}}, \quad \bar{y}_{i\cdot}=y_{i\cdot}/n$$
+
+$$y_{\cdot\cdot} = \sum_{i=1}^a\sum_{j=1}^n{y_ij}, \quad \bar{y}_{\cdot\cdot}=y_{\cdot\cdot}/N, \quad N=a\cdot n$$
+
+--
+
+We are interested in the following test:
+
+   * $H_0: \tau_1=\ldots=\tau_a=0$
+   
+   * $H_1: \exists i\ |\ \tau_i\neq0$
+
+---
+
+# The Sum of Squares
+
+Again, we use the sum of squares equation: $SS_T = SS_\text{Treatments} + SS_E$:
+
+$$\sum_{i=1}^a\sum_{j=1}^n({y_{ij} - \bar{y}_{\cdot\cdot})^2} = n\sum_{i=1}^a{(\bar{y}_{i\cdot} - \bar{y}_{\cdot\cdot})^2} + \sum_{i=1}^a\sum_{j=1}^n({y_{ij} - \bar{y}_{i\cdot})^2}$$
+
+--
+
+The expected value of each of the errors can be computed (out of scope):
+
+$$E(SS_\text{Treatments})=(a-1)\sigma^2 + n\sum_{i=1}^a{\tau_i^2}$$
+
+$$E(SS_E) = a(n-1)\sigma^2$$
+
+--
+
+The degrees of freedom of each error are: 
+
+   * $an-1$ for $SS_T$, 
+   * $a-1$ for $SS_\text{Treatments}$ 
+   * $a(n-1)$ for $SS_E$
+   
+---
+
+# The ANOVA Test
+
+If the null hypothesis holds, then $\tau_1=\ldots=\tau_a=0$, and
+
+--
+
+$MS_\text{Treatments}=SS_\text{Treatments}/(a-1)$ is an unbiased estimator of $\sigma^2$
+
+--
+
+The error mean square $MS_E=SS_E/[a(n-1)]$ is also an unbiased estimator of $\sigma^2$
+
+--
+
+Hence the following statistic has an F-distribution
+
+$$F_0=\frac{SS_\text{Treatments}/(a-1)}{SS_E/[a(n-1)]}=\frac{MS_\text{Treatments}}{MS_E}$$
+
+With $a-1$ and $a(n-1)$ degrees of freedom.
+
+--
+
+We use an upper-tail, one-sided critical region and reject $H_0$ if $f_0>f_{\alpha, a-1, a(n-1)}$.
+
+---
+
+# The ANOVA Table
+
+The corresponding ANOVA table, for a Single-Factor Experiment, with a Fixed-Effects Model:
+
+| Source of Variation | Sum of Squares | df | Mean Squares | $F_0$ |
+|----------------------|-----------------|-------|:------------:|---------------------|
+| Treatments | $SS_\text{Treatments}$ | $a-1$ | $MS_\text{Treatments}$ | $\frac{MS_\text{Treatments}}{MS_E}$ |
+| Error | $SS_E$ | $a(n-1)$ | $MS_E$ |  |
+| Total | $SS_T$ | $an-1$ |  |  |
+
+--
+
+For an unbalanced experiment (each treatment has varying group size, $n_i$) we would have:
+
+$$SS_T=\sum_{i=1}^a\sum_{j=1}^{n_i}{y_{ij}^2} - \frac{y_{\cdot\cdot}^2}{N}$$
+
+$$SS_\text{Treatments} = \sum_{i=1}^a\frac{y_{i\cdot}^2}{n_i} - \frac{y_{\cdot\cdot}^2}{N}$$
+
+And $SS_E = SS_T-SS_\text{Treatment}$
+
+---
+
+# ANOVA Example
+
+```{r anova example in mtcars}
+mtcars2 <- mtcars %>% 
+   mutate(cyl_fct = factor(cyl))
+mtcars_anova <- aov(formula = mpg ~ cyl_fct, data = mtcars2)
+summary(mtcars_anova)
+```
+
+--
+
+Usually, ANOVA will be followed by a multiple comparisons procedures, that will help identify which factors contribute to the variation.
+
+--
+
+There are many such multiple comparison tests. See [this book](http://www.ievbras.ru/ecostat/Kiril/R/Biblio_N/R_Eng/Bretz2011.pdf): Bretz F., Hothorn T., and Westfall P., Multiple Comparisons Using R, CRC Press, 2011.
+
+---
+
+# Dunnett's  Test
+
+The one-sided Dunnett's test takes the minimum (or maximum depending on direction) of the $a$ pairwise $t$ tests:
+
+$$t_i=\frac{\bar{y}_{i\cdot}-\bar{y}_0}{s\sqrt{\frac{1}{n_i} + \frac{1}{n_0}}}$$
+
+Where $y_0$ relates to the control group (to which we are comparing the treatments), and $s^2$ is the pooled variance, i.e.:
+
+$$s^2=\sum_{i=0}^m\sum_{j=1}^{n_j}(y_{ij}-\bar{y}_{i\cdot})^2/v$$
+
+With $v = \sum_{i=0}^m{n_i}-(a+1)$ degrees of freedom.
+
+--
+
+The Dunnett's test is availble in `multcomp` like many other procedures for multiple comparisons.
+
+---
+
+# Dunnett's Test Example
+.small[
+```{r Dunnetts test example}
+suppressWarnings(suppressMessages(library(multcomp)))
+glht(mtcars_anova,
+     linfct = mcp(cyl_fct = "Dunnett"),
+     alternative = "less") %>% 
+   summary()
+```
+]
