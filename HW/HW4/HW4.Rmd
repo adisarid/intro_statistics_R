@@ -1,0 +1,58 @@
+---
+title: 'Introduction to Statistics and Data Analysis with R - Homework #4'
+author: "Adi Sarid and Afek Adler"
+date: '2019-12-XX'
+output:
+  html_document: default
+  pdf_document: default
+---
+
+This homework sheet is due on the 2019-XX-XX. You may submit your answers in pairs. Submit a PDF file with the code and results for the R part. Add to the PDF your solution for the other questions.
+Submission will be performed electronically via Moodle.
+
+We urge you to start solving this sheet as soon as possible and, if you have any questions, come to visit us in reception hours next week.
+
+
+
+Across all the exercise. If not mentioned – use $\alpha$ = 0.05.
+
+## Question 1:
+
+
+
+
+***
+__The next questions should be done Both by handwriting (as a prepareation for the exam) and with R functions (as verification).__ 
+
+***
+
+## Question 2
+
+A biologist performed a regression on how much a planet diameter (x) affects it's mass (y), Based on 30 samples. His concllusion was $y ̂ = 10+0.1x$. were x is in trillions of tons ($10^{12}$ kilogram). Which regression line would he get if he would use units of ten trillions of ton? ($10^{13}$ kilogram)?
+
+## Question 3
+
+Given that $\bar{x} = 432.2,\sum_{i=1}^{10}x_i^2 = 2,048,810,\sum_{i=1}^{10}y_i^2 = 103,195, \hat{y} = 5.821 + 0.195x$
+
+Calculate:
+
+  1. $\bar{y}$
+  2. $R^2$
+  3. is there a positive linear connection between x and y? Guidance, use hypothesis testing.
+
+
+## Question 4
+
+Based on the following samples: 
+
+  1. find the parameters of a simple linear regression model ($y = a + bx$)
+  2. Can we say that there is a linear relationship between x and y? Guidance, hypothesis test on the significance level of the regression.
+
+| X| Y 
+| ----|----
+| 0| 0.5           
+| 1| 2     
+| 2| 4.2            
+| 4| 6  
+| 5| 6.5            
+| 8| 8.5  
