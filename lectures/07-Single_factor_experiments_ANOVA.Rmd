@@ -1,6 +1,6 @@
 ---
 title: "Regression, Design and Analysis of Single-Factor Experiments"
-subtitle: "Lecture #8"
+subtitle: "Lecture #8, #9"
 author: "Adi Sarid"
 institute: "Tel-Aviv University"
 date: "updated: `r Sys.Date()`"
@@ -338,7 +338,7 @@ All algorithms are greedy algorithms: look one step ahead, and choose the best c
 
 --
    
-   2. Use some accuracy measure to examine the influence of the removal of each of the variables. E.g., the Akaike Information Criteria (AIC = $-2\log(L) + 2df$)
+   2. Use some accuracy measure to examine the influence of the removal of each of the variables. E.g., the Akaike Information Criteria (AIC = $-2\log(L) + 2p$)
 
 --
    
@@ -364,7 +364,7 @@ Combination, at each iteration check both removal and addition.
 
 # Intuition for the AIC
 
-AIC = $-2\log(L) + 2df$
+AIC = $-2\log(L) + 2p$
 
 The AIC uses the likelihood $L$:
 
@@ -374,7 +374,7 @@ $$L = \prod_{i=1}^n{f(\hat{y}_i)}$$
 
 --
 
-As the number of parameters in the model increases, the model is more prone to overfitting, hence we a penalty of $2df$ (a high $df$, i.e., a lot of parameters is bad for us).
+As the number of parameters in the model increases, the model is more prone to overfitting, hence we a penalty of $2p$ (a high $p$, i.e., a lot of parameters is bad for us).
 
 --
 
@@ -388,7 +388,7 @@ Other measures also exist, e.g.:
 
    * Montgomery uses the F-Statistic
    
-   * Another measure is the BIC = $- 2\log(L) + \log(n)df$
+   * Another measure is the BIC = $- 2\log(L) + \log(n)p$
 
 ---
 
