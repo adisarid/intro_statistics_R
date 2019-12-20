@@ -87,6 +87,10 @@ Additional books:
    * Draper N. & H. Smith: Applied Regression Analysis, 3rd  ed. Wiley, 1998.
    * Gibbons J.D.: Nonparametic Statistical Inference, Springer, 2011.
 
+## Additional Sources
+
+You can find various online videos teaching statistics theory along with R coding examples. One such place is the Statistics of DOOM channel on youtube: [https://www.youtube.com/channel/UCMdihazndR0f9XBoSXWqnYg](https://www.youtube.com/channel/UCMdihazndR0f9XBoSXWqnYg).
+
 ## How this Repository is Arranged
 
 This repository is arranged with subfolders as follows:
@@ -94,6 +98,7 @@ This repository is arranged with subfolders as follows:
 ```
 ├── datasets (contains datasets we will use)
 ├── exercises (exercise notes)
-├── home_work (home work exercises)
+├── HW (home work exercises)
 ├── lectures (lecture notes)
+├── misc (miscellaneous, feel free to ignore this) 
 ```
