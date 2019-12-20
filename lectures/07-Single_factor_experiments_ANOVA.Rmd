@@ -622,7 +622,7 @@ Define:
 
 $$y_{i\cdot}=\sum_{j=1}^n{y_{ij}}, \quad \bar{y}_{i\cdot}=y_{i\cdot}/n$$
 
-$$y_{\cdot\cdot} = \sum_{i=1}^a\sum_{j=1}^n{y_ij}, \quad \bar{y}_{\cdot\cdot}=y_{\cdot\cdot}/N, \quad N=a\cdot n$$
+$$y_{\cdot\cdot} = \sum_{i=1}^a\sum_{j=1}^n{y_{ij}}, \quad \bar{y}_{\cdot\cdot}=y_{\cdot\cdot}/N, \quad N=a\cdot n$$
 
 --
 
@@ -751,5 +751,46 @@ glht(mtcars_anova,
      linfct = mcp(cyl_fct = "Dunnett"),
      alternative = "less") %>% 
    summary()
+```
+]
+
+---
+
+# Verifying ANOVA assumptions
+.small[
+The ANOVA model assumes that observations are normally and independently distributed, with the same variance for each treatment. 
+
+This can be verified using hypothesis tests on the residuals, or viewing a proper plot (e.g., qqplot). The following illustrates that some assumptions are invalid in the previous example (which?) 
+]
+.tiny[
+```{r verifying normality, fig.dim=c(8, 3.5)}
+mtcars2_resid <- mtcars2 %>% 
+   mutate(resid = mtcars_anova$residuals)
+boxplot_resid <- ggplot(mtcars2_resid, aes(x = cyl_fct, y = resid)) + 
+   geom_boxplot(fill = "lightblue") +
+   theme_bw() + ggtitle("Boxplot of residuals in each cyl level")
+qqplot_resid <- ggplot(mtcars2_resid, aes(sample = (resid - mean(resid))/sd(resid))) + 
+   geom_qq() + 
+   theme_bw() + ggtitle("QQ plot of residuals")
+cowplot::plot_grid(qqplot_resid, boxplot_resid)
+```
+]
+
+---
+
+# Determining the Sample Size
+
+The selection of the sample size is based on the difference we want to detect, and at what test power:
+
+$$1-\beta = P(\text{Reject } H_0 | H_1) = P(F_0>f_{1-\alpha, a-1, a(n-1)} | H_1)$$
+
+--
+
+The effect size represents the differences in means between groups:
+
+$$\operatorname{ES} = \frac{\mu_\text{experiment}-\mu_\text{control}}{s}$$
+.small[
+```{r determining anova sample size}
+pwr::pwr.anova.test(k = 3, n = NULL, f = 0.25, sig.level = 0.05, power = 0.8)
 ```
 ]
