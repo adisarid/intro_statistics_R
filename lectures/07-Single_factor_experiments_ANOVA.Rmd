@@ -408,7 +408,7 @@ step(mtcars_lm, direction = "backward")
 
 # Refresher and Recap - Test-like Exercises: Descriptive Statistics
 
-Now we are going to solve three exercises which might resemble exercises which will appear in the test.
+Now we are going to solve four exercises which might resemble exercises which will appear in the test.
 
 .small[Explain the different elements of a boxplot, i.e., in the following chart: 
 
@@ -458,6 +458,60 @@ Assume the populations are normally distributed with equal variances. Use a p-va
 
 ---
 
+# Test-like Exercises: Interpretation of a Model's Output
+
+.small[
+The `ChickWeight` dataset contains the results of a feeding experiment of 50 chicks' (`Chick`) with their tracked weight (`weight`), over a period of 21 days (`Time`), each chick was subjected to a different type of diet (`Diet`).
+
+In the following model (see bottom of slide), we are using the interaction of `Time*factor(Diet)` as one of the explanatory variables, along with `Time` as another explanatory variable. The dependent variable is the chick's `weight`.
+
+Questions:
+
+   1. The original `Diet` variable is numeric. Why are we using it in the regression model as `factor(Diet)`?
+
+   1. How many levels does the `factor(Diet)` variable has, explain.
+   
+   2. Why do we need the interaction of `Time*factor(Diet)` in the model? (why is `weight ~ Time + factor(Diet)` not enough)
+   
+   3. Which dietary method helps increase the chick's weight the most? Explain how you deduced this from the model's output.
+
+See the next slide for an additional question.
+]
+
+.tiny[
+```{r output exercise}
+chick_lm <- lm(formula = weight ~ Time + Time*factor(Diet), data = ChickWeight)
+summary(chick_lm)
+```
+]
+
+---
+
+# Test-like Exercises: Interpretation of a Model's Output - continued
+
+Look at the following qqplot of residuals and plot of the residuals as a function of time. 
+
+   4. Explain what are the underlying assumptions of the linear regression model.
+   
+   5. Observing the residuals' plots below, would you say that any of the linear regressions assumptions are violated? which one?
+
+```{r qqplot and residuals, echo=FALSE, fig.dim=c(10, 5)}
+chick_residuals <- as_tibble(ChickWeight) %>% 
+   mutate(resid = chick_lm$residuals)
+chick_qqplot <- ggplot(chick_residuals, aes(sample = (resid - mean(resid))/sd(resid))) + 
+   geom_qq() + 
+   theme_bw() + 
+   ggtitle("QQ plot of residuals")
+chick_residuals_plot <- ggplot(chick_residuals, aes(x = Time, y = resid)) + 
+   geom_jitter() +
+   facet_wrap(~{paste0("Diet=", Diet)}) + 
+   theme_bw() + 
+   ggtitle("Residuals as a function of time")
+cowplot::plot_grid(chick_qqplot, chick_residuals_plot)
+```
+
+---
+
 # Experiment Design - Motivation
 
 With methods of hypothesis testing, we were able to discern the differences between two groups (i.e., unpaird two-sample test).
@@ -484,7 +538,7 @@ In the case of a single variable with multiple levels, this is called *single fa
 
 --
 
-Experiments invlove:
+The oricess invlove:
 
    * Conjecture - The hypothesis that motivates the experiment
    
