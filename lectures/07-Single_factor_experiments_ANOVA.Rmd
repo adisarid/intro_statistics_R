@@ -794,3 +794,55 @@ $$\operatorname{ES} = \frac{\mu_\text{experiment}-\mu_\text{control}}{s}$$
 pwr::pwr.anova.test(k = 3, n = NULL, f = 0.25, sig.level = 0.05, power = 0.8)
 ```
 ]
+
+---
+
+# The Random-Effects Model
+
+In cases the factor has a large number of levels, we cannot sample all of them. We would like to sample part of them, $a$ levels, and draw conclusions about the entire population of factor levels.
+
+--
+
+As before, we define
+
+$$Y_{ij} = \mu + \tau_i + \epsilon_{ij}$$
+
+However, this time, the factor has a variance, i.e.:
+
+$$\operatorname{Var}(Y_{ij}) = \sigma_\tau^2 + \sigma^2$$
+
+--
+
+We would like to test the hypothesis that:
+
+   * $H_0:\sigma_\tau^2=0$
+   
+   * $H_1:\sigma_\tau^2>0$
+   
+If $H_0$ holds, this means that the treatments are identical. 
+
+--
+
+If $\sigma_\tau^2>0$ this means that there is variability between treatments.
+
+---
+
+# The Random-Effects Model - Continued
+
+The relationship of residuals still holds:
+
+$$SS_T = SS_\text{Treatments} + SS_E$$
+
+But the errors change:
+
+$$E(MS_\text{Treatments}) = E\left[\frac{SS_\text{Treatments}}{a-1}\right] = \sigma^2 + n\sigma^2_\tau$$
+
+$$E(MS_E) = E\left[\frac{SS_E}{a(n-1)}\right] = \sigma^2$$
+
+--
+
+Under the null hypothesis both sizes are identical and hence
+
+$$F_0=\frac{MS_\text{Treatments}}{MS_E}$$
+
+Is an F-distributed variable with $a-1$ and $a(n-1)$ degrees of freedom.
