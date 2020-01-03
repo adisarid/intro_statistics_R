@@ -3,7 +3,6 @@ title: "Project Instructions"
 author: "Adi Sarid"
 date: "January 2020"
 output:
-  pdf_document: default
   html_document: default
 subtitle: Intro to Statistics and Data Analysis with R (0560.1823)
 ---
@@ -20,7 +19,7 @@ The project has a weight of 30% of you final grade.
 
 ## Goal
 
-The goal of the project is to demonstrate the different elements we have been talking about, which are a part of most data analysis/data science projects. 
+The goal of the project is to demonstrate and practice the different elements we have been talking about, which are a part of most data analysis/data science projects. 
 
 ## Methods
 
@@ -46,9 +45,9 @@ The project should be performed individually.
 
 ### Choosing a dataset
 
-First, you should select a dataset on which you will perform the project. We recommend using a data set from either [Kaggle](kaggle.com) or from [tidytuesday](https://github.com/rfordatascience/tidytuesday). You can select something else. 
+First, you should select a dataset on which you will perform the project. I recommend using a data set from either [Kaggle](kaggle.com) or from [tidytuesday](https://github.com/rfordatascience/tidytuesday). You can select something else. 
 
-In any case, please do not choose something "too popular" (e.g., no built-in `R` datasets). **Check with us before you start**, so that we can confirm your dataset: email [adi@sarid-ins.co.il](mailto:adi@sarid-ins.co.il) with:
+In any case, please do not choose something "too popular" (e.g., no built-in `R` datasets). **Check with me before you start**, so that I can confirm your dataset: email [adi@sarid-ins.co.il](mailto:adi@sarid-ins.co.il) with:
 
    * The dataset name
    * Source (a url with the data and documentation of the dataset)
@@ -58,7 +57,7 @@ Please choose a dataset and email me the details by **January 12th 2020** (you c
 
 ### Draft submission (initial submission)
 
-We are giving you the opportunity to submit a draft of your work for a review. If needed, we will suggest revisions, and allow you to correct your work in order to improve your grade. The draft submissions will be graded and you can decide based on the grade you received if you want to improve them in order to improve your grade.
+I'm giving you the opportunity to submit a draft of your work for a review. If needed, I will suggest revisions, and allow you to correct your work in order to improve your grade. The draft submissions will be graded and you can decide based on the grade you received if you want to improve them in order to improve your grade.
 
 You should submit your draft by **Febuary 1st 2020**.
 
@@ -78,7 +77,7 @@ You will be graded along the following lines:
 
    * Visualizations (25%): Your ability to utilize visualizations to articulate your hypothesis and to illustrate different patterns and relationships in the data. You should be able to match the proper types of charts to what ever it is you are trying to show. 
    
-   * Modelling (25%): Your ability to match the appropriete statistical tests/models to the problem, verifying (or highlighting) certain assumptions which are valid or invalid in this case. Please provide at least two relevant models that we learned.
+   * Modelling (25%): Your ability to match the appropriete statistical tests/models to the problem, verifying (or highlighting) certain assumptions which are valid or invalid in this case. Please provide at least two relevant models/hypothesis tests that we learned.
    
    * Communication, documentation, explanations (25%): You should be able to explain the different steps you are doing, lead the reader in a logical and appealing manner, explain your results, and highlight the research or business implications of your findings.
    
