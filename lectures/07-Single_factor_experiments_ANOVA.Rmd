@@ -1024,3 +1024,21 @@ If $H_0$ is true and all $\tau_i=0$ then:
 $$F_0=\frac{MS_\text{Treatments}}{MS_E}$$
 
 Is $F$-distributed with $a-1$ and $(a-1)(b-1)$ degrees of freedom.
+
+---
+
+# Example for Randomized Complete Block Design - ANOVA
+
+An experiment was performed to determine the effect of four chemicals on the fabric strength (Example 13.5 from Montgomery).
+
+.tiny[
+```{r montgomery 13.5}
+fabric_strength <- read_csv("https://raw.githubusercontent.com/adisarid/intro_statistics_R/master/lectures/data/montgomery_13.5_fabric_strength.csv", col_types = cols()) %>% 
+   pivot_longer(cols = -chemical, names_to = "fabric_sample", values_to = "strength") %>% 
+   mutate(chemical = factor(chemical))
+
+fabric_aov <- aov(formula = strength ~ chemical + fabric_sample, data = fabric_strength)
+summary(fabric_aov)
+TukeyHSD(fabric_aov)
+```
+]
