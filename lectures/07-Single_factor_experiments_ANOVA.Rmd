@@ -998,3 +998,29 @@ $$SS_T = SS_\text{Treatments} + SS_\text{Blocks} + SS_E$$
 With degrees of freedom:
 
 $$ab-1 = (a-1) + (b-1) + (a-1)(b-1)$$
+
+---
+
+# Randomized Complete Block Design Hypothesis Test
+
+Set:
+
+$$MS_\text{Treatments} = \frac{SS_\text{Treatments}}{a-1},\quad MS_\text{Blocks} = \frac{SS_\text{Blocks}}{b-1},\quad MS_E=\frac{SS_E}{(a-1)(b-1)}$$
+
+--
+
+The mean sum of squares is given by:
+
+   * $E(MS_\text{Treatments}) = \sigma^2 + \frac{b\sum_{i=1}^a{\tau_i^2}}{a-1}$
+   
+   * $E(MS_\text{Blocks}) = \sigma^2 + \frac{a\sum_{j=1}^b{\beta_j^2}}{b-1}$
+   
+   * $E(MS_E) = \sigma^2$
+   
+--
+
+If $H_0$ is true and all $\tau_i=0$ then:
+
+$$F_0=\frac{MS_\text{Treatments}}{MS_E}$$
+
+Is $F$-distributed with $a-1$ and $(a-1)(b-1)$ degrees of freedom.
