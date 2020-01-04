@@ -914,6 +914,7 @@ summary(oil_aov)
 TukeyHSD(oil_aov)
 ```
 ]
+
 ---
 
 # Example - Olive Oil Acidity (cont.)
@@ -928,3 +929,72 @@ glht(oil_aov,
    summary()
 ```
 ]
+
+---
+
+# Randomized Complete Block Design
+
+Sometimes we have an additional factor which is not the aim of the study. For example, imagine a clinical research where $a$ treatments are used in $b$ medical centers.
+
+--
+
+It might be that the fact that there are varying medical centers in itself influences the results.
+
+--
+
+If the selection of treatments is ranodmized across medical centers, the experiment is called a randomized complete block design.
+
+--
+
+|  | Blocks |  |  |  |  |  |
+|------------|--------------------|--------------------|---------:|---------------------|------------------|-------------------|
+| Treatments | 1 | 2 | $\ldots$ | $b$ | Totals | Averages |
+| 1 | $y_{11}$ | $y_{12}$ | $\ldots$ | $y_{1b}$ | $y_{1\cdot}$ | $\bar{y}_{1\cdot}$ |
+| $\vdots$ |  |  | $\vdots$ |  |  | $\vdots$ |
+| $a$ | $y_{a1}$ | $y_{a2}$ | $\ldots$ | $y_{ab}$ | $y_{a\cdot}$ | $\bar{y}_{a\cdot}$ |
+| Totals | $y_{\cdot1}$ | $y_{\cdot2}$ | $\ldots$ | $y_{\cdot b}$ | $y_{\cdot\cdot}$ |  |
+| Averages | $\bar{y}_{\cdot1}$ | $\bar{y}_{\cdot2}$ | $\ldots$ | $\bar{y}_{\cdot b}$ |  |  |
+
+---
+
+# Randomized Complete Block Design (cont.)
+
+The formula for this design is given by:
+
+$$ Y_{ij}=\mu + \tau_i + \beta_j + \epsilon_{ij}, \quad i\in\{1,\ldots,a\},j\in\{1,\ldots,b\}$$
+
+Where
+
+   * $\mu$ is the overall mean.
+   
+   * $\tau_i$ is the effect of the $i$th treatment.
+   
+   * $\beta_j$ is the effect of the $j$th block.
+   
+   * $\epsilon_{ij}$ is the error term $\epsilon_{ij}\sim\mathcal{N}(0,\sigma)$
+   
+--
+
+We assume that the treatments and blocks are fixed factors, and that they are deviations from the overall mean, so $\sum_{i=1}^a{\tau_i}=0$ and $\sum_{j=1}^b{\beta_j}=0$. We test the hypothesis:
+
+   * $H_0: \tau_1=\ldots=\tau_a=0$
+   * $H_1: \exists i: \tau_i\neq0$
+
+---
+
+# Sum of Squares Identity in the Randomized Complete Block Design
+
+The sum of squares identity can be broken into
+
+$$\sum_{i=1}^a\sum_{j=1}^b(y_{ij}-\bar{y}_{\cdot\cdot})^2 = b\sum_{i=1}^a{(\bar{y}_{i\cdot}-\bar{y}_{\cdot\cdot})^2} + a\sum_{j=1}^b{(\bar{y}_{\cdot j}-\bar{y}_{\cdot\cdot})^2}+\sum_{i,j}{(y_{ij}-\bar{y}_{\cdot j} - \bar{y}_{i\cdot} + \bar{y}_{\cdot\cdot})^2}$$
+--
+
+Symbolically stated as
+
+$$SS_T = SS_\text{Treatments} + SS_\text{Blocks} + SS_E$$
+
+--
+
+With degrees of freedom:
+
+$$ab-1 = (a-1) + (b-1) + (a-1)(b-1)$$
