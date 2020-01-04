@@ -1,6 +1,6 @@
 ---
 title: "Regression, Design and Analysis of Single-Factor Experiments"
-subtitle: "Lecture #8, #9"
+subtitle: "Lecture #8, #9, #10"
 author: "Adi Sarid"
 institute: "Tel-Aviv University"
 date: "updated: `r Sys.Date()`"
@@ -538,7 +538,7 @@ In the case of a single variable with multiple levels, this is called *single fa
 
 --
 
-The oricess invlove:
+The process invloves:
 
    * Conjecture - The hypothesis that motivates the experiment
    
@@ -642,7 +642,7 @@ $$\sum_{i=1}^a\sum_{j=1}^n({y_{ij} - \bar{y}_{\cdot\cdot})^2} = n\sum_{i=1}^a{(\
 
 --
 
-The expected value of each of the errors can be computed (out of scope):
+The expected value of each of the errors is given by:
 
 $$E(SS_\text{Treatments})=(a-1)\sigma^2 + n\sum_{i=1}^a{\tau_i^2}$$
 
@@ -797,7 +797,7 @@ pwr::pwr.anova.test(k = 3, n = NULL, f = 0.25, sig.level = 0.05, power = 0.8)
 
 ---
 
-# The Random-Effects Model
+# The Random-Effects Model (Factor with Many Levels)
 
 In cases the factor has a large number of levels, we cannot sample all of them. We would like to sample part of them, $a$ levels, and draw conclusions about the entire population of factor levels.
 
@@ -846,3 +846,85 @@ Under the null hypothesis both sizes are identical and hence
 $$F_0=\frac{MS_\text{Treatments}}{MS_E}$$
 
 Is an F-distributed variable with $a-1$ and $a(n-1)$ degrees of freedom.
+
+---
+
+# Determining the Sample Size in the Random Effects Model
+
+We would like to find $n$ for a given $\beta$ (type-II error) such that:
+
+$$1-\beta = P(\text{Reject } H_0|H_1)=P(F_0>f_{\alpha, a-1, a(n-1)}|\sigma_\tau>0)$$
+
+--
+
+If $H_1$ is true, then the ratio $\frac{MS_\text{Treatments}/(\sigma^2+n\sigma_\tau^2)}{MS_E/\sigma^2}$ has the $F$-distribution with $a-1$ and $a(n-1)$ degrees of freedom. Then,
+
+$$1-\beta = P\left(\frac{MS_\text{Treatements}}{MS_E}>f_{\alpha, a-1, a(n-1)}|\sigma^2_\tau>0\right) = 
+P\left(\frac{MS_\text{Treatements}}{MS_E/(1+n\sigma^2_\tau/\sigma^2)}>\frac{f_{\alpha, a-1, a(n-1)}}{(1+n\sigma^2_\tau/\sigma^2)}\right)$$
+
+--
+
+Hence,
+
+$$1-\beta = P\left(F_{a-1, a(n-1)}>\frac{f_{\alpha, a-1, a(n-1)}}{(1+n\sigma^2_\tau/\sigma^2)}\right)$$
+
+If we assume something about $\sigma_\tau^2/\sigma^2$, we can calculate the desired $n$, using the $F$ distribution function.
+
+---
+
+# Random-Effects Model - Example
+
+When manufacturing food and drugs (medication) we usually aim for having a high degree of consistency, so that different batches produce the same product (quality, concentration, etc.). 
+
+Consistency is not trivial to produce: production lines malfunction, shifts change, and machinery is sometimes replaced. 
+
+The random effects model can be used to determine if consistency of the production lines should be rejected.
+
+--
+
+## The model - Olive oil acidity 
+
+   * We are manufacturing olive oil, and each batch should have an acidity level of 0.5%
+   
+   * The factory wants to design an experiment which will test if the acidity is consistent.
+   
+   * Questions: What is our factor? What are the factor levels?
+   
+---
+
+# Example - Olive oil acidity
+
+The batch is our factor. It has many levels and therefore we treat it is a random effect.
+
+--
+
+$$\text{acidity} = \mu + \tau_\text{batch} + \epsilon_{batch,j}$$
+.tiny[
+```{r olive oil acidity example}
+
+oil_manufacturing <- tibble(
+   batch = factor(c("A", "A", "A", "A", "B", "B", "B", "B", "B", 
+                    "C", "C", "C", "C", "D", "D", "E", "E")),
+   acidity = 
+      c(0.45, 0.49, 0.51, 0.50, 0.49, 0.60, 0.55, 0.41, 0.36, 
+        0.50, 0.51, 0.49, 0.48, 0.50, 0.51, 0.08, 0.20))
+
+oil_aov <- aov(formula = acidity ~ batch, data = oil_manufacturing)
+summary(oil_aov)
+TukeyHSD(oil_aov)
+```
+]
+---
+
+# Example - Olive Oil Acidity (cont.)
+
+We can use Dunnett's test to specify the exact contrasts we would like to examine:
+
+.small[
+```{r olive oil multiple comparisons}
+library(multcomp)
+glht(oil_aov,
+     linfct = mcp(batch = c("E-A=0", "E-B=0", "E-C=0", "E-D=0"))) %>% 
+   summary()
+```
+]
