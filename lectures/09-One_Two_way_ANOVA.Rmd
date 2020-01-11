@@ -1,0 +1,638 @@
+---
+title: "One-Way and Two-Way Analysis of Variance (ANOVA)"
+subtitle: "Lecture #11"
+author: "Adi Sarid"
+institute: "Tel-Aviv University"
+date: "updated: `r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "16:9"
+    css: [metropolis, rutgers-fonts]
+---
+
+```{css, echo = FALSE}
+
+.remark-code {
+  font-size: 24px;
+}
+
+.huge { 
+  font-size: 200%;
+}
+.tiny .remark-code {
+  font-size: 50%;
+}
+
+.small .remark-code{
+   font-size: 85% !important;
+}
+
+.small {
+   font-size: 85% !important;
+}
+
+.remark-slide-content {
+    font-size: 20px;
+    padding: 1em 4em 1em 4em;
+}
+
+table { display: inline-block; }
+
+th, td {
+   padding: 5px;
+}
+
+.small-slide {
+   font-size: 70% !important;
+}
+
+.image-50 img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
+.right-plot {
+   width: 60%;
+   float: right;
+   padding-left: 1%;
+   bottom: 0px;
+   right: 0px;
+   position: absolute;
+}
+
+
+
+```
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE, fig.width = 3, fig.height = 3)
+knitr::opts_chunk$set(fig.dim=c(3, 3), fig.align = "center")
+library(tidyverse)
+library(countdown)
+```
+
+# Reminder from Previous Lecture (One-Way ANOVA)
+
+   * We discussed experiment design and the motivation to analysis of variance
+   
+   * A method to compare means in different groups (treatments)
+   
+   * Leveraging the variance of the model vs. the variance of the errors (hence Analysis of Variance, ANOVA)
+   
+      * $Y_{ij} = \mu + \tau_i + \epsilon_{ij}, \quad i = 1,\ldots,a, \quad j=1,\ldots n$
+   
+   * Fixed factors: when the factor by which we are comparing the populations, $\tau_i$, has fixed levels. The $a$ treatments are chosen
+   
+   * Random factors: when the factor $\tau_i$ is a random variable, the $a$ treatments are a random sample, conclusions are to be extended
+
+---
+
+# Reminder from Previous Lecture (cont.)
+
+$$Y_{ij} = \mu + \tau_i + \epsilon_{ij}, \quad i = 1,\ldots,\ j=1,\ldots n$$
+
+The value $\mu_i=\mu+\tau_i$ is the mean value of the $i$th treatment.
+
+--
+
+We assume that the errors $\epsilon_{i,j}$ are normally and independently distributed $\mathcal{N}(0, \sigma^2)$.
+
+--
+
+For **fixed factors** we are interested in the following test:
+
+   * $H_0: \tau_1=\ldots=\tau_a=0$
+   
+   * $H_1: \exists i\ |\ \tau_i\neq0$
+
+--
+
+For **random factors** we are interested in the following test
+
+   * $H_0: \sigma_\tau^2=0$
+   
+   * $H_1: \sigma_\tau^2>0$
+
+---
+
+# The Sum of Squares
+
+We use the sum of squares equation: $SS_T = SS_\text{Treatments} + SS_E$:
+
+$$\sum_{i=1}^a\sum_{j=1}^n({y_{ij} - \bar{y}_{\cdot\cdot})^2} = n\sum_{i=1}^a{(\bar{y}_{i\cdot} - \bar{y}_{\cdot\cdot})^2} + \sum_{i=1}^a\sum_{j=1}^n({y_{ij} - \bar{y}_{i\cdot})^2}$$
+
+--
+
+In both fixed and random factor cases, we ended up with the same F-test statistic:
+
+$$F_0=\frac{SS_\text{Treatments}/(a-1)}{SS_E/[a(n-1)]}=\frac{MS_\text{Treatments}}{MS_E}$$
+
+With $a-1$ and $a(n-1)$ degrees of freedom.
+
+--
+
+We use an upper-tail, one-sided critical region and reject $H_0$ if $f_0>f_{\alpha, a-1, a(n-1)}$.
+
+---
+
+# The ANOVA Table
+
+The corresponding ANOVA table, for a Single-Factor Experiment, Fixed or Random-Effects Model:
+
+| Source of Variation | Sum of Squares | df | Mean Squares | $F_0$ |
+|----------------------|-----------------|-------|:------------:|---------------------|
+| Treatments | $SS_\text{Treatments}$ | $a-1$ | $MS_\text{Treatments}$ | $\frac{MS_\text{Treatments}}{MS_E}$ |
+| Error | $SS_E$ | $a(n-1)$ | $MS_E$ |  |
+| Total | $SS_T$ | $an-1$ |  |  |
+
+--
+
+For an unbalanced experiment (each treatment has varying group size, $n_i$) we would have:
+
+$$SS_T=\sum_{i=1}^a\sum_{j=1}^{n_i}{y_{ij}^2} - \frac{y_{\cdot\cdot}^2}{N}$$
+
+$$SS_\text{Treatments} = \sum_{i=1}^a\frac{y_{i\cdot}^2}{n_i} - \frac{y_{\cdot\cdot}^2}{N}$$
+
+And $SS_E = SS_T-SS_\text{Treatment}$
+
+---
+
+# ANOVA Example
+
+.tiny[
+```{r anova example in mtcars}
+mtcars2 <- mtcars %>% 
+   mutate(cyl_fct = factor(cyl))
+mtcars_anova <- aov(formula = mpg ~ cyl_fct, data = mtcars2)
+summary(mtcars_anova)
+TukeyHSD(mtcars_anova)
+```
+]
+
+--
+
+Usually, ANOVA will be followed by a multiple comparisons procedures, that will help identify which factors contribute to the variation.
+
+E.g., Tukey's HSD (`TukeyHSD`), and Dunnett's test (package `multcomp::glht`).
+
+---
+
+# Verifying ANOVA assumptions
+.small[
+The ANOVA model assumes that observations are normally and independently distributed, with the same variance for each treatment. 
+
+This can be verified using hypothesis tests on the residuals, or viewing a proper plot (e.g., qqplot). The following illustrates that some assumptions are invalid in the previous example (which?) 
+]
+.tiny[
+```{r verifying normality, fig.dim=c(8, 3.5)}
+mtcars2_resid <- mtcars2 %>% 
+   mutate(resid = mtcars_anova$residuals)
+boxplot_resid <- ggplot(mtcars2_resid, aes(x = cyl_fct, y = resid)) + 
+   geom_boxplot(fill = "lightblue") +
+   theme_bw() + ggtitle("Boxplot of residuals in each cyl level")
+qqplot_resid <- ggplot(mtcars2_resid, aes(sample = (resid - mean(resid))/sd(resid))) + 
+   geom_qq() + 
+   theme_bw() + ggtitle("QQ plot of residuals")
+cowplot::plot_grid(qqplot_resid, boxplot_resid)
+```
+]
+
+---
+
+# Determining the Sample Size
+
+The selection of the sample size is based on the difference we want to detect, and at what test power:
+
+$$1-\beta = P(\text{Reject } H_0 | H_1) = P(F_0>f_{1-\alpha, a-1, a(n-1)} | H_1)$$
+
+--
+
+The effect size represents the differences in means between groups:
+
+$$\operatorname{ES} = \frac{\mu_\text{experiment}-\mu_\text{control}}{s}$$
+.small[
+```{r determining anova sample size}
+pwr::pwr.anova.test(k = 3, n = NULL, f = 0.25, sig.level = 0.05, power = 0.8)
+```
+]
+
+---
+
+# Random-Effects Model - Example
+
+When manufacturing food and drugs (medication) we usually aim for having a high degree of consistency, so that different batches produce the same product (quality, concentration, etc.). 
+
+Consistency is not trivial to produce: production lines malfunction, shifts change, and machinery is sometimes replaced. 
+
+The random effects model can be used to determine if consistency of the production lines should be rejected.
+
+--
+
+## The model - Olive Oil Acidity 
+
+   * We are manufacturing olive oil, and each batch should have an acidity level of 0.5%
+   
+   * The factory wants to design an experiment which will test if the acidity is consistent.
+   
+   * Questions: What is our factor? What are the factor levels?
+   
+---
+
+# Example - Olive Oil Acidity
+
+The batch is our factor. It has many levels and therefore we treat it is a random effect.
+
+--
+
+$$\text{acidity} = \mu + \tau_\text{batch} + \epsilon_{batch,j}$$
+.tiny[
+```{r olive oil acidity example}
+
+oil_manufacturing <- tibble(
+   batch = factor(c("A", "A", "A", "A", "B", "B", "B", "B", "B", 
+                    "C", "C", "C", "C", "D", "D", "E", "E")),
+   acidity = 
+      c(0.45, 0.49, 0.51, 0.50, 0.49, 0.60, 0.55, 0.41, 0.36, 
+        0.50, 0.51, 0.49, 0.48, 0.50, 0.51, 0.08, 0.20))
+
+oil_aov <- aov(formula = acidity ~ batch, data = oil_manufacturing)
+summary(oil_aov)
+TukeyHSD(oil_aov)
+```
+]
+
+---
+
+# Example - Olive Oil Acidity (cont.)
+
+We can use Dunnett's test to specify the exact contrasts we would like to examine:
+
+.small[
+```{r olive oil multiple comparisons}
+suppressWarnings(suppressMessages(library(multcomp)))
+glht(oil_aov,
+     linfct = mcp(batch = c("E-A=0", "E-B=0", "E-C=0", "E-D=0"))) %>% 
+   summary()
+```
+]
+
+---
+
+# Randomized Complete Block Design
+
+Sometimes we have an additional *nuisance* factor which is not the aim of the study. For example, imagine a clinical research where $a$ treatments are used in $b$ medical centers.
+
+--
+
+It might be that the fact that there are varying medical centers in itself influences the results.
+
+--
+
+If the selection of treatments is ranodmized across medical centers, the experiment is called a randomized complete block design.
+
+--
+
+|  | Blocks |  |  |  |  |  |
+|------------|--------------------|--------------------|---------:|---------------------|------------------|-------------------|
+| Treatments | 1 | 2 | $\ldots$ | $b$ | Totals | Averages |
+| 1 | $y_{11}$ | $y_{12}$ | $\ldots$ | $y_{1b}$ | $y_{1\cdot}$ | $\bar{y}_{1\cdot}$ |
+| $\vdots$ |  |  | $\vdots$ |  |  | $\vdots$ |
+| $a$ | $y_{a1}$ | $y_{a2}$ | $\ldots$ | $y_{ab}$ | $y_{a\cdot}$ | $\bar{y}_{a\cdot}$ |
+| Totals | $y_{\cdot1}$ | $y_{\cdot2}$ | $\ldots$ | $y_{\cdot b}$ | $y_{\cdot\cdot}$ |  |
+| Averages | $\bar{y}_{\cdot1}$ | $\bar{y}_{\cdot2}$ | $\ldots$ | $\bar{y}_{\cdot b}$ |  |  |
+
+---
+
+# Randomized Complete Block Design (cont.)
+
+The formula for this design is given by:
+
+$$Y_{ij}=\mu + \tau_i + \beta_j + \epsilon_{ij}, \quad i\in\{1,\ldots,a\},j\in\{1,\ldots,b\}$$
+
+Where
+
+   * $\mu$ is the overall mean.
+   
+   * $\tau_i$ is the effect of the $i$th treatment.
+   
+   * $\beta_j$ is the effect of the $j$th block.
+   
+   * $\epsilon_{ij}$ is the error term $\epsilon_{ij}\sim\mathcal{N}(0,\sigma)$
+   
+--
+
+We assume that the treatments and blocks are fixed factors, and that they are deviations from the overall mean, so $\sum_{i=1}^a{\tau_i}=0$ and $\sum_{j=1}^b{\beta_j}=0$. We test the hypothesis:
+
+   * $H_0: \tau_1=\ldots=\tau_a=0$
+   * $H_1: \exists i: \tau_i\neq0$
+
+---
+
+# Sum of Squares Identity in the Randomized Complete Block Design
+
+The sum of squares identity can be broken into
+
+$$\sum_{i=1}^a\sum_{j=1}^b(y_{ij}-\bar{y}_{\cdot\cdot})^2 = b\sum_{i=1}^a{(\bar{y}_{i\cdot}-\bar{y}_{\cdot\cdot})^2} + a\sum_{j=1}^b{(\bar{y}_{\cdot j}-\bar{y}_{\cdot\cdot})^2}+\sum_{i,j}{(y_{ij}-\bar{y}_{\cdot j} - \bar{y}_{i\cdot} + \bar{y}_{\cdot\cdot})^2}$$
+--
+
+Symbolically stated as
+
+$$SS_T = SS_\text{Treatments} + SS_\text{Blocks} + SS_E$$
+
+--
+
+With degrees of freedom:
+
+$$ab-1 = (a-1) + (b-1) + (a-1)(b-1)$$
+
+---
+
+# Randomized Complete Block Design Hypothesis Test
+
+Set:
+
+$$MS_\text{Treatments} = \frac{SS_\text{Treatments}}{a-1},\quad MS_\text{Blocks} = \frac{SS_\text{Blocks}}{b-1},\quad MS_E=\frac{SS_E}{(a-1)(b-1)}$$
+
+--
+
+The mean sum of squares is given by:
+
+   * $E(MS_\text{Treatments}) = \sigma^2 + \frac{b\sum_{i=1}^a{\tau_i^2}}{a-1}$
+   
+   * $E(MS_\text{Blocks}) = \sigma^2 + \frac{a\sum_{j=1}^b{\beta_j^2}}{b-1}$
+   
+   * $E(MS_E) = \sigma^2$
+   
+--
+
+If $H_0$ is true and all $\tau_i=0$ then:
+
+$$F_0=\frac{MS_\text{Treatments}}{MS_E}$$
+
+Is $F$-distributed with $a-1$ and $(a-1)(b-1)$ degrees of freedom.
+
+---
+
+# Example for Randomized Complete Block Design - ANOVA
+
+An experiment was performed to determine the effect of four chemicals on the fabric strength (Example 13.5 from Montgomery).
+
+.tiny[
+```{r montgomery 13.5}
+fabric_strength <- read_csv("https://raw.githubusercontent.com/adisarid/intro_statistics_R/master/lectures/data/montgomery_13.5_fabric_strength.csv", col_types = cols()) %>% 
+   pivot_longer(cols = -chemical, names_to = "fabric_sample", values_to = "strength") %>% mutate(chemical = factor(chemical))
+
+fabric_aov <- aov(formula = strength ~ chemical + fabric_sample, data = fabric_strength)
+summary(fabric_aov)
+glht(fabric_aov, linfct = mcp(chemical = "Tukey")) %>% 
+   summary()
+```
+]
+
+---
+
+# Visualizing Multiple Comparisons
+
+The `multcomp` package also includes a basic visualization to illustrate the differences in means. 
+
+The chart can be invoked by using `plot` on a `glht` object.
+
+.small[
+```{r multcomp visualization, fig.dim=c(5,5)}
+
+plot(glht(fabric_aov, linfct = mcp(chemical = "Tukey")))
+
+```
+]
+
+---
+
+# Two-Way ANOVA (Design of Experiments with Several Factors)
+
+So far we treated a single factor experiment using one-way ANOVA, with a minor generalization towards a block design with a neuisance factor.
+
+We are going to generalize this to experiments with several factors, using two-way ANOVA (Montgomery Ch.14).
+
+--
+
+For example, the population are students with:
+
+   * Faculty - a factor describing the faculty the student came from
+   
+   * Semester - a factor describing which semester the student is currently at
+   
+   * $Y$ - the dependent variable is leisure time (free time)
+   
+--
+
+We would like to explore the leisure time as a function of faculty, semester, and the interaction between them.
+
+---
+
+# Factorial Experiments
+
+A factorial experiment is an experiment with all possible combinations of factor levels (all combinations of faculties and semesters). For example:
+
+   * Include Exact Sciences, Social Sciences,
+   * Students from semester 1 and semester 6
+   
+We will investigate all possible combinations of faculties and semesters in our analysis.
+
+--
+
+**Question:** What is the difference between the two examples?
+
+| Example 1 | S.1 | S.6 | | | | Example 2 | S.1 | S.6 |
+|---------|-----|-----|----|----|----|---------|-----|-----|
+| Exact | 5 | 2.5 | | | | Exact | 5 | 2.5 |
+| Social | 2.5 | 0 | | | | Social | 2.5 | 10 |
+
+--
+
+Which example illustrates:
+
+   * Main effects of Faculty/Semester?
+   
+   * Interaction effects between Faculty and Semester?
+
+---
+
+# Illustration of Interaction
+
+.tiny[
+```{r illustration of interaction effects, fig.dim=c(8,5)}
+leisure_time_ex1 <- tibble(faculty = c("E", "E", "S", "S"),
+                           semester = c(1, 6, 1, 6),
+                           time = c(5, 2.5, 2.5, 0),
+                           ex = "ex.1")
+leisure_time_ex2 <- mutate(leisure_time_ex1, ex = "ex.2")
+leisure_time_ex2$time[2] <- 10
+leisure <- bind_rows(leisure_time_ex1, leisure_time_ex2)
+ggplot(leisure, aes(x = semester, color = faculty, y = time)) + 
+   geom_point() + geom_line() +
+   facet_wrap(~ ex) +
+   scale_x_continuous(breaks = c(1,6)) +
+   theme_bw()
+   
+
+```
+]
+
+---
+
+# Warning: Non-Factorial Experiments
+
+Changing the factors one at a time might miss interaction effects. 
+
+| Example 2 | S.1 | S.6 |
+|-----------|-----|-----|
+| Exact     | 5   | 2.5 |
+| Social    | 2.5 | 10  |
+
+For example if we are conducting an experiment to see which students has the most leisure time, in a non-factorial experiment, checking factors one at a time instead we would:
+
+   * Compare semester 1 and semester 6 for exact sciences, and detect that semester 1 has more leisure time
+
+--
+   
+   * Then, compare Exact versus social sciences in semester 1 only
+   
+--
+
+   * Deduce that Exact sciences students in semester 1 has the most leisure time
+
+--
+
+   * Miss the interaction of Faculty and Semester (Social science at semester 6 has the most leisure time).
+
+---
+
+# Two-Factor Factorial Experiments
+
+Fixed factors: in each group of factor $A$ and factor $B$ we randomly sample $n$ observations. In total, we end up with $abn$ 
+--
+
+The sampling order is completely random, hence the experiment is of *completely randomized design*.
+
+--
+
+We describe the relationship by the following linear statistical model:
+
+$$Y_{ijk} = \mu + \tau_i + \beta_j + (\tau\beta)_{ij} + \epsilon_{ijk}$$
+
+For $i=1,\ldots,a\quad j=1\ldots,b\quad k=1,\ldots,n$, where
+
+   * $\tau_i$ is the effect of the $i$th level of factor $A$
+   
+   * $\beta_j$ is the effect of the $j$th level of factor $B$
+   
+   * $(\tau\beta)_{ij}$ is the effect of the interaction between $A$ and $B$
+   
+   * $\epsilon_{ijk}$ is the random error component, $\mathcal{N}(0, \sigma^2)$
+
+--
+
+**Question**: what is the difference from the single factor block design?
+
+---
+
+# Statistical Hypothesis in the Fixed Two Factor Design
+
+We will examine three distinct hypothesis:
+
+--
+
+## Factor A
+
+   * $H_0: \tau_1=\tau_2=\ldots=\tau_a=0$
+   * $H_1: \exists i: \tau_i\neq0$
+
+--
+
+## Factor B
+
+   * $H_0: \beta_1=\beta_2=\ldots=\beta_a=0$
+   * $H_1: \exists i: \beta_i\neq0$
+
+--
+
+## Interaction of A and B
+
+   * $H_0: (\tau\beta)_{11}=(\tau\beta)_{12}=\ldots=(\tau\beta)_{ab}=0$
+   * $H_1: \exists i,j: (\tau\beta)_{ij}\neq0$
+   
+---
+
+# Sum of Squares Breakdown in the Fixed Two Factor Design
+
+$$SS_T = SS_A + SS_B + SS_{AB} + SS_E$$
+
+Where
+
+$$SS_T=\sum_{i=1}^a\sum_{j=1}^b\sum_{k=1}^n(y_{ijk}-\bar{y}_{\cdots})^2$$
+
+$$SS_A + SS_B = bn\sum_{i=1}^a(\bar{y}_{i\cdot\cdot} - \bar{y}_{\cdots})^2 + an\sum_{j=1}^b(\bar{y}_{\cdot i\cdot} - \bar{y}_{\cdots})^2$$
+
+$$SS_{AB} = n\sum_{i=1}^a\sum_{j=1}^b(\bar{y}_{ij\cdot} - \bar{y}_{i\cdot\cdot} - \bar{y}_{\cdot j\cdot} + \bar{y}_\cdots)^2 $$
+
+$$SS_E = \sum_{i=1}^a\sum_{j=1}^b\sum_{k=1}^n(y_{ijk}-\bar{y}_{ij\cdot})^2$$
+
+---
+
+# The Test Statistics for a Fixed Two Factor Design
+
+The mean square errors are given by:
+
+$$MS_A=\frac{SS_A}{a-1},\quad MS_B=\frac{SS_B}{b-1},\quad MS_{AB}=\frac{SS_{AB}}{(a-1)(b-1)}, \quad MS_E=\frac{SS_E}{ab(n-1)}$$
+
+--
+
+The sizes $$MS_\cdot$$ are all unbiased estimators for $\sigma^2$ given the null hypothesis. 
+
+--
+
+Similar to what we've seen in the single factor experiment design (in the previous lecture), it can be shown that:
+
+$$E(MS_A)=E\left[\frac{SS_A}{a-1}\right] = \sigma^2 + \frac{bn\sum_{i=1}^a{\tau_i^2}}{a-1}, \quad E[MS_E]=\sigma^2$$
+
+--
+
+Hence we can use the following test statistics:
+
+$$F_0=\frac{MS_A}{MS_E},\quad F_0=\frac{MS_B}{MS_E}, \quad F_0=\frac{MS_{AB}}{MS_E}$$
+
+---
+
+# Two-Way ANVOA Table Example
+
+Example 14.5 from Montgomery: Adhesion Force by Primer Type (1-4) and Application Method (Dipping and Spraying)
+
+.tiny[
+```{r mongomery 14.5 example}
+montgomery14.5 <- read_csv("https://raw.githubusercontent.com/adisarid/intro_statistics_R/a6b19adadb793317e53f8529252bd4bc0df557a7/lectures/data/montgomery_14.5_adhesion_force.csv", col_types = "ffn")
+glimpse(montgomery14.5)
+
+adhesion_aov <- aov(formula = adhesion_force ~ primer_type + application_method + primer_type*application_method,
+                    data = montgomery14.5)
+
+summary(adhesion_aov)
+
+```
+]
+
+---
+
+# Two-Way ANOVA: Multiple Comparisons
+
+.tiny[
+```{r multiple comparisons two-way anova}
+TukeyHSD(adhesion_aov)
+```
+]
