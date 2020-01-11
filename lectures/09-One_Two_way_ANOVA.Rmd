@@ -580,7 +580,7 @@ $$SS_T=\sum_{i=1}^a\sum_{j=1}^b\sum_{k=1}^n(y_{ijk}-\bar{y}_{\cdots})^2$$
 
 $$SS_A + SS_B = bn\sum_{i=1}^a(\bar{y}_{i\cdot\cdot} - \bar{y}_{\cdots})^2 + an\sum_{j=1}^b(\bar{y}_{\cdot i\cdot} - \bar{y}_{\cdots})^2$$
 
-$$SS_{AB} = n\sum_{i=1}^a\sum_{j=1}^b(\bar{y}_{ij\cdot} - \bar{y}_{i\cdot\cdot} - \bar{y}_{\cdot j\cdot} + \bar{y}_\cdots)^2 $$
+$$SS_{AB} = n\sum_{i=1}^a\sum_{j=1}^b(\bar{y}_{ij\cdot} - \bar{y}_{i\cdot\cdot} - \bar{y}_{\cdot j\cdot} + \bar{y}_\cdots)^2$$
 
 $$SS_E = \sum_{i=1}^a\sum_{j=1}^b\sum_{k=1}^n(y_{ijk}-\bar{y}_{ij\cdot})^2$$
 
@@ -594,7 +594,7 @@ $$MS_A=\frac{SS_A}{a-1},\quad MS_B=\frac{SS_B}{b-1},\quad MS_{AB}=\frac{SS_{AB}}
 
 --
 
-The sizes $$MS_\cdot$$ are all unbiased estimators for $\sigma^2$ given the null hypothesis. 
+The sizes $MS_A, MS_B, MS_{AB}, MS_E$ are all unbiased estimators for $\sigma^2$ given the null hypothesis. 
 
 --
 
