@@ -22,7 +22,7 @@ Here are some related research questions which we can examine:
    * What is the number of words/script lines spoken by each starfleet captain?
    * What is the difference between a captain, number.1, and other characters?
    * What is the relationship between sentence length (number of words) and starfleet captains?
-   * Is there a gender bias in different series/episodes?
+   * Is there a gender bias in different series/episodes? Which series reflects more female characters (in terms of script words or script lines)?
    * What the number of words per episode? Is it randomely distributed?
 
 # Data Import and Tidying
