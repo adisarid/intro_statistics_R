@@ -1,0 +1,53 @@
+---
+title: "Where no R has gone before - Analyzing Star Trek scripts"
+author: "Adi Sarid"
+date: "12 1 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Background
+
+In this markdown, I analyze [this](https://www.kaggle.com/gjbroughton/start-trek-scripts/) data of startrek scripts.
+
+## Goals
+
+My main goal is to demonstrate various elements which I expect to see in the project, while allowing the students to ask questions as we build the analysis in real time together.
+
+Here are some related research questions which we can examine:
+
+   * What is the number of words/script lines spoken by each starfleet captain?
+   * What is the difference between a captain, number.1, and other characters?
+   * What is the relationship between sentence length (number of words) and starfleet captains?
+   * Is there a gender bias in different series/episodes?
+   * What the number of words per episode? Is it randomely distributed?
+
+# Data Import and Tidying
+
+The source is in json files - non tabular data which is hard to work with. Hence, we must first turn it into a tidyformat.  data was read from the json files and put into this tidy format.
+
+```{r read startrek script data}
+suppressWarnings(suppressMessages(library(tidyverse)))
+trek <- read_csv("https://github.com/adisarid/startrek_plumber_api/blob/master/raw_data/characters_words.csv?raw=true")
+glimpse(trek)
+```
+
+# Transformation, Visualization, and Modelling
+
+## Which starfleet captains appear in the data?
+
+First, let's determine who are the starfleet captains which appear in the data.
+
+```{r starfleet captain}
+trek %>% 
+  group_by(character, series) %>% 
+  summarize(num_words = sum(total_words)) %>% 
+  arrange(desc(num_words))
+```
+
+The starfleet captains which appear are PICARD, JANEWAY, KIRK, SISCO, and ARCHER. Now we can filter the data and examine them.
+
+# Conclusions
