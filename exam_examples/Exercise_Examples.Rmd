@@ -28,9 +28,39 @@ The test will be comprised of five (5) questions, which will cover the following
 
    * Theoretical (up to 1 question)
    
+# Visualizations
 
+### Example 1: Axis and Outliers
 
-## Exercise 1 - Multiple Linear Regression
+In `ggplot2` there are a few functions that can be used to control the axis. Two such examples are `coord_cartesian` and `lims`. Look at the following three charts. They are boxplots plotting the data of drivers killed between 1969-1984. 
+
+**Question 1:** Explain the difference in the results between `coord_cartesian` and `lims`. What function would you use for:
+
+   1. Zooming-into a chart.
+   2. Omitting observations and analyzing a chart after the omission.
+
+```{r coord cartesian versus lims, fig.dim=c(4,4)}
+
+ggplot(as_tibble(Seatbelts), aes(y = DriversKilled, x = "")) + 
+  geom_boxplot()
+
+ggplot(as_tibble(Seatbelts), aes(y = DriversKilled, x = "")) + 
+  geom_boxplot() + 
+  coord_cartesian(ylim = c(110, 130))
+
+ggplot(as_tibble(Seatbelts), aes(y = DriversKilled, x = "")) + 
+  geom_boxplot() + 
+  lims(y = c(110, 130))
+
+```
+
+### Example 2: decipher the geoms and aesthetics
+
+```{r decipher geoms and aesthetics, echo = FALSE}
+
+# Understanding model output
+
+### Understanding model output: Multiple Linear Regression
 
 The `state.x77` dataset contains various statistics on US states (the 70s). Specifically, it contains the `Income` per capita, `Frost` mean number of days with minimum temprature below freezing, `Illiteracy`, `Murder` murder rate per 100,000 population, `HS Grad` high-school graduates (%).
 
@@ -56,32 +86,4 @@ plot_summs(fit, fit2, scale = TRUE, plot.distributions = TRUE)
 
 **Question 4:** Based on the results, what would you say about the relationship between `Illiteracy` and `HS Grad`, i.e., do they correlate? and if so, would you expect a positive or negative correlation? why?
 
-## Exercise 2 - Axis and Outliers
-
-In `ggplot2` there are a few functions that can be used to control the axis. Two such examples are `coord_cartesian` and `lims`. Look at the following three charts. They are boxplots plotting the data of drivers killed between 1969-1984. 
-
-**Question 1:** Explain the difference in the results between `coord_cartesian` and `lims`. What function would you use for:
-
-   1. Zooming-into a chart.
-   2. Omitting observations and analyzing a chart after the omission.
-
-```{r coord cartesian versus lims, fig.dim=c(4,4)}
-
-ggplot(as_tibble(Seatbelts), aes(y = DriversKilled, x = "")) + 
-  geom_boxplot()
-
-ggplot(as_tibble(Seatbelts), aes(y = DriversKilled, x = "")) + 
-  geom_boxplot() + 
-  coord_cartesian(ylim = c(110, 130))
-
-ggplot(as_tibble(Seatbelts), aes(y = DriversKilled, x = "")) + 
-  geom_boxplot() + 
-  lims(y = c(110, 130))
-
-```
-
-**Question 2:** Would observation A be classified as an outlier when examined using two boxplots (one for the x-axis and one for the y-axis)?
-
-```{r would this be classified as an outlier?}
-
-```
+# Hypothesis testing
