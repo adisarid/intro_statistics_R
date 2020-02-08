@@ -211,3 +211,27 @@ tribble(~shift, ~Machine_A, ~ Machine_B, ~Machine_C, ~Machine_D,
 ```
 
 Test the hypothesis (using $\alpha=0.05$) that breakdowns are independent of the shift. Find the p-value for this test.
+
+\newpage
+### Example 9: Confidence and Prediction Intervals
+
+The following exercise is similar to Walpole, *et al.* (Chapter 9, page 245, ex. 7).
+
+A random sample of $n=100$ car owners show that in the state of Virginia, a car drives 23,500 km per year with a sample standard deviation of 3900 km.
+
+   a. Construct a 99% confidence interval for the average number of kilometers a car is driven annually in Virginia.
+   
+   b. What can we assert with a 99% confidence interval about the possible size of our error if we estimate the average number of kilometers driven by car owners in Virgina to be 23,500 km?
+   
+   c. Danny has just moved to Virginia, provide an upper bound (one sided prediction interval) at a 95% confidence interval to the amount of kilometers Danny will drive in the next year.
+   
+\newpage
+# Example 10: Two Sample Tests, p-value
+
+The following exercise is from Walpole, *et al.*, (chapter 9, page 319, ex. 9).
+
+A study at the University of Colorado shows that running increases the percent resting metabolic rate (RMR) in older women. The average RMR of 30 elderly women runners was 34.0% higher than the average RMR of 30 sedentary elderly women. The standard deviations were 10.5 and 10.2 respectively. 
+
+Was there a significant increase in RMR of the women runnders over the sedentary women?
+
+Assume the populations are normally distributed with equal variances. Use a p-value to report you conclusions.
