@@ -16,7 +16,9 @@ The test will be comprised of five (5) questions, which will cover the following
    
    * Understanding model output (1 question)
    
-   * Hypothesis testing (2-3 questions): 
+   * Point estimation methods (1 question)
+   
+   * Hypothesis testing and models (2-3 questions): 
    
       * Means
       
@@ -28,13 +30,15 @@ The test will be comprised of five (5) questions, which will cover the following
 
    * Theoretical (up to 1 question)
    
+In total you will be given five questions with 25 points each (that's 125 points). You need to choose the four questions out of the five and note on your test which four questions you want us to examine (otherwise we examine the first four).
+   
 # Visualizations
 
 ### Example 1: Axis and Outliers
 
 In `ggplot2` there are a few functions that can be used to control the axis. Two such examples are `coord_cartesian` and `lims`. Look at the following three charts. They are boxplots plotting the data of drivers killed between 1969-1984. 
 
-**Question 1:** Explain the difference in the results between `coord_cartesian` and `lims`. What function would you use for:
+**Question 1 (12.5 pts):** Explain the difference in the results between `coord_cartesian` and `lims`. What function would you use for:
 
    1. Zooming-into a chart.
    2. Omitting observations and analyzing a chart after the omission.
@@ -54,19 +58,37 @@ ggplot(as_tibble(Seatbelts), aes(y = DriversKilled, x = "")) +
 
 ```
 
-### Example 2: decipher the geoms and aesthetics
+**Question 2 (12.5 pts):** Explain how a boxplot can be used to detect outliers (i.e., how are outliers highlighted in a boxplot and in what sense are they outliers)?
 
-```{r decipher geoms and aesthetics, echo = FALSE}
+### Example 2: Spot the geom and aesthetics
+
+The following chart shows the TSLA (Tesla) stock closing price over a preiod of a few years (between Nov 13 and Nov 18). 
+
+```{r tsla stock prices, echo = FALSE}
+read_csv("TSLA.csv", col_types = cols()) %>% 
+   mutate(year = lubridate::year(Date),
+          month = factor(lubridate::month(Date))) %>% 
+   ggplot(aes(x = factor(month), y = year, fill = Close)) + 
+   geom_raster() + 
+   scale_fill_viridis_c()
+```
+
+   1. What `geom_*` was used to produce the chart? (6 pts)
+   2. What are the aesthetics which were used to produce the chart (i.e., what was used in `aes(...)`)? (6 pts)
+   3. Are there any trends to this stock? explain. (7 pts)
+   4. In general, what geom and aesthetics would you use to replace the ones in the previous chart, in order to illustrate stock prices trends? draw an example (it doesn't have to be accurate, just as an illustration). (6 pts)
+   
+Hint: In 1-4 you can use the ggplot2 cheat sheet. Also, here are some of the geoms in ggplot2 (`geom_*`), some of which are helpful for answering this question: `geom_label, geom_text, geom_area, geom_density, geom_histogram, geom_qq, geom_point, geom_raster, geom_tile, geom_countour, geom_col, geom_bar, geom_boxplot`.
 
 # Understanding model output
 
-### Understanding model output: Multiple Linear Regression
+### Example 3: Multiple Linear Regression `state.x77`
 
-The `state.x77` dataset contains various statistics on US states (the 70s). Specifically, it contains the `Income` per capita, `Frost` mean number of days with minimum temprature below freezing, `Illiteracy`, `Murder` murder rate per 100,000 population, `HS Grad` high-school graduates (%).
+The `state.x77` dataset contains various statistics on US states (during the 70s). Specifically, it contains the `Income` per capita, `Frost` mean number of days with minimum temprature below freezing, `Illiteracy`, `Murder` murder rate per 100,000 population, `HS Grad` high-school graduates (%). You've worked with this data set in the homework.
 
 Two linear regression models were fit to predict the per capita income, the second fit contains `HS Grad` which is not included in the first fit.
 
-```{r lm fits}
+```{r lm fits, warnings=FALSE}
 library(jtools)
 states <- as.data.frame(state.x77)
 fit <- lm(Income ~ Frost + Illiteracy + Murder, data = states)
@@ -74,16 +96,59 @@ fit2 <- lm(Income ~ Frost + Illiteracy + Murder + `HS Grad`, data = states)
 export_summs(fit, fit2, scale = FALSE)
 ```
 
-**Question 1:** Ignoring the intercept, what are the significant coefficients in each of the models?
+**Questions (6.25 pts. each):**
 
-**Question 2:** How does an increase of 1 unit in `HS Grad` influence the `Income` variable?
+   1. Ignoring the intercept, what are the significant coefficients in each of the models?
 
-**Question 3:** The following density charts show the distribution of the coefficients estimates with a 95% confidence interval. What does it mean when a density chart does not include the dashed line?
+   2. How does an increase of 1 unit in `HS Grad` influence the `Income` variable?
+
+   3. The following density charts show the distribution of the coefficients' estimates with a 95% confidence interval. What does it mean when a density chart does not include the dashed line? (i.e., when the density chart is far from the dashed line)
+   
+   4. Based on the results, what would you say about the relationship between `Illiteracy` and `HS Grad`, i.e., do they correlate? and if so, would you expect a positive or negative correlation? why?
 
 ```{r coefficients plot}
 plot_summs(fit, fit2, scale = TRUE, plot.distributions = TRUE)
 ```
 
-**Question 4:** Based on the results, what would you say about the relationship between `Illiteracy` and `HS Grad`, i.e., do they correlate? and if so, would you expect a positive or negative correlation? why?
+   
+### Example 4: Multiple Linear Regression `ChickWeight`
+
+The `ChickWeight` dataset contains the results of a feeding experiment of 50 chicks' (`Chick`) with their tracked weight (`weight`), over a period of 21 days (`Time`), each chick was subjected to a different type of diet (`Diet`).
+
+In the following model, we are using the interaction of `Time*Diet` as one of the explanatory variables, along with `Time` as another explanatory variable. The dependent variable is the chick's `weight`.
+
+```{r output exercise}
+chick_lm <- lm(formula = weight ~ Time + Time*factor(Diet), data = ChickWeight)
+summary(chick_lm)
+```
+
+**Questions (5 pts. each):**
+
+   1. How many levels does the `Diet` variable have, explain.
+   
+   2. Why do we need the interaction of `Time*Diet` in the model? (why is `weight ~ Time + Diet` not enough)
+   
+   3. Which dietary method helps increase the chick's weight the most? Explain how you deduced this from the model's output.
+
+   4. Explain what are the underlying assumptions of the linear regression model.
+   
+   5. Observing the residuals' plots below, would you say that any of the linear regressions assumptions are violated? which one?
+
+```{r qqplot and residuals, echo=FALSE, fig.dim=c(10, 5)}
+chick_residuals <- as_tibble(ChickWeight) %>% 
+   mutate(resid = chick_lm$residuals)
+chick_qqplot <- ggplot(chick_residuals, aes(sample = (resid - mean(resid))/sd(resid))) + 
+   geom_qq() + 
+   theme_bw() + 
+   ggtitle("QQ plot of residuals")
+chick_residuals_plot <- ggplot(chick_residuals, aes(x = Time, y = resid)) + 
+   geom_jitter() +
+   facet_wrap(~{paste0("Diet=", Diet)}) + 
+   theme_bw() + 
+   ggtitle("Residuals as a function of time")
+cowplot::plot_grid(chick_qqplot, chick_residuals_plot)
+```
+
+
 
 # Hypothesis testing
