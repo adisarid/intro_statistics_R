@@ -179,7 +179,7 @@ Hint: Express $E\bar{X}^2$
 
 Two types of plastic are suitable for use by an electronics component manufacturer. The breaking strength of this plastic is important. It is known that $\sigma_1=\sigma_2=1.0$ psi. From a random sample of size $n_1=10, n_2=12$, we obtain $\bar{x}_1=162.5, \bar{x}_2=155.0$.
 
-   (a) Compute a 95% confidence interval for the difference of mean breaking strength of plastic 1 minus plastic 2.
+   (a) Compute a one sided 95% confidence interval for the difference of mean breaking strength of plastic 1 minus plastic 2.
    
    (b) The company will not adopt plastic 1 unless its mean breaking strength exceeds that of plastic 2 by at least $10$ psi. Formulate a hypothesis test which will test this hypothesis.
    
@@ -187,3 +187,18 @@ Two types of plastic are suitable for use by an electronics component manufactur
    
    (d) How would your answer change if the requirement was that plastic 1 is stronger than platic 2 by $3$ psi?
 
+### Example 8: Contingency table tests
+
+A company operates four machines three shift each day. From production records, the following data on the number of breakdowns are collected:
+
+```{r shifts vs machines, echo = FALSE}
+
+tribble(~shift, ~Machine_A, ~ Machine_B, ~Machine_C, ~Machine_D,
+        1, 41, 20, 12, 16,
+        2, 31, 11, 9, 14,
+        3, 15, 17, 16, 10) %>% 
+   knitr::kable(format = "markdown")
+
+```
+
+Test the hypothesis (using $\alpha=0.05$) that breakdowns are independent of the shift. Find the p-value for this test.
