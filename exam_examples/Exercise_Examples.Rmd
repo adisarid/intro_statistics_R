@@ -161,7 +161,7 @@ Let $X_1, \ldots,X_n$ be i.i.d variables $X_i\sim\mathcal{N}(\mu,\sigma)$.
    
 Hint: compute the variance of $\bar{X}$ and compare it to the variance of $X_1$.
 
-### Example 6: Bias (question 7-10 in Montgomery, page 228.)
+### Example 6: Bias (question 7.10 in Montgomery, page 228.)
 
 Let $X_1,\ldots,X_10$ be a random sample of size $n$ from a population with mean $\mu$ and variance $\sigma^2$.
 
@@ -174,3 +174,16 @@ Let $X_1,\ldots,X_10$ be a random sample of size $n$ from a population with mean
 Hint: Express $E\bar{X}^2$
 
 # Hypothesis testing, intervals, and models
+
+### Example 7: Two sample test for means
+
+Two types of plastic are suitable for use by an electronics component manufacturer. The breaking strength of this plastic is important. It is known that $\sigma_1=\sigma_2=1.0$ psi. From a random sample of size $n_1=10, n_2=12$, we obtain $\bar{x}_1=162.5, \bar{x}_2=155.0$.
+
+   (a) Compute a 95% confidence interval for the difference of mean breaking strength of plastic 1 minus plastic 2.
+   
+   (b) The company will not adopt plastic 1 unless its mean breaking strength exceeds that of plastic 2 by at least $10$ psi. Formulate a hypothesis test which will test this hypothesis.
+   
+   (c) Conduct the statistical test and answer with $\alpha=0.05$, should the manufacturer use plastic 1?
+   
+   (d) How would your answer change if the requirement was that plastic 1 is stronger than platic 2 by $3$ psi?
+
