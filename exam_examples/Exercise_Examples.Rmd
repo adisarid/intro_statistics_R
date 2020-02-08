@@ -28,7 +28,7 @@ The test will be comprised of four questions, which will cover the following top
       
       * ANOVA
    
-In total you will be given five questions with 25 points each (that's 125 points). You need to choose the four questions out of the five and note on your test which four questions you want us to examine (otherwise we examine the first four).
+In total you will be given four questions with 25 points each. Following are a few examples.
    
 # Visualizations
 
