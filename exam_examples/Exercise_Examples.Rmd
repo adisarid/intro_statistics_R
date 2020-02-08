@@ -2,7 +2,9 @@
 title: "Test Exercises - Examples"
 author: "Adi"
 date: "Feb 2020"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -168,7 +170,7 @@ Hint: compute the variance of $\bar{X}$ and compare it to the variance of $X_1$.
 \newpage
 ### Example 6: Bias (question 7.10 in Montgomery, page 228.)
 
-Let $X_1,\ldots,X_10$ be a random sample of size $n$ from a population with mean $\mu$ and variance $\sigma^2$.
+Let $X_1,\ldots,X_n$ be a random sample of size $n$ from a population with mean $\mu$ and variance $\sigma^2$.
 
    a. Show that $\bar{X}^2$ is a biased estimator for $\mu^2$.
    
