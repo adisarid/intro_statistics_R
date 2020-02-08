@@ -18,7 +18,7 @@ The test will be comprised of four questions, which will cover the following top
    
    * Point estimation methods
    
-   * Hypothesis testing and models:
+   * Hypothesis testing, intervals, and models:
    
       * Means
       
@@ -149,7 +149,7 @@ cowplot::plot_grid(chick_qqplot, chick_residuals_plot)
 
 # Point Estimation
 
-### Example 5: Point estimation.
+### Example 5: Point estimation for mean
 
 Let $X_1, \ldots,X_n$ be i.i.d variables $X_i\sim\mathcal{N}(\mu,\sigma)$.
 
@@ -157,6 +157,20 @@ Let $X_1, \ldots,X_n$ be i.i.d variables $X_i\sim\mathcal{N}(\mu,\sigma)$.
    
    b. Prove that the average $\bar{X}=\frac{1}{n}\sum_i{X_i}$ is an unbiased estimator for $\mu$.
    
-   c. As you've shown in (a) and (b), both estimators are unbiased. What makes $\bar{x}$ a better estimator?
+   c. As you've shown in (a) and (b), both estimators are unbiased. Which is a better estimator and why?
+   
+Hint: compute the variance of $\bar{X}$ and compare it to the variance of $X_1$.
 
-# Hypothesis testing
+### Example 6: Bias (question 7-10 in Montgomery, page 228.)
+
+Let $X_1,\ldots,X_10$ be a random sample of size $n$ from a population with mean $\mu$ and variance $\sigma^2$.
+
+   a. Show that $\bar{X}^2$ is a biased estimator for $\mu^2$.
+   
+   b. Find the amount of bias in this estimator.
+   
+   c. What happens to the bias as the sample size $n$ increases?
+   
+Hint: Express $E\bar{X}^2$
+
+# Hypothesis testing, intervals, and models
