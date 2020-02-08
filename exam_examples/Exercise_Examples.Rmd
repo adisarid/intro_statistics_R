@@ -10,15 +10,15 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 ```
 
-The test will be comprised of five (5) questions, which will cover the following topics:
+The test will be comprised of four questions, which will cover the following topics:
 
-   * Visualizations (1 question)
+   * Visualizations
    
-   * Understanding model output (1 question)
+   * Understanding model output
    
-   * Point estimation methods (1 question)
+   * Point estimation methods
    
-   * Hypothesis testing and models (2-3 questions): 
+   * Hypothesis testing and models:
    
       * Means
       
@@ -27,8 +27,6 @@ The test will be comprised of five (5) questions, which will cover the following
       * Regression
       
       * ANOVA
-
-   * Theoretical (up to 1 question)
    
 In total you will be given five questions with 25 points each (that's 125 points). You need to choose the four questions out of the five and note on your test which four questions you want us to examine (otherwise we examine the first four).
    
@@ -149,6 +147,16 @@ chick_residuals_plot <- ggplot(chick_residuals, aes(x = Time, y = resid)) +
 cowplot::plot_grid(chick_qqplot, chick_residuals_plot)
 ```
 
+# Point Estimation
 
+### Example 5: Point estimation.
+
+Let $X_1, \ldots,X_n$ be i.i.d variables $X_i\sim\mathcal{N}(\mu,\sigma)$.
+
+   a. Prove that the value of $X_1$ is an unbiased estimator for $\mu$.
+   
+   b. Prove that the average $\bar{X}=\frac{1}{n}\sum_i{X_i}$ is an unbiased estimator for $\mu$.
+   
+   c. As you've shown in (a) and (b), both estimators are unbiased. What makes $\bar{x}$ a better estimator?
 
 # Hypothesis testing
