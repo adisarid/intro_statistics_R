@@ -187,9 +187,9 @@ Hint: Express $E\bar{X}^2$
 
 Two types of plastic are suitable for use by an electronics component manufacturer. The breaking strength of this plastic is important. It is known that $\sigma_1=\sigma_2=1.0$ psi. From a random sample of size $n_1=10, n_2=12$, we obtain $\bar{x}_1=162.5, \bar{x}_2=155.0$.
 
-   (a) Compute a one sided 95% confidence interval for the difference of mean breaking strength of plastic 1 minus plastic 2.
+   (a) The company will not adopt plastic 1 unless its mean breaking strength exceeds that of plastic 2 by at least $10$ psi. Compute a one sided 95% confidence interval for the difference of mean breaking strength of plastic 1 minus plastic 2 (think about what side of the confidence interval you need)
    
-   (b) The company will not adopt plastic 1 unless its mean breaking strength exceeds that of plastic 2 by at least $10$ psi. Formulate a hypothesis test which will test this hypothesis.
+   (b) Formulate a hypothesis test which will test the hypothesis that the difference is at least $10$ psi.
    
    (c) Conduct the statistical test and answer with $\alpha=0.05$, should the manufacturer use plastic 1?
    
