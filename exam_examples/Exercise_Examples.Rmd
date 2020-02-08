@@ -29,7 +29,8 @@ The test will be comprised of four questions, which will cover the following top
       * ANOVA
    
 In total you will be given four questions with 25 points each. Following are a few examples.
-   
+
+\newpage
 # Visualizations
 
 ### Example 1: Axis and Outliers
@@ -58,6 +59,7 @@ ggplot(as_tibble(Seatbelts), aes(y = DriversKilled, x = "")) +
 
 **Question 2 (12.5 pts):** Explain how a boxplot can be used to detect outliers (i.e., how are outliers highlighted in a boxplot and in what sense are they outliers)?
 
+\newpage
 ### Example 2: Spot the geom and aesthetics
 
 The following chart shows the TSLA (Tesla) stock closing price over a preiod of a few years (between Nov 13 and Nov 18). 
@@ -78,6 +80,7 @@ read_csv("TSLA.csv", col_types = cols()) %>%
    
 Hint: In 1-4 you can use the ggplot2 cheat sheet. Also, here are some of the geoms in ggplot2 (`geom_*`), some of which are helpful for answering this question: `geom_label, geom_text, geom_area, geom_density, geom_histogram, geom_qq, geom_point, geom_raster, geom_tile, geom_countour, geom_col, geom_bar, geom_boxplot`.
 
+\newpage
 # Understanding model output
 
 ### Example 3: Multiple Linear Regression `state.x77`
@@ -108,7 +111,7 @@ export_summs(fit, fit2, scale = FALSE)
 plot_summs(fit, fit2, scale = TRUE, plot.distributions = TRUE)
 ```
 
-   
+\newpage
 ### Example 4: Multiple Linear Regression `ChickWeight`
 
 The `ChickWeight` dataset contains the results of a feeding experiment of 50 chicks' (`Chick`) with their tracked weight (`weight`), over a period of 21 days (`Time`), each chick was subjected to a different type of diet (`Diet`).
@@ -147,6 +150,7 @@ chick_residuals_plot <- ggplot(chick_residuals, aes(x = Time, y = resid)) +
 cowplot::plot_grid(chick_qqplot, chick_residuals_plot)
 ```
 
+\newpage
 # Point Estimation
 
 ### Example 5: Point estimation for mean
@@ -161,6 +165,7 @@ Let $X_1, \ldots,X_n$ be i.i.d variables $X_i\sim\mathcal{N}(\mu,\sigma)$.
    
 Hint: compute the variance of $\bar{X}$ and compare it to the variance of $X_1$.
 
+\newpage
 ### Example 6: Bias (question 7.10 in Montgomery, page 228.)
 
 Let $X_1,\ldots,X_10$ be a random sample of size $n$ from a population with mean $\mu$ and variance $\sigma^2$.
@@ -173,6 +178,7 @@ Let $X_1,\ldots,X_10$ be a random sample of size $n$ from a population with mean
    
 Hint: Express $E\bar{X}^2$
 
+\newpage
 # Hypothesis testing, intervals, and models
 
 ### Example 7: Two sample test for means
@@ -187,6 +193,7 @@ Two types of plastic are suitable for use by an electronics component manufactur
    
    (d) How would your answer change if the requirement was that plastic 1 is stronger than platic 2 by $3$ psi?
 
+\newpage
 ### Example 8: Contingency table tests
 
 A company operates four machines three shift each day. From production records, the following data on the number of breakdowns are collected:
