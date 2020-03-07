@@ -27,9 +27,10 @@ The course will be given in Hebrew, but all the supporting materials will be pro
 
 Garding will be based on: 
 
-   * Homework, in pairs (20%)
+   * Final exam (70%)
    * Final project, individually (30%)
-   * Final exam (50%).
+
+You will have homework but its up to you to make sure you do them and understand them, we will not be grading them.
 
 ## Prerequisites
 
@@ -96,9 +97,11 @@ You can find various online videos teaching statistics theory along with R codin
 This repository is arranged with subfolders as follows:
 
 ```
-├── datasets (contains datasets we will use)
+├── exam_examples (examples for questions and exams)
 ├── exercises (exercise notes)
 ├── HW (home work exercises)
 ├── lectures (lecture notes)
-├── misc (miscellaneous, feel free to ignore this) 
+   └── data (contains datasets we will use)
+├── misc (miscellaneous, feel free to ignore this)
+└── project (project instructions and example)
 ```
