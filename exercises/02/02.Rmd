@@ -94,11 +94,10 @@ In probability theory and statistics, the chi-square distribution (also chi-squa
 ```{r X^2, echo=FALSE, out.width = '50%'}
 knitr::include_graphics(knitr::include_graphics('x^2.png'))
 ```
-\
+
 **We will also use the F distribution**
 
 # Q1 & Q2 - Attached in PDF
-
 
 
 
