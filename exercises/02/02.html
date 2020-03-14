@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 <meta name="author" content="Afek Adler" />
 
-<meta name="date" content="2019-11-07" />
+<meta name="date" content="2020-03-14" />
 
 <title>EX 02 - Data Handling &amp; MLE</title>
 
@@ -332,6 +331,7 @@ summary {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -365,29 +365,38 @@ summary {
 
 <h1 class="title toc-ignore">EX 02 - Data Handling &amp; MLE</h1>
 <h4 class="author">Afek Adler</h4>
-<h4 class="date">2019-11-07</h4>
+<h4 class="date">2020-03-14</h4>
 
 </div>
 
 
-<p>Last time it was an intro lecture.<br />
-Today’s topics:</p>
+<p>Last excercise we did:</p>
+<ul>
+<li>Spoke about the R language and seen examples.</li>
+<li>Reminded to go over basic probability distributions (Normal, Binomial, exc.)</li>
+</ul>
+<p>Today’s topics:</p>
 <ol style="list-style-type: decimal">
 <li>Basic theory which will be the basis for the next weeks.</li>
-<li>Solve a question</li>
+<li>Solve a question.</li>
 </ol>
 <p><strong>HW 01 is out - submission in two weeks from now</strong></p>
 <div id="revision---the-normal-distribution--" class="section level2">
 <h2><span class="header-section-number">0.1</span> Revision - the normal distribution -</h2>
 <p><span class="math display">\[f\left(x | \mu, \sigma^{2}\right)=\frac{1}{\sqrt{2 \pi \sigma^{2}}} e^{-\frac{(x-\mu)^{2}}{2 \sigma^{2}}}\]</span></p>
 </div>
+<div id="expectency-and-variance-of-the-sample-sum-i.i.d" class="section level2">
+<h2><span class="header-section-number">0.2</span> Expectency and Variance of the sample sum (i.i.d)</h2>
+<p>i.i.d stands for independent and identically distributed random variables. <span class="math display">\[E\left(\sum_{i=1}^{n} X_{i}\right)=\sum_{i=1}^{n} E\left(X_{i}\right)= \sum_{i=1}^{n} \mu = n\mu \]</span></p>
+<p><span class="math display">\[V\left(\sum_{i=1}^{n} X_{i}\right)=\sum_{i=1}^{n} V\left(X_{i}\right)= \sum_{i=1}^{n} \sigma^{2} = n\sigma^{2} \]</span></p>
+</div>
 <div id="expectency-and-variance-of-the-sample-mean-i.i.d" class="section level2">
-<h2><span class="header-section-number">0.2</span> Expectency and Variance of the sample mean (i.i.d)</h2>
+<h2><span class="header-section-number">0.3</span> Expectency and Variance of the sample mean (i.i.d)</h2>
 <p><span class="math display">\[E(\bar{X})=E\left(\frac{1}{n} \sum_{i=1}^{n} X_{i}\right)=\frac{1}{n} \sum_{i=1}^{n} E\left(X_{i}\right)=\frac{1}{n} \sum_{i=1}^{n} \mu=\frac{1}{n} \cdot n \mu=\mu\]</span></p>
 <p><span class="math display">\[V(\bar{X})=V\left(\frac{1}{n} \sum_{i=1}^{n} X_{i}\right)=\frac{1}{n^{2}} \sum_{i=1}^{n} V\left(X_{i}\right)=\frac{1}{n^{2}} \sum_{i=1}^{n} \sigma^{2}=\frac{1}{n^{2}} \cdot n \sigma^{2}=\frac{\sigma^{2}}{n}\]</span></p>
 </div>
 <div id="bias-variance-decomposition" class="section level2">
-<h2><span class="header-section-number">0.3</span> Bias variance decomposition</h2>
+<h2><span class="header-section-number">0.4</span> Bias variance decomposition</h2>
 <p><span class="math display">\[\operatorname{MSE}(\hat{\Theta})=E(\hat{\Theta}-\theta)^{2}\]</span> <span class="math display">\[ \operatorname{MSE}(\boldsymbol{\hat{\Theta}})=E[\boldsymbol{\hat{\Theta}}-E(\boldsymbol{\hat{\Theta}})]^{2}+[\theta-E(\boldsymbol{\hat{\Theta}})]^{2}\]</span> <span class="math display">\[=V(\hat{\Theta})+(\text { bias })^{2}\]</span></p>
 <p>The MSE of an estimator is a criterion in choosing the best estimator:</p>
 <ul>
@@ -397,15 +406,16 @@ Today’s topics:</p>
 <p>The distribution of a sample (i.i.d) from the normal distribution (on board). ***</p>
 </div>
 <div id="central-limit-theoram" class="section level2">
-<h2><span class="header-section-number">0.4</span> Central limit theoram</h2>
+<h2><span class="header-section-number">0.5</span> Central limit theoram</h2>
 <p>Let there be n random variable such that - <span class="math display">\[E(X_i) = \mu,V(X_i) = \sigma \]</span> Than, for a large n: <span class="math display">\[\sum_{n} X_{i} \sim N\left(n \mu, n \sigma^{2}\right)\]</span> <span class="math display">\[\bar{X} \sim N\left(\mu, \frac{\sigma^{2}}{n}\right)\]</span></p>
+<p>If <span class="math inline">\(X_i\)</span> is distributed normal than it accounts for every n.</p>
 </div>
 <div id="deriving-an-unbiased-estimate-for-sigma2s2--" class="section level2">
-<h2><span class="header-section-number">0.5</span> Deriving an unbiased estimate for <span class="math inline">\(\sigma^{2}(S^{2})\)</span> -</h2>
+<h2><span class="header-section-number">0.6</span> Deriving an unbiased estimate for <span class="math inline">\(\sigma^{2}(S^{2})\)</span> -</h2>
 <p><span class="math display">\[E\left(S^{2}\right)=E\left[\frac{\sum_{i=1}^{n}\left(X_{i}-\bar{X}\right)^{2}}{n-1}\right]=\frac{1}{n-1} E \sum_{i=1}^{n}\left(X_{i}-\bar{X}\right)^{2}\]</span></p>
 <p><span class="math display">\[=\frac{1}{n-1} E \sum_{i=1}^{n}\left(X_{i}^{2}+\bar{X}^{2}-2 \bar{X} X_{i}\right)=\frac{1}{n-1} E\left(\sum_{i=1}^{n} X_{i}^{2}-n \bar{X}^{2}\right)\]</span></p>
 <p><span class="math display">\[=\frac{1}{n-1}\left[\sum_{i=1}^{n} E\left(X_{i}^{2}\right)-n E\left(\bar{X}^{2}\right)\right]\]</span></p>
-<p>Reacall that - <span class="math inline">\(E\left(X_{i}^{2}\right)=\mu^{2}+\sigma^{2}\)</span> and <span class="math inline">\(\mu^{2}+\sigma^{2} / n\)</span> So - <span class="math display">\[E\left(S^{2}\right)=\frac{1}{n-1}\left[\sum_{i=1}^{n}\left(\mu^{2}+\sigma^{2}\right)-n\left(\mu^{2}+\sigma^{2} / n\right)\right]\]</span> <span class="math display">\[=\frac{1}{n-1}\left(n \mu^{2}+n \sigma^{2}-n \mu^{2}-\sigma^{2}\right) = \sigma^{2} \]</span></p>
+<p>Recall from the probability course - <span class="math display">\[V(X) = E(X^2) - [E(X)]^2\]</span> We can deduce that <span class="math inline">\(E\left(X_{i}^{2}\right)=\mu^{2}+\sigma^{2}\)</span> and <span class="math inline">\(E(\bar{x}) =\mu^{2}+\sigma^{2} / n\)</span> So - <span class="math display">\[E\left(S^{2}\right)=\frac{1}{n-1}\left[\sum_{i=1}^{n}\left(\mu^{2}+\sigma^{2}\right)-n\left(\mu^{2}+\sigma^{2} / n\right)\right]\]</span> <span class="math display">\[=\frac{1}{n-1}\left(n \mu^{2}+n \sigma^{2}-n \mu^{2}-\sigma^{2}\right) = \sigma^{2} \]</span></p>
 </div>
 <div id="some-distribuitons-that-we-will-use-in-the-future" class="section level1">
 <h1><span class="header-section-number">1</span> Some distribuitons that we will use in the future</h1>
@@ -421,8 +431,8 @@ Today’s topics:</p>
 <strong>We will also use the F distribution</strong></p>
 </div>
 </div>
-<div id="q1---attached-in-pdf" class="section level1">
-<h1><span class="header-section-number">2</span> Q1 - Attached in PDF</h1>
+<div id="q1-q2---attached-in-pdf" class="section level1">
+<h1><span class="header-section-number">2</span> Q1 &amp; Q2 - Attached in PDF</h1>
 </div>
 
 
