@@ -1,18 +1,27 @@
 ---
 title: 'Introduction to Statistics and Data Analysis with R - Homework #1'
 author: "Adi Sarid and Afek Adler"
-date: '2019-11-03'
+date: "`r Sys.Date()`"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
-This homework sheet is due on the 18th of November. You may submit your answers in pairs.
+This homework sheet is due on the 2020-04-01 on 24:00.  You may submit your answers in pairs.
 Submission will be performed electronically via the moodle.
 
 We urge you to start solving this sheet as soon as possible and, if you have any questions, come to visit us in reception hours next week.
 
 The exercise is divided into two parts: Technical (programming in `R`) and theoretical.
+
+Submit the following questions:
+
+   * Q1 - only 3.6.1.6 (specified later).
+   * Q2
+   * Q4 
+   * Q5
+   
+   
 
 # Technical (programming in `R`)
 
@@ -22,9 +31,10 @@ Please read the following chapters in [R4DS - https://r4ds.had.co.nz](https://r4
 
    1. [Introduction](https://r4ds.had.co.nz/introduction.html)
    2. [Explore - Introduction](https://r4ds.had.co.nz/explore-intro.html)
-   3. [Explore - Data visualizations](https://r4ds.had.co.nz/data-visualisation.html) **up to 3.6**
+   3. [Explore - Data visualizations](https://r4ds.had.co.nz/data-visualisation.html)
+   4. [Workflow](https://r4ds.had.co.nz/workflow-basics.html)
    
-Solve exercise 3.6.1, and **submit the code for question 6** ("*Recreate the R code necessary to generate the following graphs*").
+Solve exercise 3.6.1,3.81, 4.4. **submit the code for question 6 (in 3.6.1)**  ("*Recreate the R code necessary to generate the following graphs*").
 
 ## Question 2:
 
