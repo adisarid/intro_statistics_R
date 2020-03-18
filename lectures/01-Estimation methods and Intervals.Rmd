@@ -154,9 +154,9 @@ We talked about *quantiles*/*percentiles*/*median*:
 
 # Why $S^2$ is an unbiased estimator to $\sigma^2$?
 
-$S^2$ is unbiased (you actually saw this in the exercise):
+$S^2$ is unbiased:
 
-$$ES^2=\frac{1}{n-1}E{\sum_{i=1}^n(X_i-\bar{X})^2}=\frac{1}{n-1}E{\sum_{i=1}^n(x_i^2+\bar{X}^2-2\bar{X}x_i)}$$
+$$ES^2=\frac{1}{n-1}E{\sum_{i=1}^n(x_i-\bar{X})^2}=\frac{1}{n-1}E{\sum_{i=1}^n(x_i^2+\bar{X}^2-2\bar{X}x_i)}=$$
 
 --
 
@@ -208,7 +208,7 @@ rv <- tibble(x = rnorm(500, mean = 0, sd = 5)) %>%
   mutate(cumsum_x = cumsum(x),
          n = seq_along(x),
          average_x = cumsum_x/n,
-         sample_var = (1/(n-1))*cumsum(x^2-average_x^2)) %>% 
+         sample_var = (1/(n-1))*cumsum((x-average_x)^2)) %>% 
   slice(-1)
 
 ggplot(rv, aes(x = n, y = sample_var)) + 
@@ -602,7 +602,7 @@ $$\pi(p|x) = \frac{f(x|p)\pi(p)}{\int{f(x|p)\pi(p)dp}}=\frac{\left(\begin{array}
 
 Take for example $x=1$ then:
 
-$$p^*=\int_0^1\pi(p|x=1)dp=3\left(\begin{array}{l}2\\1\end{array}\right)\int_0^1{p\times p^1(1-p)^{2-1}dp}=1/2$$
+$$p^*=\int_0^1p\times\pi(p|x=1)dp=3\left(\begin{array}{l}2\\1\end{array}\right)\int_0^1{p\times p^1(1-p)^{2-1}dp}=1/2$$
 
    * Exactly the same we would have got with $\bar{p}=x/n=1/2$.
 
