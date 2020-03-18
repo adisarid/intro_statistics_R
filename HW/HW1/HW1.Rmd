@@ -3,8 +3,8 @@ title: 'Introduction to Statistics and Data Analysis with R - Homework #1'
 author: "Adi Sarid and Afek Adler"
 date: '2019-11-03'
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 This homework sheet is due on the 18th of November. You may submit your answers in pairs.

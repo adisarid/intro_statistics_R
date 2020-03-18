@@ -1,5 +1,5 @@
 ---
-title: "EX 02 - Data Handling & MLE"
+title: "EX 03 - Data Handling & MLE"
 author: "Afek Adler"
 date: "`r Sys.Date()`"
 output:
@@ -14,7 +14,7 @@ knitr::opts_chunk$set
 
 Last excercise we did:
 
-  * Expectency and Variance of the sample mean
+  * Expectency and Variance of the sample mean and sample sum
   * Central limit theoram 
   * Bias variance decomposition of a point estimator
   * Derived an unbiased estimate for $\sigma^{2}(S^{2})$ 
@@ -22,7 +22,6 @@ Last excercise we did:
   
 Today we will:
 
-  * Do a quick recap on MSE because there was an interesting discussion about it in the last excercise
   * Cover methods for point estimattion
   * Get to know `dplyr` package
   * Try to develop a feeling for bayesian estimation.
@@ -107,6 +106,7 @@ delta <- abs(pmax- (49/80))
 delta
 ```
 
+# HW1 q3
 
 # Best Pracitces for data Data handling with R
 

@@ -1,0 +1,288 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Introduction to Statistics and Data Analysis with R - Homework \#1},
+  pdfauthor={Adi Sarid and Afek Adler},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+
+\title{Introduction to Statistics and Data Analysis with R - Homework \#1}
+\author{Adi Sarid and Afek Adler}
+\date{2019-11-03}
+
+\begin{document}
+\maketitle
+
+This homework sheet is due on the 18th of November. You may submit your
+answers in pairs. Submission will be performed electronically via the
+moodle.
+
+We urge you to start solving this sheet as soon as possible and, if you
+have any questions, come to visit us in reception hours next week.
+
+The exercise is divided into two parts: Technical (programming in
+\texttt{R}) and theoretical.
+
+\hypertarget{technical-programming-in-r}{%
+\section{\texorpdfstring{Technical (programming in
+\texttt{R})}{Technical (programming in R)}}\label{technical-programming-in-r}}
+
+\hypertarget{question-1}{%
+\subsection{Question 1:}\label{question-1}}
+
+Please read the following chapters in \href{https://r4ds.had.co.nz}{R4DS
+- https://r4ds.had.co.nz}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \href{https://r4ds.had.co.nz/introduction.html}{Introduction}
+\item
+  \href{https://r4ds.had.co.nz/explore-intro.html}{Explore -
+  Introduction}
+\item
+  \href{https://r4ds.had.co.nz/data-visualisation.html}{Explore - Data
+  visualizations} \textbf{up to 3.6}
+\end{enumerate}
+
+Solve exercise 3.6.1, and \textbf{submit the code for question 6}
+(``\emph{Recreate the R code necessary to generate the following
+graphs}'').
+
+\hypertarget{question-2}{%
+\subsection{Question 2:}\label{question-2}}
+
+In this question, you will get acquainted (or reminded of) the following
+distributions:
+
+\begin{itemize}
+\tightlist
+\item
+  Normal distribution \(N(\mu, \sigma)\)
+\item
+  Student's t \(t_{\operatorname{df}}\)
+\item
+  Chi-square \(\chi^2\)
+\end{itemize}
+
+Complete the blanks (\texttt{\_\_\_}) in the following code, to generate
+\(n=100\) random values from each of these distributions with:
+
+\begin{itemize}
+\tightlist
+\item
+  Normal with \(\mu=3, \sigma = 1.5\)
+\item
+  Student's-t with \(\operatorname{df}=10\)
+\item
+  Chi-square with \(\operatorname{df}=12\)
+\end{itemize}
+
+Tip: if you type a \texttt{?} followed by the command name in the
+console, you will see its documentation. I.e., type \texttt{?rnorm} to
+see the help on the random number generator for the normal distribution.
+
+\hypertarget{complete-the-blanks}{%
+\subsubsection{Complete the blanks:}\label{complete-the-blanks}}
+
+\begin{verbatim}
+set.seed(0)  # we set the seed of the random generator so that your results will be consistent
+
+random_normal <- rnorm(n = ___, mean = ___, ___ = 1.5)
+random_t <- rt(n = ___, df = ___)
+random_chi <- rchisq(n = ___, df = ___)
+\end{verbatim}
+
+\hypertarget{plot-by-completing-the-blanks}{%
+\subsubsection{Plot by completing the
+blanks:}\label{plot-by-completing-the-blanks}}
+
+Plot each of these samples using \texttt{ggplot2}. Think, what
+\texttt{geom} would you use to plot the distribution of the sample?
+
+\begin{verbatim}
+
+# if you don't have the tidyverse package first install by running
+# install.packages("tidyverse")
+
+library(tidyverse) 
+
+all_random_data <- tibble(random_normal, random_t, random_chi)
+
+ggplot(all_random_data, aes(random_normal)) + 
+  geom____()
+
+ggplot(all_random_data, aes(random_t)) + 
+  ___
+
+ggplot(all_random_data, aes(random_chi)) + 
+  ___
+\end{verbatim}
+
+\hypertarget{answer-these}{%
+\subsubsection{Answer these:}\label{answer-these}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Is the original distribution symmetric? does the plots look symmetric,
+  why?
+\item
+  Generally speaking (not relating to the specific sample you obtained),
+  what is the relationship between the mean and median of each of these
+  distributions?
+\item
+  What would happen if we increase \(n\) from 100 to 1000?
+
+  \begin{enumerate}
+  \def\labelenumii{\alph{enumii}.}
+  \tightlist
+  \item
+    How would the distribution look like?
+  \item
+    Why?
+  \item
+    Modify your code and visualize the updates.
+  \end{enumerate}
+\end{enumerate}
+
+\hypertarget{theoretical}{%
+\section{Theoretical}\label{theoretical}}
+
+\hypertarget{question-3}{%
+\subsection{Question 3:}\label{question-3}}
+
+In the smallest branch of the smallest bank, the number of customers in
+the queue (waiting customers), is a random variable \(Q\in\{0,1,2\}\).
+You cannot have more than 2 customers waiting in the queue, because
+the've been downsizing and the branch is really small.
+
+The distribution of \(Q\) is dependent on a parameter \(\theta\).
+
+\[Q = \left\{\begin{array}{ll}0 & \text{w.p. }4\theta^2\\
+1 & \text{w.p. }4\theta-8\theta^2\\
+2 & \text{w.p. }1-4\theta+4\theta^2\end{array}\right.\]
+
+The bank's headquarters randomly sampled the queue during five
+independent times. The results were \(\{0,1,0,0,0\}\) customers in the
+queue.
+
+\hypertarget{answer-the-following-questions}{%
+\subsubsection{Answer the following
+questions:}\label{answer-the-following-questions}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Find an unbiased estimator \(\hat{\Theta}\) for the parameter
+  \(\theta\) for a sample of size \(n=5\). What is \(\hat{\Theta}\)
+  based on the current sample? (you should get 0.45)
+\item
+  Find an unbiased estimator for the expected number of customers
+  waiting in the queue based on a sample of size \(n=5\). What is the
+  estimate of the expected number of customers, based on the current
+  sample? (0.2)
+\item
+  Find an estimator for \(\theta\) in the maximum likelihood estimation
+  method. (0.45)
+\end{enumerate}
+
+\hypertarget{question-4}{%
+\subsection{Question 4:}\label{question-4}}
+
+let \(X\) be a random Bernoulli variable. It's probability density
+function can be formulated as follows:
+
+\[
+f(x ; p)=\left\{\begin{array}{ll}{p^{x}(1-p)^{1-x}} & {x=0,1} \\ {0} & {\text { otherwise }}\end{array}\right.
+\]
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Show that \(X=1\) with probability \(p\) and that \(X=0\) with
+  probability \(1-p\)
+\item
+  Suppose we get a random sample of size \(n\) from a Bernulli
+  distribution. What is the likelihood function \(L(p)\) of the sample?
+  (what is the probability that
+  \(P\left(X_{1}=x_{1}, X_{2}=x_{2}, \ldots, X_{n}=x_{n}\right)\))
+\item
+  Apply the \(\log\) transformation on this likelihood function, what do
+  you get?
+\item
+  Find the \(p\) that maximizes \(\log L(p)\)
+\end{enumerate}
+
+\hypertarget{question-5}{%
+\subsection{Question 5:}\label{question-5}}
+
+For the following probability density function:
+\[f(x)=\left\{\begin{array}{ll}{\frac{2}{\theta^{2}}(\theta-x)} & {0<x<\theta} \\ {0} & {\text { else }}\end{array}\right.\]
+Find \(\theta\) by the method of moments.
+
+\hypertarget{question-6}{%
+\subsection{Question 6:}\label{question-6}}
+
+For the exponential distribution:
+\[f(x ; \lambda)=\left\{\begin{array}{ll}{\lambda e^{-\lambda x}} & {x \geq 0} \\ {0} & {x<0}\end{array}\right.\]
+Find \(\lambda\) by MLE and by the Method of Moments.
+
+\end{document}

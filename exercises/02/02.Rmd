@@ -6,17 +6,29 @@ output:
   html_document :  
     number_sections: TRUE
 ---
-Last time it was an intro lecture. \
+Last excercise we did:
+
+  * Spoke about the R language and seen examples.
+  * Reminded to go over basic probability distributions (Normal, Binomial, exc.)
+
+
 Today's topics:
 
   1. Basic theory which will be the basis for the next weeks.
-  2. Solve a question
+  2. Solve a question.
 
 **HW 01 is out - submission in two weeks from now**
 
 
 ## Revision - the normal distribution - 
 \[f\left(x | \mu, \sigma^{2}\right)=\frac{1}{\sqrt{2 \pi \sigma^{2}}} e^{-\frac{(x-\mu)^{2}}{2 \sigma^{2}}}\]
+
+
+## Expectency and Variance of the sample sum (i.i.d)
+i.i.d stands for independent and identically distributed random variables.
+\[E\left(\sum_{i=1}^{n} X_{i}\right)=\sum_{i=1}^{n} E\left(X_{i}\right)= \sum_{i=1}^{n} \mu = n\mu \]
+
+\[V\left(\sum_{i=1}^{n} X_{i}\right)=\sum_{i=1}^{n} V\left(X_{i}\right)= \sum_{i=1}^{n} \sigma^{2} = n\sigma^{2} \]
 
 ## Expectency and Variance of the sample mean (i.i.d)
 \[E(\bar{X})=E\left(\frac{1}{n} \sum_{i=1}^{n} X_{i}\right)=\frac{1}{n} \sum_{i=1}^{n} E\left(X_{i}\right)=\frac{1}{n} \sum_{i=1}^{n} \mu=\frac{1}{n} \cdot n \mu=\mu\]
@@ -47,6 +59,8 @@ Than, for a large n:
 \[\bar{X} \sim N\left(\mu, \frac{\sigma^{2}}{n}\right)\]
 
 
+If $X_i$ is distributed normal than it accounts for every n.
+
 ## Deriving an unbiased estimate for $\sigma^{2}(S^{2})$ - 
 
 \[E\left(S^{2}\right)=E\left[\frac{\sum_{i=1}^{n}\left(X_{i}-\bar{X}\right)^{2}}{n-1}\right]=\frac{1}{n-1} E \sum_{i=1}^{n}\left(X_{i}-\bar{X}\right)^{2}\]
@@ -55,7 +69,9 @@ Than, for a large n:
 
 \[=\frac{1}{n-1}\left[\sum_{i=1}^{n} E\left(X_{i}^{2}\right)-n E\left(\bar{X}^{2}\right)\right]\]
 
-Reacall that - $E\left(X_{i}^{2}\right)=\mu^{2}+\sigma^{2}$ and $\mu^{2}+\sigma^{2} / n$
+Recall from the probability course - 
+\[V(X) = E(X^2) - [E(X)]^2\]
+We can deduce that $E\left(X_{i}^{2}\right)=\mu^{2}+\sigma^{2}$ and $E(\bar{x}) =\mu^{2}+\sigma^{2} / n$
 So - 
 \[E\left(S^{2}\right)=\frac{1}{n-1}\left[\sum_{i=1}^{n}\left(\mu^{2}+\sigma^{2}\right)-n\left(\mu^{2}+\sigma^{2} / n\right)\right]\]
 \[=\frac{1}{n-1}\left(n \mu^{2}+n \sigma^{2}-n \mu^{2}-\sigma^{2}\right) = \sigma^{2} \]
@@ -78,11 +94,10 @@ In probability theory and statistics, the chi-square distribution (also chi-squa
 ```{r X^2, echo=FALSE, out.width = '50%'}
 knitr::include_graphics(knitr::include_graphics('x^2.png'))
 ```
-\
+
 **We will also use the F distribution**
 
-# Q1 - Attached in PDF
-
+# Q1 & Q2 - Attached in PDF
 
 
 
