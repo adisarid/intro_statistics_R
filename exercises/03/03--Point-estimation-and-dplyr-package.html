@@ -11,7 +11,7 @@
 
 <meta name="author" content="Afek Adler" />
 
-<meta name="date" content="2020-03-14" />
+<meta name="date" content="2020-03-18" />
 
 <title>EX 03 - Data Handling &amp; MLE</title>
 
@@ -365,7 +365,7 @@ summary {
 
 <h1 class="title toc-ignore">EX 03 - Data Handling &amp; MLE</h1>
 <h4 class="author">Afek Adler</h4>
-<h4 class="date">2020-03-14</h4>
+<h4 class="date">2020-03-18</h4>
 
 </div>
 
@@ -380,7 +380,6 @@ summary {
 </ul>
 <p>Today we will:</p>
 <ul>
-<li>Do a quick recap on MSE because there was an interesting discussion about it in the last excercise</li>
 <li>Cover methods for point estimattion</li>
 <li>Get to know <code>dplyr</code> package</li>
 <li>Try to develop a feeling for bayesian estimation.</li>
@@ -436,8 +435,11 @@ delta</code></pre>
 <pre><code>## [1] 6.814623e-07</code></pre>
 </div>
 </div>
+<div id="hw1-q3" class="section level1">
+<h1><span class="header-section-number">3</span> HW1 q3</h1>
+</div>
 <div id="best-pracitces-for-data-data-handling-with-r" class="section level1">
-<h1><span class="header-section-number">3</span> Best Pracitces for data Data handling with R</h1>
+<h1><span class="header-section-number">4</span> Best Pracitces for data Data handling with R</h1>
 <p>R main datatypes:</p>
 <ul>
 <li>vectors</li>
@@ -543,7 +545,7 @@ delta</code></pre>
 <hr />
 <p><strong>At home - find a better way to print the classes and the % of missing values in R</strong> <br></p>
 <div id="select-picks-variables-based-on-their-names." class="section level2">
-<h2><span class="header-section-number">3.1</span> <code>select()</code> picks variables based on their names.</h2>
+<h2><span class="header-section-number">4.1</span> <code>select()</code> picks variables based on their names.</h2>
 <pre class="r"><code>flight_ditance_airtime &lt;- flights %&gt;% select( distance, air_time) 
 flight_ditance_airtime %&gt;% head(2)</code></pre>
 <pre><code>## # A tibble: 2 x 2
@@ -553,7 +555,7 @@ flight_ditance_airtime %&gt;% head(2)</code></pre>
 ## 2     1416      227</code></pre>
 </div>
 <div id="mutate-adds-new-variables-that-are-functions-of-existing-variables." class="section level2">
-<h2><span class="header-section-number">3.2</span> <code>mutate()</code> adds new variables that are functions of existing variables.</h2>
+<h2><span class="header-section-number">4.2</span> <code>mutate()</code> adds new variables that are functions of existing variables.</h2>
 <pre class="r"><code>flight_ditance_airtime %&gt;% mutate(mean_speed = distance/air_time) %&gt;% head(2)</code></pre>
 <pre><code>## # A tibble: 2 x 3
 ##   distance air_time mean_speed
@@ -569,7 +571,7 @@ flight_ditance_airtime %&gt;% head(2)</code></pre>
 ## 2       6.24</code></pre>
 </div>
 <div id="filter-picks-cases-based-on-their-values." class="section level2">
-<h2><span class="header-section-number">3.3</span> <code>filter()</code> picks cases based on their values.</h2>
+<h2><span class="header-section-number">4.3</span> <code>filter()</code> picks cases based on their values.</h2>
 <pre class="r"><code>flights %&gt;% filter(is.na(dep_delay)) %&gt;% head(2)</code></pre>
 <pre><code>## # A tibble: 2 x 19
 ##    year month   day dep_time sched_dep_time dep_delay arr_time sched_arr_time
@@ -581,7 +583,7 @@ flight_ditance_airtime %&gt;% head(2)</code></pre>
 ## #   hour &lt;dbl&gt;, minute &lt;dbl&gt;, time_hour &lt;dttm&gt;</code></pre>
 </div>
 <div id="arrange-picks-cases-based-on-their-values." class="section level2">
-<h2><span class="header-section-number">3.4</span> <code>arrange()</code> picks cases based on their values.</h2>
+<h2><span class="header-section-number">4.4</span> <code>arrange()</code> picks cases based on their values.</h2>
 <pre class="r"><code>flights %&gt;% arrange(desc(month)) %&gt;% head(2)</code></pre>
 <pre><code>## # A tibble: 2 x 19
 ##    year month   day dep_time sched_dep_time dep_delay arr_time sched_arr_time
@@ -593,7 +595,7 @@ flight_ditance_airtime %&gt;% head(2)</code></pre>
 ## #   hour &lt;dbl&gt;, minute &lt;dbl&gt;, time_hour &lt;dttm&gt;</code></pre>
 </div>
 <div id="summarize-reduces-multiple-values-down-to-a-single-summary." class="section level2">
-<h2><span class="header-section-number">3.5</span> <code>summarize()</code> reduces multiple values down to a single summary.</h2>
+<h2><span class="header-section-number">4.5</span> <code>summarize()</code> reduces multiple values down to a single summary.</h2>
 <pre class="r"><code>by_month &lt;- group_by(flights,month)
 by_month %&gt;% summarise(count = n()) %&gt;% 
   ggplot( mapping = aes(x = month, y = count)) + geom_bar(stat=&quot;identity&quot;) +  coord_cartesian(ylim = c(2*10^4, 3*10^4))</code></pre>
@@ -611,7 +613,7 @@ by_month %&gt;% summarise(count = n()) %&gt;%
 </div>
 </div>
 <div id="bayesian-estimation" class="section level1">
-<h1><span class="header-section-number">4</span> Bayesian estimation</h1>
+<h1><span class="header-section-number">5</span> Bayesian estimation</h1>
 <p>We want to minimize with respect to a given loss function - <span class="math display">\[\int L(\hat{\theta}- \theta)*p(\theta|x)d\theta\]</span></p>
 <p>In the lecture, we have seen that when <span class="math inline">\(L(\hat{\theta},\theta) = (\hat{\theta}- \theta)^2\)</span> than <span class="math inline">\(\hat{\theta} = E(posterier)\)</span>, other types of loss functions will derive different estimators (like we have seen above). The logic of this method is as follows - we have somekind of a distribution over <span class="math inline">\(\theta\)</span>, but we need to choose only one of those. So we formulate an objective function and minimze it with respect to the parameter that we want to find. The most used ones are the mean, median, and common of that distribution, and as we said, thet are the bayesian estimators for different loss functions.</p>
 </div>
