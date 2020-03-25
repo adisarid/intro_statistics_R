@@ -9,14 +9,23 @@ output:
 
 Last excercise we did:
 
-  * Cover methods for point estimattion
+  * Cover methods for point estimation
   * Get to know dplyr package
   * Developed a feeling for bayesian estimation
 
 Today we will:
 
+  * What make an estimator good?
   * Talk on interavel estimation
   * Go throw a reminder on MLE with a motivation for machine learning (a mixture process)
+
+# Another MLE example
+Q1 is in the attached file
+
+# Charactristics of a good estimator
+
+  * Unbiased
+  * Consistency - It's variance is tending to 0 as n (number of samples) goes to infinity.
 
 
 # Interval Estimation
@@ -69,7 +78,7 @@ An online advertising company is doing an ab testing for a new advertisement and
 because \[ p(1-p) \leq 0.5*0.5  \ \forall p \in \{0,1\} \]
 
 If we know for example that the CTR is bounded by 4% than:
-\[n \geq  240 = \frac{0.5*0.5}{0.00016} \geq \frac{\hat{p}\hat{q}}{0.00016}\]
+\[n \geq  240 = \frac{0.04*0.96}{0.00016} \geq \frac{\hat{p}\hat{q}}{0.00016}\]
 
 # CL Verification
 Let's verify that indeed when we bouild CI (and..our assumptions are correct) than $1-\alpha$ our parameter is inside the CI:  
@@ -91,7 +100,7 @@ for (i in 1:N_tests)
 print(counter/N_tests)
 ```
 
-# MLE motivation
+# MLE motivation (Not for the exam)
 
 Motivation example: solving MLE with the expectation maximization algorithm for GMM
 ## MLE for Human Hight
