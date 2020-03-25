@@ -72,6 +72,76 @@ knitr::opts_chunk$set(fig.dim=c(3, 3), fig.align = "center")
 library(tidyverse)
 ```
 
+# Interim summary: probability concepts/reminder
+
+A short recap of probability theoretical concepts we have used so far:
+
+   * A random variable $X$ - is a function from a set of (probabilistic) outcomes into a measureable space (e.g., real numbers).
+
+   * For the most part, we don't think of it as a function but as an object which can get different values.
+
+--
+
+   * A random variable has a probability distribution $P_X(x)$ function which describes the probability of getting different values, i.e., $P(X\leq x), P(X=x), P(X>x)$, etc.
+   
+   * A random variable can be either discrete or continuous.
+
+--
+
+   * If the random variable is continuous (can get any real value in a certain range), then it also has a **density function**: $f_X(x)=P(X=x)$. We also have a cumulative distribution function defined by $F_X(x)=P(X\leq x)$.
+
+--
+
+   * Two random variables are considered **independent** if $P_{X,Y}(x,y)=P_X(x)\cdot P_Y(y)$
+
+---
+
+# Interim summary: probability concepts/reminder (2)
+
+These concepts allow us to define the following:
+   
+   * Expectancy $E[X]$ is the expected value of a random variable, defined as:
+      
+$$\int_{-\infty}^\infty{xf(x)dx}$$
+   * This is equivalent to checking each possible value of $X$ and multiplying it by its weight.
+      
+   * In the discrete case this becomes a sum: 
+      
+$$\sum_{x=-\infty}^\infty{xP(X=x)}$$
+--
+
+   * Some properties of expectancy:
+   
+      * A number $a$: $Ea=a$
+      * It is linear $E[aX+bY + c]=aE[X]+bE[Y] + c$
+      * If two random variables $X,Y$ are **independent**, then $E[XY]=E[X]E[Y]$.
+   
+   * We use the letter $\mu$ for the expected value.
+      
+---
+
+# Interim summary: probability concepts/reminder (3)
+
+   * The dispersion of a random variable is measured by its **Variance** $\operatorname{Var}(X)$.
+   
+   * The variance is defined as $E\left[(X-E[X])^2\right]$, i.e., the **expected** squared distance from the random variable to its expectancy (how far is it from its expected value).
+   
+   * It can be shown that $E\left[(X-E[X])^2\right]=EX^2-(EX)^2$.
+   
+   * It holds the following properties: $\operatorname{Var}(aX+b)=a^2\operatorname{Var}(X)$.
+
+--
+
+   * If $X,Y$ are independent then $\operatorname{Var}(X+Y)=\operatorname{Var}(X)+\operatorname{Var}(Y)$
+   
+   * We use the letter $\sigma^2$ for the variance.
+   
+   * The standard deviation is the square root of the variance, i.e., $\sigma = \sqrt{\operatorname{Var}(X)}$
+   
+   * Moments: $E[X]$ is called the first moment, $E[X^2]$ is called the second moment, $E[X^k]$ is called the $k$-th moment.
+
+---
+
 # Reminder from previous lecture
 
 Last lesson we talked about:
@@ -82,13 +152,13 @@ Last lesson we talked about:
 
 --
 
-   * We discussed three methods of estimation
+   * We discussed two methods of estimation
    
       1. Maximum Likelihood Estimation (MLE) $L(\theta)=\prod_i{f(x_i;\theta)}$; examples: Poisson, Normal.
       
-      2. Bayesian method $\pi(\theta|x)=\frac{f(x|\theta)\pi(\theta)}{\int{f(x|\theta)\pi(\theta)}d\theta}$; examples: discrete/uniform for estimating a population proportion
+      2. The moment method (use $EX^k=\sum{x_i^k}$ across $k=1,2,\ldots$)
       
-      3. The moment method (use $EX^k=\sum{x_i^k}$ across $k=1,2,\ldots$)
+      3. Another method is called the Bayesian method (which we did not discuss).
    
 --
 
