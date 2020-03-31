@@ -1,0 +1,588 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={EX 03 - Data Handling \& MLE},
+            pdfauthor={Afek Adler},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\providecommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{EX 03 - Data Handling \& MLE}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{Afek Adler}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+      \predate{\centering\large\emph}
+  \postdate{\par}
+    \date{2020-03-22}
+
+
+\begin{document}
+\maketitle
+
+Last excercise we did:
+
+\begin{itemize}
+\tightlist
+\item
+  Expectency and Variance of the sample mean and sample sum
+\item
+  Central limit theoram
+\item
+  Bias variance decomposition of a point estimator
+\item
+  Derived an unbiased estimate for \(\sigma^{2}(S^{2})\)
+\item
+  Covered the student's t-distribution and chi square distribution
+\end{itemize}
+
+Today we will:
+
+\begin{itemize}
+\tightlist
+\item
+  Cover methods for point estimattion
+\item
+  Get to know \texttt{dplyr} package
+\item
+  Try to develop a feeling for bayesian estimation.
+\end{itemize}
+
+\hypertarget{loss-function}{%
+\section{Loss function}\label{loss-function}}
+
+A quick recap of the MSE of an estimator:
+\[\operatorname{MSE}(\hat{\Theta})=E((\hat{\Theta}-\theta)^{2})\]
+
+The squared loss did not come from heaven but from convienince. for
+example, another good criterion can be:
+
+\[\operatorname{MAE}(\hat{\Theta})=E(|\hat{\Theta}-\theta)|)\]
+
+Or many other types of error function. Also, at the lecture you have
+seen an \emph{example} of Bayesian estimation where
+\(\hat{\theta}_{\mathrm{MMSE}}=\int \theta \mathrm{p}(\theta | \mathbf{x}) \mathrm{d} \theta=\mathrm{E}(\theta | \mathbf{x})\)
+,the derivation of this formula was taken under assumption of a square
+loss but there are also many other bayesian estimators like the maximum
+a posteriori estimation -
+\(\hat{\theta}_{\mathrm{MAP}}=\underset{\theta}{\arg \max } p(\mathbf{\theta}| x)\).
+In the end of the excercise we will go deeper into this subject.
+
+\hypertarget{point-estimaion}{%
+\section{Point estimaion}\label{point-estimaion}}
+
+\hypertarget{some-nice-to-have-charactraists}{%
+\subsection{Some nice to have
+charactraists}\label{some-nice-to-have-charactraists}}
+
+\begin{itemize}
+\tightlist
+\item
+  Unbiased. If \(E(\hat{\theta}) = \theta\)
+\item
+  Consistent. If the varaince of the estimator \textasciitilde{}0 when N
+  tends to \(\infty\)
+\end{itemize}
+
+Remember that the sample mean is unbiased estimator of the population
+mean
+
+\hypertarget{point-estimates-with-the-method-of-moments-mom}{%
+\subsection{Point estimates with the method of moments
+(MOM)}\label{point-estimates-with-the-method-of-moments-mom}}
+
+The first moment
+\[E(X)=\frac{\sum_{i=1}^{n} X_{i}}{n} \Rightarrow E(X)=\bar{X}\] The
+Second moment
+\[E\left(X^{2}\right)=\frac{\sum_{i=1}^{n} X_{i}^{2}}{n} \Rightarrow \]
+\[V(X)=E\left(X^{2}\right)-E^{2}(X) \Rightarrow V(X)=\frac{\sum_{i=1}^{n} X_{i}^{2}}{n}-(\bar{X})^{2}\]
+
+\textbf{Q1: MOM}
+
+Let \[X =  \mathcal{U}\left(\theta , \theta + 6 \right)\] Estimate
+\(\theta\) with the method of moments\\
+
+Therfore \[E(X) =  (\theta + \theta+ 6 )/2 = \theta +3\] And
+\[E(X) = \bar{X} = \theta +3\] By the equation of the first moment.
+Therfore \[\hat{\theta} = \bar{X}  -3\]
+
+\hypertarget{point-estimates-with-the-mazimum-likelihood-estimation-mle}{%
+\subsection{Point estimates with the mazimum likelihood estimation
+(MLE)}\label{point-estimates-with-the-mazimum-likelihood-estimation-mle}}
+
+In statistics, maximum likelihood estimation (MLE) is a method of
+estimating the parameters of a probability distribution by maximizing a
+likelihood function, so that under the assumed statistical model the
+observed data is most probable. The point in the parameter space that
+maximizes the likelihood function is called the maximum likelihood
+estimate. The logic of maximum likelihood is both intuitive and
+flexible, and as such the method has become a dominant means of
+statistical inference.
+
+If the likelihood function is differentiable, the derivative test for
+determining maxima can be applied. In some cases, the first-order
+conditions of the likelihood function can be solved explicitly; for
+instance, the ordinary least squares estimator maximizes the likelihood
+of the linear regression model. Under most circumstances, however,
+numerical methods will be necessary to find the maximum of the
+likelihood function. (``Wikipedia'')
+
+\textbf{Q2: MLE} With the binomial distribution - suppose we had a trial
+with 49 success ou of 80.
+
+\begin{equation}
+L(p)=f_{D}(\mathrm{H}=49 | p)=\left(\begin{array}{c}{80} \\ {49}\end{array}\right) p^{49}(1-p)^{31}\end{equation}
+\begin{equation}
+0=\frac{\partial}{\partial p}\left(\left(\begin{array}{c}{80} \\ {49}\end{array}\right) p^{49}(1-p)^{31}\right) , \{discard binomial coefficient\}
+\end{equation} \begin{equation}
+0=49 p^{48}(1-p)^{31}-31 p^{49}(1-p)^{30}, \{(uv)` = u`v +v`u\}
+\end{equation} \begin{equation}
+=p^{48}(1-p)^{30}[49(1-p)-31 p]
+\end{equation} \begin{equation}
+=p^{48}(1-p)^{30}[49-80 p]
+\end{equation} Can be solved also by applying log on the likelihood.
+
+It's clear that the maximum is at p = 49/80. But let's see how we do it
+in R using the bulit in
+\href{ehttps://stat.ethz.ch/R-manual/R-devel/library/stats/html/optimize.html}{optimize}
+function:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{likelihood <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(p) \{}
+\NormalTok{  p}\OperatorTok{^}\DecValTok{49}\OperatorTok{*}\NormalTok{((}\DecValTok{1}\OperatorTok{-}\NormalTok{p)}\OperatorTok{^}\DecValTok{31}\NormalTok{)}
+\NormalTok{\}}
+\NormalTok{tolerance <-}\StringTok{ }\DecValTok{10}\OperatorTok{^}\NormalTok{(}\OperatorTok{-}\DecValTok{4}\NormalTok{) }
+\NormalTok{pmax <-}\StringTok{ }\KeywordTok{optimize}\NormalTok{(likelihood, }\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{), }\DataTypeTok{tol =}\NormalTok{ tolerance  , }\DataTypeTok{maximum =}\NormalTok{ T)[[}\DecValTok{1}\NormalTok{]]}
+\NormalTok{delta <-}\StringTok{ }\KeywordTok{abs}\NormalTok{(pmax}\OperatorTok{-}\StringTok{ }\NormalTok{(}\DecValTok{49}\OperatorTok{/}\DecValTok{80}\NormalTok{))}
+\NormalTok{delta}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 6.814623e-07
+\end{verbatim}
+
+\hypertarget{hw1-q3}{%
+\section{HW1 q3}\label{hw1-q3}}
+
+\hypertarget{best-pracitces-for-data-data-handling-with-r}{%
+\section{Best Pracitces for data Data handling with
+R}\label{best-pracitces-for-data-data-handling-with-r}}
+
+R main datatypes:
+
+\begin{itemize}
+\tightlist
+\item
+  vectors
+\item
+  matrices
+\item
+  data.frame - matrices with meatadata, added functionallity and allow
+  multiple data types
+\item
+  tibbles - modern take on dataframes
+\end{itemize}
+
+\texttt{dplyr} is a grammar of data manipulation, providing a consistent
+set of verbs that help you solve the most common data manipulation
+challenges:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{mutate()} adds new variables that are functions of existing
+  variables.
+\item
+  \texttt{select()} picks variables based on their names.
+\item
+  \texttt{filter()} picks cases based on their values.
+\item
+  \texttt{summarize()} reduces multiple values down to a single summary.
+\item
+  \texttt{arrange()} sorts the rows.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(tidyverse)}
+\KeywordTok{library}\NormalTok{(nycflights13)}
+\end{Highlighting}
+\end{Shaded}
+
+This dataset has 19 columns so the head function is not that usefull
+when knitting to html. It is always useful to know how many missing
+values we have in our dataset, sometimes missing values are not just
+given to us as NA.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{head}\NormalTok{(flights,}\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 2 x 19
+##    year month   day dep_time sched_dep_time dep_delay arr_time
+##   <int> <int> <int>    <int>          <int>     <dbl>    <int>
+## 1  2013     1     1      517            515         2      830
+## 2  2013     1     1      533            529         4      850
+## # ... with 12 more variables: sched_arr_time <int>, arr_delay <dbl>,
+## #   carrier <chr>, flight <int>, tailnum <chr>, origin <chr>, dest <chr>,
+## #   air_time <dbl>, distance <dbl>, hour <dbl>, minute <dbl>,
+## #   time_hour <dttm>
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{colSums}\NormalTok{(}\KeywordTok{is.na}\NormalTok{(flights))}\OperatorTok{/}\KeywordTok{nrow}\NormalTok{(flights) }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##           year          month            day       dep_time sched_dep_time 
+##    0.000000000    0.000000000    0.000000000    0.024511842    0.000000000 
+##      dep_delay       arr_time sched_arr_time      arr_delay        carrier 
+##    0.024511842    0.025871796    0.000000000    0.028000808    0.000000000 
+##         flight        tailnum         origin           dest       air_time 
+##    0.000000000    0.007458964    0.000000000    0.000000000    0.028000808 
+##       distance           hour         minute      time_hour 
+##    0.000000000    0.000000000    0.000000000    0.000000000
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{sapply}\NormalTok{(flights,class)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## $year
+## [1] "integer"
+## 
+## $month
+## [1] "integer"
+## 
+## $day
+## [1] "integer"
+## 
+## $dep_time
+## [1] "integer"
+## 
+## $sched_dep_time
+## [1] "integer"
+## 
+## $dep_delay
+## [1] "numeric"
+## 
+## $arr_time
+## [1] "integer"
+## 
+## $sched_arr_time
+## [1] "integer"
+## 
+## $arr_delay
+## [1] "numeric"
+## 
+## $carrier
+## [1] "character"
+## 
+## $flight
+## [1] "integer"
+## 
+## $tailnum
+## [1] "character"
+## 
+## $origin
+## [1] "character"
+## 
+## $dest
+## [1] "character"
+## 
+## $air_time
+## [1] "numeric"
+## 
+## $distance
+## [1] "numeric"
+## 
+## $hour
+## [1] "numeric"
+## 
+## $minute
+## [1] "numeric"
+## 
+## $time_hour
+## [1] "POSIXct" "POSIXt"
+\end{verbatim}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\textbf{At home - find a better way to print the classes and the \% of
+missing values in R}
+
+\hypertarget{select-picks-variables-based-on-their-names.}{%
+\subsection{\texorpdfstring{\texttt{select()} picks variables based on
+their
+names.}{select() picks variables based on their names.}}\label{select-picks-variables-based-on-their-names.}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{flight_ditance_airtime <-}\StringTok{ }\NormalTok{flights }\OperatorTok{%>%}\StringTok{ }\KeywordTok{select}\NormalTok{( distance, air_time) }
+\NormalTok{flight_ditance_airtime }\OperatorTok{%>%}\StringTok{ }\KeywordTok{head}\NormalTok{(}\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 2 x 2
+##   distance air_time
+##      <dbl>    <dbl>
+## 1     1400      227
+## 2     1416      227
+\end{verbatim}
+
+\hypertarget{mutate-adds-new-variables-that-are-functions-of-existing-variables.}{%
+\subsection{\texorpdfstring{\texttt{mutate()} adds new variables that
+are functions of existing
+variables.}{mutate() adds new variables that are functions of existing variables.}}\label{mutate-adds-new-variables-that-are-functions-of-existing-variables.}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{flight_ditance_airtime }\OperatorTok{%>%}\StringTok{ }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{mean_speed =}\NormalTok{ distance}\OperatorTok{/}\NormalTok{air_time) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{head}\NormalTok{(}\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 2 x 3
+##   distance air_time mean_speed
+##      <dbl>    <dbl>      <dbl>
+## 1     1400      227       6.17
+## 2     1416      227       6.24
+\end{verbatim}
+
+If you only want to keep the new variables, use \texttt{transmute()}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{flight_ditance_airtime }\OperatorTok{%>%}\StringTok{ }\KeywordTok{transmute}\NormalTok{(}\DataTypeTok{mean_speed =}\NormalTok{ distance}\OperatorTok{/}\NormalTok{air_time) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{head}\NormalTok{(}\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 2 x 1
+##   mean_speed
+##        <dbl>
+## 1       6.17
+## 2       6.24
+\end{verbatim}
+
+\hypertarget{filter-picks-cases-based-on-their-values.}{%
+\subsection{\texorpdfstring{\texttt{filter()} picks cases based on their
+values.}{filter() picks cases based on their values.}}\label{filter-picks-cases-based-on-their-values.}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{flights }\OperatorTok{%>%}\StringTok{ }\KeywordTok{filter}\NormalTok{(}\KeywordTok{is.na}\NormalTok{(dep_delay)) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{head}\NormalTok{(}\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 2 x 19
+##    year month   day dep_time sched_dep_time dep_delay arr_time
+##   <int> <int> <int>    <int>          <int>     <dbl>    <int>
+## 1  2013     1     1       NA           1630        NA       NA
+## 2  2013     1     1       NA           1935        NA       NA
+## # ... with 12 more variables: sched_arr_time <int>, arr_delay <dbl>,
+## #   carrier <chr>, flight <int>, tailnum <chr>, origin <chr>, dest <chr>,
+## #   air_time <dbl>, distance <dbl>, hour <dbl>, minute <dbl>,
+## #   time_hour <dttm>
+\end{verbatim}
+
+\hypertarget{arrange-picks-cases-based-on-their-values.}{%
+\subsection{\texorpdfstring{\texttt{arrange()} picks cases based on
+their
+values.}{arrange() picks cases based on their values.}}\label{arrange-picks-cases-based-on-their-values.}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{flights }\OperatorTok{%>%}\StringTok{ }\KeywordTok{arrange}\NormalTok{(}\KeywordTok{desc}\NormalTok{(month)) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{head}\NormalTok{(}\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 2 x 19
+##    year month   day dep_time sched_dep_time dep_delay arr_time
+##   <int> <int> <int>    <int>          <int>     <dbl>    <int>
+## 1  2013    12     1       13           2359        14      446
+## 2  2013    12     1       17           2359        18      443
+## # ... with 12 more variables: sched_arr_time <int>, arr_delay <dbl>,
+## #   carrier <chr>, flight <int>, tailnum <chr>, origin <chr>, dest <chr>,
+## #   air_time <dbl>, distance <dbl>, hour <dbl>, minute <dbl>,
+## #   time_hour <dttm>
+\end{verbatim}
+
+\hypertarget{summarize-reduces-multiple-values-down-to-a-single-summary.}{%
+\subsection{\texorpdfstring{\texttt{summarize()} reduces multiple values
+down to a single
+summary.}{summarize() reduces multiple values down to a single summary.}}\label{summarize-reduces-multiple-values-down-to-a-single-summary.}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{by_month <-}\StringTok{ }\KeywordTok{group_by}\NormalTok{(flights,month)}
+\NormalTok{by_month }\OperatorTok{%>%}\StringTok{ }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{count =} \KeywordTok{n}\NormalTok{()) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{( }\DataTypeTok{mapping =} \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ month, }\DataTypeTok{y =}\NormalTok{ count)) }\OperatorTok{+}\StringTok{ }\KeywordTok{geom_bar}\NormalTok{(}\DataTypeTok{stat=}\StringTok{"identity"}\NormalTok{) }\OperatorTok{+}\StringTok{  }\KeywordTok{coord_cartesian}\NormalTok{(}\DataTypeTok{ylim =} \KeywordTok{c}\NormalTok{(}\DecValTok{2}\OperatorTok{*}\DecValTok{10}\OperatorTok{^}\DecValTok{4}\NormalTok{, }\DecValTok{3}\OperatorTok{*}\DecValTok{10}\OperatorTok{^}\DecValTok{4}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{03-_Point_estimation_and_dplyr_package_files/figure-latex/summarize method-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ flights) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{geom_bar}\NormalTok{(}\DataTypeTok{mapping =} \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ month)) }\OperatorTok{+}
+\StringTok{ }\KeywordTok{coord_cartesian}\NormalTok{(}\DataTypeTok{ylim =} \KeywordTok{c}\NormalTok{(}\DecValTok{2}\OperatorTok{*}\DecValTok{10}\OperatorTok{^}\DecValTok{4}\NormalTok{, }\DecValTok{3}\OperatorTok{*}\DecValTok{10}\OperatorTok{^}\DecValTok{4}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{03-_Point_estimation_and_dplyr_package_files/figure-latex/another way-1.pdf}
+
+Additional resources:
+
+\begin{itemize}
+\tightlist
+\item
+  \href{https://r4ds.had.co.nz/transform.html}{r4ds}
+\item
+  \href{https://dplyr.tidyverse.org/}{dplyr}
+\item
+  \href{https://github.com/rstudio/cheatsheets/blob/master/data-transformation.pdf}{dplyr
+  cheat sheet}
+\end{itemize}
+
+\hypertarget{bayesian-estimation}{%
+\section{Bayesian estimation}\label{bayesian-estimation}}
+
+We want to minimize with respect to a given loss function -
+\[\int L(\hat{\theta}- \theta)*p(\theta|x)d\theta\]
+
+In the lecture, we have seen that when
+\(L(\hat{\theta},\theta) = (\hat{\theta}- \theta)^2\) than
+\(\hat{\theta} = E(posterier)\), other types of loss functions will
+derive different estimators (like we have seen above). The logic of this
+method is as follows - we have somekind of a distribution over
+\(\theta\), but we need to choose only one of those. So we formulate an
+objective function and minimze it with respect to the parameter that we
+want to find. The most used ones are the mean, median, and common of
+that distribution, and as we said, thet are the bayesian estimators for
+different loss functions.
+
+
+\end{document}

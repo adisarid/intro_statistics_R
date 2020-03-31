@@ -11,21 +11,29 @@ Last excercise we did:
 
   * Cover methods for point estimation
   * Get to know dplyr package
-  * Developed a feeling for bayesian estimation
+  * Talked about what makes an estimator a good one
 
 Today we will:
 
-  * What make an estimator good?
+  * Explain again some terms (central limit theorem, what is an estimator, what is a moment)
+  * Revise MLE with an example
   * Talk on interavel estimation
-  * Go throw a reminder on MLE with a motivation for machine learning (a mixture process)
 
-# Another MLE example
-Q1 is in the attached file
 
-# Charactristics of a good estimator
+## What is an the difference between $\theta$ and $\hat{\theta}$
+$\theta$ is the population parameter (we will never know it). 
+$\hat{\theta}$ estimates $\theta$ based on a sample from the population. 
 
-  * Unbiased
-  * Consistency - It's variance is tending to 0 as n (number of samples) goes to infinity.
+## What is a moment?
+The moments of a function describes it's shape.
+In the method of moments we assume that our sample is big enough such that the sample moments are approximately equal to the population moments. And that's how we estimate parameters.
+
+## Central limit theoram
+Q1 in excercise notes
+
+
+# Another MLE and Moments example
+Q2 in excercise notes
 
 
 # Interval Estimation
@@ -74,7 +82,7 @@ An online advertising company is doing an ab testing for a new advertisement and
 
 \[0.05 = Length \geq 2*Z_{1-\frac{\alpha}{2}}*\sqrt{\frac{\hat{p}\hat{q}}{n}} =  2*Z_.975*\sqrt{\frac{\hat{p}\hat{q}}{n}} \Rightarrow\]
 \[=  2*1.96*\sqrt{\frac{\hat{p}\hat{q}}{n}} \Rightarrow\ 0.01275 \geq \sqrt{\frac{\hat{p}\hat{q}}{n}} \Rightarrow\ n \geq \frac{\hat{p}\hat{q}}{0.00016} \Rightarrow\]
-\[n \geq  1562.5 = \frac{0.5*0.5}{0.00016} \geq \frac{\hat{p}\hat{q}}{0.00016}\]
+\[n \geq  \frac{\hat{p}\hat{q}}{0.00016} = \frac{0.5*0.5}{0.00016} = 1562.5\]
 because \[ p(1-p) \leq 0.5*0.5  \ \forall p \in \{0,1\} \]
 
 If we know for example that the CTR is bounded by 4% than:
@@ -100,109 +108,4 @@ for (i in 1:N_tests)
 print(counter/N_tests)
 ```
 
-# MLE motivation (Not for the exam)
 
-Motivation example: solving MLE with the expectation maximization algorithm for GMM
-## MLE for Human Hight
-
-Assume that we are given data of human height but we don't know their gender.
-
-
-``` {r}
-photo_path <- 'https://ourworldindata.org/uploads/2019/06/distribution-1.png'
-destination_path <- 'heights.jpg'
-download.file(photo_path,destination_path, mode = 'wb')
-```
-
-```{r human height, echo=FALSE, fig.cap="Distribution of height by Gender", out.width = '75%'}
-knitr::include_graphics(destination_path)
-```
-
-Let's generate a sample:
-
-```{r  sample generation}
-library(tidyverse)
-set.seed(42)
-n_samples = 500
-
-male_avg_h = 178.4
-male_std_h = 7.6
-
-female_avg_h = 154  # 164.7 
-female_std_h = 7.1
-
-male_h <- rnorm(n_samples, male_avg_h, male_std_h)
-female_h <- rnorm(n_samples, female_avg_h, female_std_h)
-
-# a plot using ggplot
-all_h <- tibble(h = c(male_h,female_h))
-
-ggplot(all_h, aes(h)) + 
-  geom_density(fill = "red", color = "blue") + 
-  ggtitle("Human Height [cm]") +
-  labs(caption = "n=1000")
-```
-
-
-Let's assume we know only the heights vector but we don't know the genders at all.
-We call the gender a hidden variable because we never observe it.
-let's consider a model to generate this vector:
-
-For each sample:
-
-  1. Sample a gender: \[ Z \in \{Female,Male\} \]
-NOTE : in our example z is derived from a Bernoulli distribution but the general case is Categorical distribution.
-for simplicity lets note: 
- \[ p(Z = Male) = p ,p(Z = Female) = 1-p\]
-  2. After we know a gender we need to sample a height - let's assume: 
-\[ p(X|Z) = \mathcal{N}\left(\mu_z , \sigma_z^{2}\right)\]
-
-NOTE : it means that there are parameters that describe the height of Males and different parametrs that describe the height Females but their both from normal distribution.
-
-Therefore we can deduce:
-\[ p(X = x ,Z= z ) = p(Z=z)* p(X = x|Z= z) \]
-
-Suppose we know the genders in our sample, finding the parameters is than trivial:
-\[ \hat{p} = NumberOfMalesInSample/SampleSize \]
-\[ \hat{\mu}_{Male} = AvgMaleHeight \]
-\[ \hat{\sigma}_{Male} = SigmaMaleHeight \]
-
-
-If we see a height and we want to know whether its a Female or Male, we can do it in a probabalistic manner, given that we know the parameters of the model:
-\[ p(Z= z|X = x) = p(X = x ,Z= z )/p(X=x)\]
-This is called soft clustering.
-and if we would have to guess a class (gender), than we would guess:
-\[ Z_i = argmax_z p(Z= z|X = x_i)\]
-This is called Hard clustering.
-So if we know the parameters we "know" Z and if we know Z we know the parameters.
-
-
-**But we don't know them..** MLE to the rescue!
-Let's define the likelihood of one sample:
-\[ p(X = x) = p(Z=Male)* p(X = x|Z=Male) + p(Z=Female)* p(X = x|Z=Fenale)\]
-And the complete Data liklihood:
-\[\prod_{i}^{n}  p(X = x_i) = \prod_{i}^{n} (p(Z=Male)* p(X = x_i|Z=Male) + p(Z=Female)* p(X = x_i|Z=Fenale))\]
-But you will find that this term is impossible to optimize analytically. 
-Luckily, there are ways to solve this problem (heuristically):
-  
-  1. Expectaion maximization algorithm - There exist a lower bound on the log likelihood of the data and it's possible to optimize it iteratively, those improving the likelihood. But we are not guaranteed a global maxima.
-  2. Gradient descent (with a a constrain on each sigma being positive semi definite).
-  
-We will not cover this terms in this course but you will meet the gradient descent algorithm in the future.
-
-
-Resources : 
-
-* [Most detailed explanations](http://cs229.stanford.edu/notes/cs229-notes8.pdf)
-* [Example in 2d](http://www.ee.bgu.ac.il/~haimp/ml/lectures/lec2/lec2.pdf)
-* [Video](https://www.youtube.com/watch?v=Rkl30Fr2S38)
-
-
-Q: 
-
-* What happens if there are more females? 
-* What happens if we care more about false positives/false negatives?
-
-A : \
-
-** Wait For Intro to Machine Learning Course! **
