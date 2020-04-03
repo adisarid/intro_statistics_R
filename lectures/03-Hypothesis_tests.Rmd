@@ -572,7 +572,7 @@ Negating the expression $\ldots$ within the probability $P(\ldots)$, we get:
 
 $$\alpha = 1-(1-\alpha) = 1-P\left(\hat{p}+z_{\alpha/2}\sqrt{p(1-p)/n}<p<\hat{p}+z_{1-\alpha/2}\sqrt{p(1-p)/n}\right)=$$
 
-$$=P\left(\hat{p}+z_{\alpha/2}\sqrt{p(1-p)/n}\geq p\right)+P\left(p\leq\hat{p}+z_{1-\alpha/2}\sqrt{p(1-p)/n}\right)$$
+$$=P\left(\hat{p}+z_{\alpha/2}\sqrt{p(1-p)/n}\geq p\right)+P\left(p\geq\hat{p}+z_{1-\alpha/2}\sqrt{p(1-p)/n}\right)$$
 
 --
 
