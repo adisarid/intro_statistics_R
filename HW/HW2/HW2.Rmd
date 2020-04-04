@@ -1,47 +1,21 @@
 ---
 title: 'Introduction to Statistics and Data Analysis with R - Homework #2'
 author: "Adi Sarid and Afek Adler"
-date: '2019-11-03'
+date: "`r Sys.Date()`"
 output:
   html_document: default
   pdf_document: default
 ---
 
-This homework sheet is due on the 3rd of December. You may submit your answers in pairs, **in R** (,Rmd file).
+You may submit your answers in pairs, **in R** (,Rmd file).
 Submission will be performed electronically via Moodle.
 
 We urge you to start solving this sheet as soon as possible and, if you have any questions, come to visit us in reception hours next week.
 
+Submit the your answeers for questions 1-4. 
+
+
 ## Question 1:
-
-As we did in the exercise 4, show that if confidence intervals are constructed using a given confidence level from an infinite number of independent sample statistics, the proportion of those intervals that contain the true value of the parameter will be equal to the confidence level. 
-
-In the exercise we have seen it for the confidence interval for the mean of i.i.d samples from normal distribution with known variance, here we will do it for the confidence interval of sigma (as you have seen in lecture 3, slide #20).
-
-Modify the code - 
-
-``` {r confidense interval}
-miu = 10
-sigma = 3
-n = 10
-alpha = 0.1
-N_tests <- 10000
-counter <- 0
-error = qnorm(1-alpha/2)*(sigma/sqrt(n))
-for (i in 1:N_tests)
-  {sample = rnorm(n,miu,sigma)
-  sample_mean <- mean(sample)
-  left <- sample_mean-error 
-  right <- sample_mean + error
-  between <- (left <= miu) & (miu <= right)
-  counter <- counter+between}
-estimated_confidence <- (counter/N_tests)
-true_confidence <- 1- alpha
-print (abs(estimated_confidence - true_confidence))
-```
-
-
-## Question 2:
 In this question we will look at the iris classic dataset (built in in r environment):
 
   1. Plot a box plot of the numeric features
@@ -76,14 +50,14 @@ Based on the previous figure, which iris type would you say it is?
 
 ```
 
-## Question 3:
+## Question 2:
 This question is an appetizer for hypothesis test. we will create a QQ plot.
-A QQ plot is a visual test (not a statistical test!) to check whether a one dimensional variable is distributed normal.
+A QQ plot is a visual test (not a statistical test!) to check whether a one dimensional variable is distributed according according to some kind of a known distribution.
 
 Instructions are provided in the attached link:
 
   1. What is a QQ plot? e.g, what appears in the x and y axis?
-  2. make a QQ plot for sample1 and sample2. are the plots the same? What's the difference?
+  2. make a QQ plot for sample1 and sample2 (with the normal distribution). are the plots the same? What's the difference?
 * As always, plot the graph with `ggplot`
 [https://www.youtube.com/watch?v=X9_ISJ0YpGw](explanation)
 
@@ -101,47 +75,7 @@ sample2 <- rnorm(100^2,100,36)
 ```
 
 
-## Question 4:
-In this question we will verify the following formulas:
-
-\[E(\bar{X})=E\left(\frac{1}{n} \sum_{i=1}^{n} X_{i}\right)=\frac{1}{n} \sum_{i=1}^{n} E\left(X_{i}\right)=\frac{1}{n} \sum_{i=1}^{n} \mu=\frac{1}{n} \cdot n \mu=\mu\]
-
-\[V(\bar{X})=V\left(\frac{1}{n} \sum_{i=1}^{n} X_{i}\right)=\frac{1}{n^{2}} \sum_{i=1}^{n} V\left(X_{i}\right)=\frac{1}{n^{2}} \sum_{i=1}^{n} \sigma^{2}=\frac{1}{n^{2}} \cdot n \sigma^{2}=\frac{\sigma^{2}}{n}\]
-
-1. Read about bootstrapping in Wikipedia.
-2. What are the different phases of performing bootstrapping? Where does it appear in the following code?
-2. What is the error metric we use in order to calculate the deviations in the result simulation, why? offer another evaluation metric.
-
-[https://en.wikipedia.org/wiki/Bootstrapping_(statistics)](bootstrapping)
-
-``` {r bootstrapping,warning=FALSE }
-set.seed(0)
-true_mean <- 10
-true_var <- true_mean
-true_sd <- sqrt(true_mean)
-population <- 10^3
-samples <- rpois(population, lambda = true_mean)
-bootstrap_samples <-1000
-n_samples <- 100
-means <- numeric(bootstrap_samples)
-var <- numeric(bootstrap_samples)
-for (i in 1:bootstrap_samples) { 
-   temp_sample <- sample(samples, size= n_samples, replace =T)
-   means[i] <- mean(temp_sample)
-   var[i] <- var(temp_sample)
-} 
-mean_daviation <- abs(mean(means)-true_mean)/true_mean
-var_deviation <- abs(var(means)-true_mean/n_samples)/true_var
-print (mean_daviation)
-print(var_deviation)
-```
-
-Bonus:
-  
-  * Implement the same code with r `boot` package. 
-
-
-## Question 5:
+## Question 3:
 The breaking strength of yarn used in manufacturing
 drapery material is required to be at least 100 psi. Past experience
 has indicated that breaking strength is normally distributed
@@ -149,3 +83,17 @@ and that $\sigma = 2$  psi. A random sample of nine specimens
 is tested, and the average breaking strength is found to be 98
 psi. Find a 95% two-sided confidence interval on the true
 mean breaking strength.
+
+## Question 4:
+In order to find the proportion of defective bottles produced by a machine, two samples were taken. In sample 1, out of $n_1$ bottles $d_1$ werefound to be defective and in sample 2 out of $n_2$ bottles $d_2$ werefound to be defective.
+
+Hereby there are 3 different estimators for the proportion of defective bottles:
+
+  1. $\hat{p}_{1}=\frac{d_{1}}{n_{1}}$
+  2. $\hat{p}_{2}=\frac{d_{1}+d_{2}}{n_{1}+n_{2}}$
+  3. $\hat{p}_{3}=\frac{1}{2}\cdot\left(\frac{d_{1}}{n_{1}}+\frac{d_{2}}{n_{2}}\right)=\frac{d_{1}}{2 n_{1}}+\frac{d_{2}}{2 n_{2}}$
+  
+For each one of the above estimators. Check if it is unbiased and calculate the MSE (mean squared error) of that estimator. 
+
+## Question 5:
+Read chapter 5 in r4ds and do excercises 5.24 - 5.41. 
