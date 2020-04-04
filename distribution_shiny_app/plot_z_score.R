@@ -1,40 +1,30 @@
-library(tidyverse)
-
 # This script illustrates z-score.
-
-plot_z_score <- function(z = NULL, p = NULL, 
-                         alternative = c("two.sided", "one.sided")){
+## Example:
+# plot_z_score(1, "two.sided")
+# plot_z_score(0.05, "one.sided")
+plot_z_score <- function(p = NULL, 
+                         alternative = c("two.sided", "one.sided"),
+                         z_dense = tibble(z_range = seq(-3, 3, by = 0.05),
+                                          density = dnorm(z_range),
+                                          p_range = pnorm(z_range))){
   
-  if (!is.null(z) & !is.null(p)){
-    stop("Can't have both z and p...")
-  }
-  
-  if (alternative[1] == "two.sided" & !is.null(p)){
-    div_factor <- 0.5
-  } else {
-    div_factor <- 1
-  }
-  
-  if (!is.null(p)){
-    if (p > 0.5){
-      p <- 1-p
-    }
-  }
-  
-  z_dense <- tibble(z_range = seq(-3, 3, by = 0.05),
-                    density = dnorm(z_range),
-                    p_range = pnorm(z_range))
-  
+  # prep the plot
   base_plot <- ggplot(z_dense, aes(x = z_range, y = density)) + 
     geom_line()
   
   subtitle_str <- ""
   
-  if (!is.null(z)){
-    p <- pnorm(q = z)*div_factor
+  
+  
+  # split to two sided/one sided alternative
+  if (alternative[1] == "two.sided"){
+    z_of_p <- qnorm(p/2)
+    div_factor <- 0.5
+  } else {
+    z_of_p <- qnorm(p)
+    div_factor <- 1
   }
-
-  z_of_p <- qnorm(p*div_factor)
+  
   density_of_p <- dnorm(z_of_p)
   
   base_plot <- base_plot + 
@@ -51,13 +41,13 @@ plot_z_score <- function(z = NULL, p = NULL,
       geom_segment(x = 3, xend = -z_of_p,
                    y = density_of_p, yend = density_of_p, color = "red") +
       geom_segment(x = -z_of_p, xend = -z_of_p, y = density_of_p, yend = 0, color = "red")
-      
+    
   }
   
   subtitle_str <- paste0(subtitle_str, "p = Phi(z) = pnorm(z) = ", round(p*div_factor, 3), 
                          "; z = qnorm(p) = ", 
                          round(z_of_p, 3))
-
+  
   
   base_plot + 
     xlab("z_p") + 
@@ -67,6 +57,3 @@ plot_z_score <- function(z = NULL, p = NULL,
             subtitle = subtitle_str)
   
 }
-
-plot_z_score(p=0.05, alternative = "two.sided")
-plot_z_score(z = -1.649, alternative = "one.sided")
