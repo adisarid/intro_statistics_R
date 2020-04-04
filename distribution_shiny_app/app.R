@@ -21,8 +21,9 @@ ui <- fluidPage(
                              sliderInput("alpha", "α-level (alpha)", value = 0.05, 
                                          min = 0, max = 1, step = 0.025,
                                          animate = TRUE),
-                             sliderInput("z", "z-score", value = qnorm(0.05),
-                                         min = -3, max = 3, step = 0.05),
+                             verbatimTextOutput("z"),
+                             # sliderInput("z", "z-score", value = qnorm(0.05),
+                             #             min = -3, max = 3, step = 0.05),
                              radioButtons("alternative", "Two- or one-sided test",
                                           choices = c("One sided" = "one.sided",
                                                       "Two sided" = "two.sided"),
@@ -58,46 +59,11 @@ server <- function(input, output, session) {
                      z_dense)
     })
     
-    observeEvent(input$alpha, {
-        
+    output$z <- renderText({
         if (input$alternative == "one.sided"){
-            updateSliderInput(session,
-                              "z",
-                              value = qnorm(p = input$alpha)
-            )
+            paste0("z-score=", qnorm(p = input$alpha))
         } else {
-            updateSliderInput(session,
-                              "z",
-                              value = qnorm(p = input$alpha/2)
-            )
-        }
-        
-    })
-    
-    observeEvent(input$z, {
-        if (input$alternative == "two.sided") {
-            new_alpha <- pnorm(input$z)*2
-        } else {
-            new_alpha <- pnorm(input$z)
-        }
-        
-        if (!near(new_alpha, input$alpha, tol = 0.01)) {
-            updateSliderInput(session,
-                              "alpha",
-                              value = new_alpha)   
-        }
-    })
-    
-    observeEvent(input$alternative, {
-        if (input$alternative == "two.sided"){
-            updateSliderInput(session, 
-                              "z",
-                              min = -3, max = 0)
-        } else {
-            updateSliderInput(session,
-                              "z",
-                              min = -3, 
-                              max = 3)
+            paste0("z-score=", qnorm(p = input$alpha/2))
         }
     })
 
