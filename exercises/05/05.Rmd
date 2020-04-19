@@ -71,7 +71,7 @@ On board:
 * $1 - \alpha$
 * $\beta$ the probability if *$H_1$* is True but our test says otherwise 
 * $1- \beta$
-* $p_{value}$ - Intuition - low $p_{value}$ means it's very likely that $H_0$ generated our sample
+* $p_{value}$ - Intuition - low $p_{value}$ means it's not very likely that $H_0$ generated our sample
 * Rejection region $C$ and it's counterpart, the acceptance region $\overline{C}$
 
 
