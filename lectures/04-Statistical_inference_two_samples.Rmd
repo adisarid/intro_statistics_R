@@ -172,7 +172,7 @@ Then, what is $E[\bar{X}_1-\bar{X}_2]$, and $\operatorname{Var}[\bar{X}_1-\bar{X
 
 $$E[\bar{X}_1-\bar{X}_2] = \mu_1-\mu_2$$
 
-$$\operatorname{Var}[\bar{X}_1-\bar{X}_2]=\operatorname{Var}(\bar{X}_1)-\operatorname{Var}(\bar{X}_2)=\frac{\sigma_1^2}{n_1} + \frac{\sigma_2^2}{n_2}$$ 
+$$\operatorname{Var}[\bar{X}_1-\bar{X}_2]=\operatorname{Var}(\bar{X}_1)+\operatorname{Var}(\bar{X}_2)=\frac{\sigma_1^2}{n_1} + \frac{\sigma_2^2}{n_2}$$ 
 
 Using these, and the fact that the sum of two normally distributed variables is also normal we obtain...
 
@@ -358,10 +358,10 @@ countdown::countdown(minutes = 5)
 
 # Demonstrating tests in the ipf data set (test 1)
 
-   * $H_0:$ men lift higher weights than women
-   * $H_1:$ men and women lift the same weight
+   * $H_0:$ men and women lift the same weight
+   * $H_1:$ men lift higher weights than women
 
-Unpaired t-test
+Unpaired t-test (note that I switched $H_0$ and $H_1$)
 .tiny[
 ```{r read ipf and first test}
 #https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-10-08/ipf_lifts.csv
@@ -402,7 +402,7 @@ Test 3 was:
    * $H_0:$ The age of male athletes is normally distributed
    * $H_1:$ The age of male athletes is not normally distributed
    
-This is the goodness of fit test that we were discussing last week.
+This is the goodness of fit test that we were discussing in the previous unit.
 
 Test 4 was:
 
