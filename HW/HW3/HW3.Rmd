@@ -1,18 +1,24 @@
 ---
 title: 'Introduction to Statistics and Data Analysis with R - Homework #3'
 author: "Adi Sarid and Afek Adler"
-date: '2019-12-03'
+date: "`r Sys.Date()`"
 output:
   html_document: default
   pdf_document: default
 ---
 
-This homework sheet is due on the 2019-12-17. You may submit your answers in pairs. Submit a PDF file with the code and results for the R part. Add to the PDF your solution for the other questions.
+This homework sheet is due on the 2019-05-12. You may submit your answers in pairs. Submit a PDF file with the code and results for the R part. Add to the PDF your solution for the other questions.
 Submission will be performed electronically via Moodle.
 
 We urge you to start solving this sheet as soon as possible and, if you have any questions, come to visit us in reception hours next week.
 
+Submit the your answeers for questions 1-4. Questions 2 and 4 from the "hypothesis testing questions #1" and question 1 from "hypothesis testing questions #2".
+
 ## Question 1:
+In r4ds - excerices 5.52 to 5.71.
+
+
+## Question 2:
 
 
 Across all the exercise. If not mentioned – use $\alpha$ = 0.05.
@@ -56,24 +62,12 @@ __Your code here: __
 ```
 
 
-## Question 2:
-
-In this question we will the state.x77 (built-in in R) data set:
-
-  *  Find two variables which you think are independent and two which you think are dependent and do a HT for independence. Elaborate on your results.
-  
-
-Separate the countries by their majority choice in the [2016 Presidetnal election](https://en.wikipedia.org/wiki/Political_party_strength_in_U.S._states)        [1](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=24&cad=rja&uact=8&ved=2ahUKEwidkpqdsJTmAhVQLVAKHQezDkMQFjAXegQIBBAC&url=https%3A%2F%2Ftransition.fec.gov%2Fpubrec%2Ffe2016%2Ffederalelections2016.xlsx&usg=AOvVaw1--QzI7A9J-59UDfplN9SC).
-For each column, perform an hypothesis test of the means (check which one is higher). Explain the steps you have done in order to so. 
-Are there any methodological problems in doing this test as such? explain.
-
-
 ***
 __The next questions should be done Both by handwriting (as a prepareation for the exam) and with R functions (as verification).__ 
 
 ***
 
-## Question 3
+## Question 2
 
 Here are 50 samples of time between events (can be any events, for example, time between emergency room entrance in an hospital).
 
@@ -84,9 +78,9 @@ time_events <- c(5.2, 16.6, 9.8, 14.9, 1.3, 0.5, 16.6, 16.5, 1, 16.6, 19.3, 10.6
 Test the hypothesis that this sample were taken form an exponential distribution. 
 Guidance - estimate the parameter of the distribution first.
 
-## Question 4
+## Question 3
 
-There is always a line in the coffee station in Yoto. The waiting time is distributed exponential with $\theta$. The cafeteria manager claims that the mean waiting time is 5 m whereas the students claim that the mean waiting time is 10 m (and therefore it takes all the time between two lessons).
+There is always a line in the coffee station in Yoto. The waiting time is distributed exponential with $\theta$. The cafeteria manager claims that the mean waiting time is 5m whereas the students claim that the mean waiting time is 10 m (and therefore it takes all the time between two lessons).
 
   a. One student decided to test this claims by going to get coffee. He claims that if he will wait more than 10m, than the mean waiting time is indeed 10m.
 based on this test, write down the null and the alternative hypothesis and calculate $\alpha$ and $\beta$.
@@ -97,7 +91,7 @@ based on this test, write down the null and the alternative hypothesis and calcu
  Based on this test, write down the null and the alternative hypothesis and calculate the critical value and $\alpha$.
  
  
-## Question 5
+## Question 4
 
 Two american people (Hilli form Colorado and Billie from California) argue about whether the amount of brown bears in california is higher than in Colorado. 
 Each of them went to the woods a couple of times and recorded the amount of bears they have seen. Altohugh they agrreed to do it 20 times, Hilli decided that he can't bear it no more after a bear attack. 

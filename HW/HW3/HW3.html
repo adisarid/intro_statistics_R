@@ -7,12 +7,11 @@
 <meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
-<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 <meta name="author" content="Adi Sarid and Afek Adler" />
 
-<meta name="date" content="2019-12-03" />
+<meta name="date" content="2020-04-28" />
 
 <title>Introduction to Statistics and Data Analysis with R - Homework #3</title>
 
@@ -271,6 +270,7 @@ code {
 }
 img {
   max-width:100%;
+  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -344,6 +344,18 @@ summary {
 }
 </style>
 
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
 <!-- code folding -->
 
 
@@ -365,15 +377,20 @@ summary {
 
 <h1 class="title toc-ignore">Introduction to Statistics and Data Analysis with R - Homework #3</h1>
 <h4 class="author">Adi Sarid and Afek Adler</h4>
-<h4 class="date">2019-12-03</h4>
+<h4 class="date">2020-04-28</h4>
 
 </div>
 
 
-<p>This homework sheet is due on the 2019-12-17. You may submit your answers in pairs. Submit a PDF file with the code and results for the R part. Add to the PDF your solution for the other questions. Submission will be performed electronically via Moodle.</p>
+<p>This homework sheet is due on the 2019-05-12. You may submit your answers in pairs. Submit a PDF file with the code and results for the R part. Add to the PDF your solution for the other questions. Submission will be performed electronically via Moodle.</p>
 <p>We urge you to start solving this sheet as soon as possible and, if you have any questions, come to visit us in reception hours next week.</p>
+<p>Submit the your answeers for questions 1-4. Questions 2 and 4 from the “hypothesis testing questions #1” and question 1 from “hypothesis testing questions #2”.</p>
 <div id="question-1" class="section level2">
 <h2>Question 1:</h2>
+<p>In r4ds - excerices 5.52 to 5.71.</p>
+</div>
+<div id="question-2" class="section level2">
+<h2>Question 2:</h2>
 <p>Across all the exercise. If not mentioned – use <span class="math inline">\(\alpha\)</span> = 0.05. Create a tibble with 100 rows such that:</p>
 <ul>
 <li>Column 1 – samples from normal distribution (mean = 3, std = 1)</li>
@@ -395,35 +412,27 @@ summary {
 <p><strong>Your code here: </strong></p>
 <p>Do you expect that those column will we independent? check yourself with an hypothesis test.</p>
 <p><strong>Your code here: </strong></p>
-</div>
-<div id="question-2" class="section level2">
-<h2>Question 2:</h2>
-<p>In this question we will the state.x77 (built-in in R) data set:</p>
-<ul>
-<li>Find two variables which you think are independent and two which you think are dependent and do a HT for independence. Elaborate on your results.</li>
-</ul>
-<p>Separate the countries by their majority choice in the <a href="https://en.wikipedia.org/wiki/Political_party_strength_in_U.S._states">2016 Presidetnal election</a> <a href="https://www.google.com/url?sa=t&amp;rct=j&amp;q=&amp;esrc=s&amp;source=web&amp;cd=24&amp;cad=rja&amp;uact=8&amp;ved=2ahUKEwidkpqdsJTmAhVQLVAKHQezDkMQFjAXegQIBBAC&amp;url=https%3A%2F%2Ftransition.fec.gov%2Fpubrec%2Ffe2016%2Ffederalelections2016.xlsx&amp;usg=AOvVaw1--QzI7A9J-59UDfplN9SC">1</a>. For each column, perform an hypothesis test of the means (check which one is higher). Explain the steps you have done in order to so. Are there any methodological problems in doing this test as such? explain.</p>
 <hr />
 <p><strong>The next questions should be done Both by handwriting (as a prepareation for the exam) and with R functions (as verification).</strong></p>
 <hr />
 </div>
-<div id="question-3" class="section level2">
-<h2>Question 3</h2>
+<div id="question-2-1" class="section level2">
+<h2>Question 2</h2>
 <p>Here are 50 samples of time between events (can be any events, for example, time between emergency room entrance in an hospital).</p>
 <pre><code>time_events &lt;- c(5.2, 16.6, 9.8, 14.9, 1.3, 0.5, 16.6, 16.5, 1, 16.6, 19.3, 10.6, 26.8, 4.5, 2.5, 24.9, 3.4, 9.1, 12.5, 10.6, 27.6, 1.3, 0.4, 2.2, 7.8, 6, 17.6, 10.8, 2.7, 1.3, 1.6, 15.7,10.9, 2.1, 20.1, 1.9, 13.6, 0.4, 18.8, 11.4, 3, 0.3, 5.5, 2.7, 2.2, 9.5, 14.8, 3, 6.3, 11.2)</code></pre>
 <p>Test the hypothesis that this sample were taken form an exponential distribution. Guidance - estimate the parameter of the distribution first.</p>
 </div>
-<div id="question-4" class="section level2">
-<h2>Question 4</h2>
-<p>There is always a line in the coffee station in Yoto. The waiting time is distributed exponential with <span class="math inline">\(\theta\)</span>. The cafeteria manager claims that the mean waiting time is 5 m whereas the students claim that the mean waiting time is 10 m (and therefore it takes all the time between two lessons).</p>
+<div id="question-3" class="section level2">
+<h2>Question 3</h2>
+<p>There is always a line in the coffee station in Yoto. The waiting time is distributed exponential with <span class="math inline">\(\theta\)</span>. The cafeteria manager claims that the mean waiting time is 5m whereas the students claim that the mean waiting time is 10 m (and therefore it takes all the time between two lessons).</p>
 <ol style="list-style-type: lower-alpha">
 <li><p>One student decided to test this claims by going to get coffee. He claims that if he will wait more than 10m, than the mean waiting time is indeed 10m. based on this test, write down the null and the alternative hypothesis and calculate <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span>.</p></li>
 <li><p>The cafeteria manager claimed that a sample of one student is not enough, and suggested that if and only if the student will wait more than 15m than we can reject the claim that the mean waiting time is 5 m. Based on this test, write down the null and the alternative hypothesis and calculate <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span>.</p></li>
 <li><p>In order to solve the controversy, it was decided to measure the time of 100 students in line (not in the same time, independent of each other). The test statistic will be their mean waiting time, under the requirement that the test power should be 95% (<span class="math inline">\(1 - \beta = 0.95\)</span>). Based on this test, write down the null and the alternative hypothesis and calculate the critical value and <span class="math inline">\(\alpha\)</span>.</p></li>
 </ol>
 </div>
-<div id="question-5" class="section level2">
-<h2>Question 5</h2>
+<div id="question-4" class="section level2">
+<h2>Question 4</h2>
 <p>Two american people (Hilli form Colorado and Billie from California) argue about whether the amount of brown bears in california is higher than in Colorado. Each of them went to the woods a couple of times and recorded the amount of bears they have seen. Altohugh they agrreed to do it 20 times, Hilli decided that he can’t bear it no more after a bear attack.</p>
 <table>
 <thead>
@@ -469,23 +478,6 @@ $(document).ready(function () {
 
 
 </script>
-
-<!-- tabsets -->
-
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
-  });
-});
-</script>
-
-<!-- code folding -->
-
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>
