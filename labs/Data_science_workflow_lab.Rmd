@@ -1,0 +1,28 @@
+---
+title: "Lab - the data science workflow"
+author: "Adi Sarid"
+date: "r Sys.Date()"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+In this lab we cover the data science work flow. The lab will walk you through the steps performed in a data science / analysis project:
+
+   * Data import
+   * Data tidying
+   * Transformation <-> Visualization <-> Modelling
+   
+The lab will also cover the theoretic elements we covered such confidence intervals and hypothesis tests. This lab is to be performed in groups of 3 (i.e., zoom break rooms).
+
+# Open a new project
+
+# Data import
+
+# Data tidying
+
+# Transformation, visualization
+
+# Modelling
