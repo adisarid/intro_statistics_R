@@ -376,7 +376,7 @@ question("What hypothesis tests can be used to compare pork and fish consumption
    
    * Assuming that the variance of pork and fish consumption is the same, what test statistic would you use for this hypothesis?
    
-$$T=\frac{? - ? - (\\mu_1 - \\mu_2)}{S_p\sqrt{? + ?}}$$
+$$T=\\frac{? - ? - (\\mu_1 - \\mu_2)}{S_p\\sqrt{? + ?}}$$
 
 $$S_p = ?$$
 
@@ -395,7 +395,22 @@ question("Is this test paired or unpaired?",
 
    * Conduct the test by computing the test statistic and its p-value. You can do this either directly or with the `t.test` function. However you prefer. If you are using the `t.test`, note that you have to set the `var.equal` argument (to what?).
 
-```{r compare fish and pork}
+```{r compare_fish_and_pork, exercise=TRUE}
+pork_vector <- ...
+
+t.test(x = ..., y = ..., var.equal = ...)
+
+```
+
+```{r compare_fish_and_pork-hint-1}
+pork_vector <- food_consumption %>% 
+   filter(food_category == "Pork") %>% 
+   pull(consumption)
+
+t.test(x = ..., y = ..., var.equal = ...)
+```
+
+```{r compare_fish_and_pork-solution}
 pork_vector <- food_consumption %>% 
    filter(food_category == "Pork") %>% 
    pull(consumption)
@@ -405,10 +420,6 @@ t.test(x = fish_vector, y = pork_vector, var.equal = T)
 ```
    
    * How would you have conducted the test if the variances were assumed to be unequal?
-   
-```{r compare fish and pork unequal variance}
-t.test(x = fish_vector, y = pork_vector, var.equal = F)
-```
 
 ***
 
@@ -422,7 +433,64 @@ In this final part, we're going to use visualizations to examine the relationshi
 
    * Reclassify all the `food_category` into two types of products: meet/dairy versus vegan. You can use the definition of the following tibble, along with the `left_join` function, but you will probably need to read about it in the documentation. Another option is to use another function called `case_when` or `recode_factor`.
    
-```{r food reclassification}
+```{r food_reclassification, exercise=TRUE}
+food_types <- tribble(~food_category, ~food_type,
+                      "Beef", "Meat/Dairy",
+                      "Eggs", "Meat/Dairy",
+                      "Fish", "Meat/Dairy",
+                      "Lamb & Goat", "Meat/Dairy",
+                      "Milk - inc. cheese", "Meat/Dairy",
+                      "Pork", "Meat/Dairy",
+                      "Poultry", "Meat/Dairy",
+                      "Rice", "Vegan",
+                      "Soybeans", "Vegan",
+                      "Wheat and Wheat Products", "Vegan",
+                      "Nuts inc. Peanut Butter", "Vegan")
+
+food_consumption_reclassified <- food_consumption %>% 
+   ...
+
+```
+
+```{r food_reclassification-hint-1}
+food_types <- tribble(~food_category, ~food_type,
+                      "Beef", "Meat/Dairy",
+                      "Eggs", "Meat/Dairy",
+                      "Fish", "Meat/Dairy",
+                      "Lamb & Goat", "Meat/Dairy",
+                      "Milk - inc. cheese", "Meat/Dairy",
+                      "Pork", "Meat/Dairy",
+                      "Poultry", "Meat/Dairy",
+                      "Rice", "Vegan",
+                      "Soybeans", "Vegan",
+                      "Wheat and Wheat Products", "Vegan",
+                      "Nuts inc. Peanut Butter", "Vegan")
+
+food_consumption_reclassified <- food_consumption %>% 
+   left_join(...)
+
+```
+
+```{r food_reclassification-solution}
+food_types <- tribble(~food_category, ~food_type,
+                      "Beef", "Meat/Dairy",
+                      "Eggs", "Meat/Dairy",
+                      "Fish", "Meat/Dairy",
+                      "Lamb & Goat", "Meat/Dairy",
+                      "Milk - inc. cheese", "Meat/Dairy",
+                      "Pork", "Meat/Dairy",
+                      "Poultry", "Meat/Dairy",
+                      "Rice", "Vegan",
+                      "Soybeans", "Vegan",
+                      "Wheat and Wheat Products", "Vegan",
+                      "Nuts inc. Peanut Butter", "Vegan")
+
+food_consumption_reclassified <- food_consumption %>% 
+   left_join(food_types)
+
+```
+
+```{r food_reclassification actual run, include=FALSE}
 food_types <- tribble(~food_category, ~food_type,
                       "Beef", "Meat/Dairy",
                       "Eggs", "Meat/Dairy",
@@ -443,7 +511,36 @@ food_consumption_reclassified <- food_consumption %>%
 
    * In the result you got, summarize the data such that each country will appear only twice (once for Meat/Dairy and once for Vegan consumption values), with the overall consumption for that type. Select only the `consumption` and `food_type` values. You should be using the functions `group_by` and `summary`.
    
-```{r reclassification summary}
+```{r reclassification_summary, exercise=TRUE}
+food_consumption_summarised <- food_consumption_reclassified %>% 
+   ...
+```
+
+```{r reclassification_summary-hint-1}
+food_consumption_summarised <- food_consumption_reclassified %>% 
+   group_by(..., ...) %>% 
+   summarize(consumption = sum(...))
+```
+
+```{r reclassification_summary-hint-2}
+food_consumption_summarised <- food_consumption_reclassified %>% 
+   group_by(country, ...) %>% 
+   summarize(consumption = sum(...))
+```
+
+```{r reclassification_summary-hint-3}
+food_consumption_summarised <- food_consumption_reclassified %>% 
+   group_by(country, food_type) %>% 
+   summarize(consumption = sum(...))
+```
+
+```{r reclassification_summary-solution}
+food_consumption_summarised <- food_consumption_reclassified %>% 
+   group_by(country, food_type) %>% 
+   summarize(consumption = sum(consumption))
+```
+
+```{r create food consumption summarized, include=FALSE}
 food_consumption_summarised <- food_consumption_reclassified %>% 
    group_by(country, food_type) %>% 
    summarize(consumption = sum(consumption))
@@ -453,7 +550,43 @@ food_consumption_summarised <- food_consumption_reclassified %>%
    
    * Try to use `pivot_wider` in order to make that transformation, and use `ggplot` to create the chart.
    
-```{r consumption chart}
+```{r consumption_chart, exercise=TRUE}
+food_consumption_summarised %>% 
+   ungroup() %>% 
+   select(country, consumption, food_type) %>% 
+   pivot_wider(...) %>% 
+   ggplot(...) + 
+   ...
+```
+
+```{r consumption_chart-hint-1}
+food_consumption_summarised %>% 
+   ungroup() %>% 
+   select(country, consumption, food_type) %>% 
+   pivot_wider(names_from = food_type, values_from = ...) %>% 
+   ggplot(...) + 
+   ...
+```
+
+```{r consumption_chart-hint-2}
+food_consumption_summarised %>% 
+   ungroup() %>% 
+   select(country, consumption, food_type) %>% 
+   pivot_wider(names_from = food_type, values_from = consumption) %>% 
+   ggplot(aes(x = `Meat/Dairy`, y = ...)) + 
+   geom_...()
+```
+
+```{r consumption_chart-hint-3}
+food_consumption_summarised %>% 
+   ungroup() %>% 
+   select(country, consumption, food_type) %>% 
+   pivot_wider(names_from = food_type, values_from = consumption) %>% 
+   ggplot(aes(x = `Meat/Dairy`, y = Vegan)) + 
+   geom_...()
+```
+
+```{r consumption_chart-solution}
 food_consumption_summarised %>% 
    ungroup() %>% 
    select(country, consumption, food_type) %>% 
