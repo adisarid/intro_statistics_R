@@ -2,12 +2,15 @@
 title: "Lab - food consumption and carbon footprint"
 author: "Adi Sarid"
 date: "`r Sys.Date()`"
-output: html_document
+output: learnr::tutorial
+runtime: shiny_prerendered
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
+library(learnr)
+food_consumption <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-02-18/food_consumption.csv')
 ```
 
 In this lab we cover the data science work flow. The lab will walk you through the steps performed in a data science project:
@@ -49,15 +52,31 @@ In groups, find the original source of the data (the nu3.de website within the l
 
 Using the `read_csv` function from the `readr` package, read the food consumption data. 
 
-   * Use the following functions to understand how the data is arranged: `glimpse`, `head`, `View`. 
+   * Use the following functions to understand how the data is arranged, for example with `glimpse`, `head` or just typing the  `food_consumption` name. In an interactive rstudio session you can also use `View`. 
    
    * Comparing the file you read with the original table, in what sense the file you read is more "tidy"?
 
-```{r read the data}
+```{r read_the_data, exercise=TRUE}
+food_consumption <- readr::read_csv(...)
+```
+
+```{r read_the_data-hint-1}
 food_consumption <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-02-18/food_consumption.csv')
+food_consumption
+```
 
+```{r read_the_data-hint-2}
+glimpse(...)
+```
+
+```{r read_the_data-hint-3}
+head(...)
+```
+
+```{r read_the_data-solution}
+food_consumption <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-02-18/food_consumption.csv')
+food_consumption
 glimpse(food_consumption)
-
 head(food_consumption)
 
 ```
@@ -80,28 +99,90 @@ $$\sigma^2=\operatorname{Var}(X)=E\left[(X-E[X])^2\right]=\ldots?$$
 
    * Write down two estimates for the variance $\hat{\sigma}^2$ and $s^2$. Which would you prefer to use and why?
    
-   * What plot(s) would you use to visualize the distribution of consumption of each food type? you can use the `ggplot2` cheatsheet to consider this. Once you reach a conclusion - create the chart.
-   
-```{r foo consumption distribution}
+   * What plot(s) would you use to visualize the distribution of consumption of each food type? you can use the `ggplot2` cheatsheet to consider this (there is more than one option). Once you reach a conclusion - create the chart(s).
 
+```{r food_consumption_distribution, exercise=TRUE}
+
+```
+
+```{r food_consumption_distribution-hint-1}
+ggplot(food_consumption, ...) + 
+   ...
+```
+
+```{r food_consumption_distribution-hint-2}
+ggplot(food_consumption, aes(x = ..., y = ...)) + 
+   geom_...()
+```
+   
+```{r food_consumption_distribution-hint-3}
+ggplot(food_consumption, aes(x = food_category, y = ...)) + 
+   geom_boxplot() +
+   coord_flip()
+```
+   
+```{r food_consumption_distribution-solution}
+# Option 1:
 ggplot(food_consumption, aes(x = food_category, y = consumption)) + 
    geom_boxplot() + coord_flip()
 
+# Option 2:
 ggplot(food_consumption, aes(x = consumption)) + 
    geom_histogram() + 
    facet_wrap(~food_category)
 
+# Option 3:
 ggplot(food_consumption, aes(x = consumption)) + 
    geom_density() + 
    facet_wrap(~food_category, scales = "free")
-
 ```
+
+
 
    * Based on the plot, what products have the highest (or lowest) variance? what is the meaning of having a high (or low) variance in this context of food consumption?
    
    * Verify this by computing the consumption standard deviation of each product, also add to your computation the mean, median and 1st and 3rd quartiles. You can use `group_by` and `summarize` for this.
-   
-```{r summary stats}
+
+```{r summary_stats, exercise=TRUE}
+
+food_descriptives <- food_consumption %>% 
+   ...
+
+```
+
+```{r summary_stats-hint-1}
+food_descriptives <- food_consumption %>% 
+   group_by(...) %>% 
+   ...
+```  
+
+```{r summary_stats-hint-2}
+food_descriptives <- food_consumption %>% 
+   group_by(food_category) %>% 
+   summarize(...)
+```
+ 
+```{r summary_stats-hint-3}
+food_descriptives <- food_consumption %>% 
+   group_by(food_category) %>% 
+   summarize(mean = ...,
+             q1 = ...,
+             q2 = ...,
+             q3 = ...,
+             sd = ...)
+```
+ 
+```{r summary_stats-hint-4}
+food_descriptives <- food_consumption %>% 
+   group_by(food_category) %>% 
+   summarize(mean = mean(consumption),
+             q1 = quantile(..., probs = 0.25),
+             q2 = median(...),
+             q3 = quantile(..., probs = ...),
+             sd = sd(...))
+```
+ 
+```{r summary_stats-solution}
 food_descriptives <- food_consumption %>% 
    group_by(food_category) %>% 
    summarize(mean = mean(consumption),
@@ -111,6 +192,17 @@ food_descriptives <- food_consumption %>%
              sd = sd(consumption)) %>% 
    arrange(desc(mean))
 food_descriptives
+```
+
+```{r create food_descriptives for later, include=FALSE}
+food_descriptives <- food_consumption %>% 
+   group_by(food_category) %>% 
+   summarize(mean = mean(consumption),
+             q1 = quantile(consumption, probs = 0.25),
+             q2 = median(consumption),
+             q3 = quantile(consumption, probs = 0.75),
+             sd = sd(consumption)) %>% 
+   arrange(desc(mean))
 ```
 
 ***
@@ -123,17 +215,87 @@ food_descriptives
 
 In this part we will create a number of confidence intervals. Follow these steps in order to answer this question:
 
-   * First, decide what kind of confidence interval is to be used (what statistic are you using) and write it down as a formula:
+   * First, decide what kind of confidence interval is to be used (what statistic are you using) to compare the consumption of food categories?
+   
+```{r test-statistic, echo=FALSE}
+question("What test statistic should we use to create a confidence interval around the mean consumption of food categories?",
+         answer("$Z$"),
+         answer("$T$", correct = TRUE),
+         answer("$\\chi^2$"),
+         answer("Either $Z$ or $T$, it doesn't matter which"),
+         allow_retry = T)
+```
+   
+   * Write it down as a formula:
 
-$$T_{\text{df}=n-1} = \frac{\bar{X} - \mu}{S/\sqrt{n}}$$
+$$?_{\text{df}=n-1} = \frac{??? - ???}{???/\sqrt{???}}$$
 
    * And the confidence interval is therefore:
 
-$$\mu\in\bar{X}\pm t_{\alpha/2,n-1}S/\sqrt{n}$$
+$$\\mu\in?\pm t_{\alpha/2,n-1}?/\sqrt{?}$$
 
    * Use the tibble you created in the last step of the previous part (`food_descriptives`), to create a confidence interval for all the food categories, with $\alpha=0.05$. Use the following code.
-   
-```{r confidence intervals t statistic}
+
+```{r confidence_intervals_t_statistic, exercise=TRUE}
+
+# First find the relevant t for the chosen alpha and the relevant degrees of freedom
+t0.05_129 <- ... # you should consider one of: dt, pt, qt, rt
+
+# Now use it on the tibble we computed
+food_descriptives %>% 
+   ...
+
+```
+
+```{r confidence_intervals_t_statistic-hint-1}
+
+# First find the relevant t for the chosen alpha and the relevant degrees of freedom
+t0.05_129 <- qt(p = ..., df = ...) # you should consider one of: dt, pt, qt, rt
+
+# Now use it on the tibble we computed
+food_descriptives %>% 
+   ...
+
+```
+
+```{r confidence_intervals_t_statistic-hint-2}
+
+# First find the relevant t for the chosen alpha and the relevant degrees of freedom
+t0.05_129 <- qt(p = 0.05/2, df = 129)
+
+# Now use it on the tibble we computed
+food_descriptives %>% 
+   ...
+
+```
+
+```{r confidence_intervals_t_statistic-hint-3}
+
+# First find the relevant t for the chosen alpha and the relevant degrees of freedom
+t0.05_129 <- qt(p = 0.05/2, df = 129)
+
+# Now use it on the tibble we computed
+food_descriptives %>% 
+   mutate(ci_lower_bound = ...,
+          ci_upper_bound = ...) %>% 
+   select(food_category, ci_lower_bound, mean, ci_upper_bound)
+
+```
+
+```{r confidence_intervals_t_statistic-hint-4}
+
+# First find the relevant t for the chosen alpha and the relevant degrees of freedom
+t0.05_129 <- qt(p = 0.05/2, df = 129)
+
+# Now use it on the tibble we computed
+food_descriptives %>% 
+   mutate(ci_lower_bound = mean + t0.05_129*sd/sqrt(130),
+          ci_upper_bound = ...) %>% 
+   select(food_category, ci_lower_bound, mean, ci_upper_bound)
+
+```
+
+```{r confidence_intervals_t_statistic-solution}
 
 # First find the relevant t for the chosen alpha and the relevant degrees of freedom
 t0.05_129 <- qt(p = 0.05/2, df = 129)
@@ -147,7 +309,47 @@ food_descriptives %>%
 ```
 
    * Check your result using the `t.test` function for Fish.
-   
+
+```{r fish_ci, exercise=TRUE}
+
+fish_vector <- food_consumption %>% 
+   filter(...) %>% 
+   pull(...)
+
+t.test(...)
+
+```
+
+```{r fish_ci-hint-1}
+
+fish_vector <- food_consumption %>% 
+   filter(food_category == "...") %>% 
+   pull(consumption)
+
+t.test(...)
+
+```
+
+```{r fish_ci-hint-2}
+
+fish_vector <- food_consumption %>% 
+   filter(food_category == "Fish") %>% 
+   pull(consumption)
+
+t.test(...)
+
+```
+
+```{r fish_ci-solution}
+
+fish_vector <- food_consumption %>% 
+   filter(food_category == "Fish") %>% 
+   pull(consumption)
+
+t.test(fish_vector)
+
+```
+
 ```{r fish ci}
 
 fish_vector <- food_consumption %>% 
@@ -158,21 +360,39 @@ t.test(fish_vector)
 
 ```
 
-   * Formulate a hypothesis test which examines the expected consumption of Fish vs. Pork (with $H_0$ and $H_1$).
+   * Formulate a hypothesis test which examines the expected consumption of Fish vs. Pork (with $H_0$ and $H_1$). Check all that can be used:
    
-$$H_0: \mu_{\text{pork}} = \mu_{\text{fish}}$$
-$$H_0: \mu_{\text{pork}} \neq \mu_{\text{fish}}$$
-
+```{r hypothesis-test-formulation-question, echo=FALSE}
+question("What hypothesis tests can be used to compare pork and fish consumption?",
+         allow_retry = TRUE,
+         random_answer_order = TRUE,
+         type = "checkbox",
+         answer("$H_0: \\mu_{\\text{pork}} = \\mu_{\\text{fish}}, H_1:\\mu_{\\text{pork}} \\neq \\mu_{\\text{fish}}$", correct = TRUE),
+         answer("$H_0: \\mu_{\\text{pork}} = \\mu_{\\text{fish}}, H_1:\\mu_{\\text{pork}} > \\mu_{\\text{fish}}$", correct = TRUE),
+         answer("$H_0: \\mu_{\\text{pork}} \\neq \\mu_{\\text{fish}}, H_1:\\mu_{\\text{pork}} = \\mu_{\\text{fish}}$", correct = FALSE),
+         answer("$H_0: \\mu_{\\text{pork}} < \\mu_{\\text{fish}}, H_1:\\mu_{\\text{pork}} > \\mu_{\\text{fish}}$", correct = FALSE),
+         answer("$H_0: \\mu_{\\text{pork}} \\neq \\mu_{\\text{fish}}, H_1:\\mu_{\\text{pork}} < \\mu_{\\text{fish}}$", correct = FALSE))
+```
+   
    * Assuming that the variance of pork and fish consumption is the same, what test statistic would you use for this hypothesis?
    
-$$T=\frac{\bar{X}_1 - \bar{X}_2 - (\mu_1 - \mu_2)}{S_p\sqrt{1/n_1 + 1/n_2}}$$
+$$T=\frac{? - ? - (\\mu_1 - \\mu_2)}{S_p\sqrt{? + ?}}$$
 
-$$S_p = \sqrt{\frac{(n_1-1)S_1^2 + (n_2-1)S_2^2}{n_1 + n_2 -2}}$$
+$$S_p = ?$$
 
-With df$=n_1+n_2-2$.
+With df$=?$.
 
-   * Is this a paired or unpaired test?
-   
+```{r hypothesis_test_formulation_paired_unpaired, echo=FALSE}
+question("Is this test paired or unpaired?",
+         allow_retry = TRUE,
+         random_answer_order = TRUE,
+         type = "radio",
+         answer("Paired", correct = FALSE),
+         answer("Unpaired", correct = TRUE),
+         answer("Irrelevant", correct = FALSE),
+         answer("Can be paired or unpaired - it doesn't matter", correct = FALSE))
+```
+
    * Conduct the test by computing the test statistic and its p-value. You can do this either directly or with the `t.test` function. However you prefer. If you are using the `t.test`, note that you have to set the `var.equal` argument (to what?).
 
 ```{r compare fish and pork}
