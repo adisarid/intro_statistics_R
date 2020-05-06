@@ -27,7 +27,7 @@ First, open up a new project. To do this, in RStudio go to:
 
    * File -> New Project -> New Directory -> New Project.
 
-Provide your project directory name (under directory name), and click ok. Note that everything will close and RStudio will open up in a clean window. But don't worry, you can always view this file by visiting [this link](https://github.com/adisarid/intro_statistics_R/tree/master/labs/Data_science_workflow_lab.Rmd).
+Provide your project directory name (under directory name), and click ok. Note that everything will close and RStudio will open up in a clean window. But don't worry, you can always view this file by visiting [this link](https://sarid.shinyapps.io/food_consumption_lab/).
 
 Once a new RStudio instance has opened with a clean window of your new project, open up a new RMarkdown, which you will use to answer your questions to this lab by:
 
@@ -350,7 +350,7 @@ t.test(fish_vector)
 
 ```
 
-```{r fish ci}
+```{r fish ci, include=FALSE}
 
 fish_vector <- food_consumption %>% 
    filter(food_category == "Fish") %>% 
