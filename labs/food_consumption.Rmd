@@ -232,7 +232,7 @@ $$?_{\text{df}=n-1} = \frac{??? - ???}{???/\sqrt{???}}$$
 
    * And the confidence interval is therefore:
 
-$$\\mu\in?\pm t_{\alpha/2,n-1}?/\sqrt{?}$$
+$$\mu\in?\pm t_{\alpha/2,n-1}?/\sqrt{?}$$
 
    * Use the tibble you created in the last step of the previous part (`food_descriptives`), to create a confidence interval for all the food categories, with $\alpha=0.05$. Use the following code.
 
@@ -376,7 +376,7 @@ question("What hypothesis tests can be used to compare pork and fish consumption
    
    * Assuming that the variance of pork and fish consumption is the same, what test statistic would you use for this hypothesis?
    
-$$T=\\frac{? - ? - (\\mu_1 - \\mu_2)}{S_p\\sqrt{? + ?}}$$
+$$T=\frac{? - ? - (\mu_1 - \mu_2)}{S_p\sqrt{? + ?}}$$
 
 $$S_p = ?$$
 
