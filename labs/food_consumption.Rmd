@@ -1,0 +1,252 @@
+---
+title: "Lab - food consumption and carbon footprint"
+author: "Adi Sarid"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+In this lab we cover the data science work flow. The lab will walk you through the steps performed in a data science project:
+
+   * Data import
+   * Data tidying
+   * Transformation <-> Visualization <-> Modelling
+   
+The lab will also cover the theoretic elements we covered such confidence intervals and hypothesis tests. This lab is to be performed in groups of 3 (i.e., zoom break rooms).
+
+# First exercise - open up a new project.
+
+First, open up a new project. To do this, in RStudio go to:
+
+   * File -> New Project -> New Directory -> New Project.
+
+Provide your project directory name (under directory name), and click ok. Note that everything will close and RStudio will open up in a clean window. But don't worry, you can always view this file by visiting [this link](https://github.com/adisarid/intro_statistics_R/tree/master/labs/Data_science_workflow_lab.Rmd).
+
+Once a new RStudio instance has opened with a clean window of your new project, open up a new RMarkdown, which you will use to answer your questions to this lab by:
+
+   * File -> New file -> R Markdown...
+
+Give your RMarkdown file a name and use the html outupt type. In your new RMarkdown file you can delete lines 1-10 and delete everything else in the file (lines 11-31). Try to knit it by clicking ctrl+k. 
+
+Now we are ready to do some analysis.
+
+# Second exercise - get to know your data
+
+In this lab we are going to analyze food consumption data from *tidytuesday*. You can read about tidytuesday [here](https://github.com/rfordatascience/tidytuesday) - it's a github repository which is updated every Tuesday with data freely available for analyzing and sharpening your data analysis skills. 
+Today we will use this dataset: [here](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-02-18/readme.md).
+
+In groups, find the original source of the data (the nu3.de website within the links) and discuss: 
+
+   * What is the origin of the data?
+   
+   * Would you consider the data reliable/trust worthy?
+   
+   * How was the carbon footprint computed for each food type and country?
+
+Using the `read_csv` function from the `readr` package, read the food consumption data. 
+
+   * Use the following functions to understand how the data is arranged: `glimpse`, `head`, `View`. 
+   
+   * Comparing the file you read with the original table, in what sense the file you read is more "tidy"?
+
+```{r read the data}
+food_consumption <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-02-18/food_consumption.csv')
+
+glimpse(food_consumption)
+
+head(food_consumption)
+
+```
+
+***
+
+**Checkpoint** - make sure you summarize your answers in a convinient way, we are going to discuss them in class.
+
+***
+
+# Third exercise - visualization, and descriptive statistics of food consumption
+
+In the group, discuss: 
+
+   * What influences the consumption of various goods (e.g., pork, beef, fish, wheat, etc.). In which countries would you expect to find a low or high consumption of specific products?
+   
+   * Write down an equivalent formula for the variance. This is a theoretic part, you can write your answer in RMarkdown by enclosing it with the $ characters like this. RMarkdown interprets such test as LaTeX and creates a formula:
+
+$$\sigma^2=\operatorname{Var}(X)=E\left[(X-E[X])^2\right]=\ldots?$$
+
+   * Write down two estimates for the variance $\hat{\sigma}^2$ and $s^2$. Which would you prefer to use and why?
+   
+   * What plot(s) would you use to visualize the distribution of consumption of each food type? you can use the `ggplot2` cheatsheet to consider this. Once you reach a conclusion - create the chart.
+   
+```{r foo consumption distribution}
+
+ggplot(food_consumption, aes(x = food_category, y = consumption)) + 
+   geom_boxplot() + coord_flip()
+
+ggplot(food_consumption, aes(x = consumption)) + 
+   geom_histogram() + 
+   facet_wrap(~food_category)
+
+ggplot(food_consumption, aes(x = consumption)) + 
+   geom_density() + 
+   facet_wrap(~food_category, scales = "free")
+
+```
+
+   * Based on the plot, what products have the highest (or lowest) variance? what is the meaning of having a high (or low) variance in this context of food consumption?
+   
+   * Verify this by computing the consumption standard deviation of each product, also add to your computation the mean, median and 1st and 3rd quartiles. You can use `group_by` and `summarize` for this.
+   
+```{r summary stats}
+food_descriptives <- food_consumption %>% 
+   group_by(food_category) %>% 
+   summarize(mean = mean(consumption),
+             q1 = quantile(consumption, probs = 0.25),
+             q2 = median(consumption),
+             q3 = quantile(consumption, probs = 0.75),
+             sd = sd(consumption)) %>% 
+   arrange(desc(mean))
+food_descriptives
+```
+
+***
+
+**Checkpoint** - together in class, we're going to discuss and solve the exercise so far.
+
+***
+
+# Fourth exercise - modelling - confidence intervals and hypothesis tests of consumption
+
+In this part we will create a number of confidence intervals. Follow these steps in order to answer this question:
+
+   * First, decide what kind of confidence interval is to be used (what statistic are you using) and write it down as a formula:
+
+$$T_{\text{df}=n-1} = \frac{\bar{X} - \mu}{S/\sqrt{n}}$$
+
+   * And the confidence interval is therefore:
+
+$$\mu\in\bar{X}\pm t_{\alpha/2,n-1}S/\sqrt{n}$$
+
+   * Use the tibble you created in the last step of the previous part (`food_descriptives`), to create a confidence interval for all the food categories, with $\alpha=0.05$. Use the following code.
+   
+```{r confidence intervals t statistic}
+
+# First find the relevant t for the chosen alpha and the relevant degrees of freedom
+t0.05_129 <- qt(p = 0.05/2, df = 129)
+
+# Now use it on the tibble we computed
+food_descriptives %>% 
+   mutate(ci_lower_bound = mean + t0.05_129*sd/sqrt(130),
+          ci_upper_bound = mean - t0.05_129*sd/sqrt(130)) %>% 
+   select(food_category, ci_lower_bound, mean, ci_upper_bound)
+
+```
+
+   * Check your result using the `t.test` function for Fish.
+   
+```{r fish ci}
+
+fish_vector <- food_consumption %>% 
+   filter(food_category == "Fish") %>% 
+   pull(consumption)
+
+t.test(fish_vector)
+
+```
+
+   * Formulate a hypothesis test which examines the expected consumption of Fish vs. Pork (with $H_0$ and $H_1$).
+   
+$$H_0: \mu_{\text{pork}} = \mu_{\text{fish}}$$
+$$H_0: \mu_{\text{pork}} \neq \mu_{\text{fish}}$$
+
+   * Assuming that the variance of pork and fish consumption is the same, what test statistic would you use for this hypothesis?
+   
+$$T=\frac{\bar{X}_1 - \bar{X}_2 - (\mu_1 - \mu_2)}{S_p\sqrt{1/n_1 + 1/n_2}}$$
+
+$$S_p = \sqrt{\frac{(n_1-1)S_1^2 + (n_2-1)S_2^2}{n_1 + n_2 -2}}$$
+
+With df$=n_1+n_2-2$.
+
+   * Is this a paired or unpaired test?
+   
+   * Conduct the test by computing the test statistic and its p-value. You can do this either directly or with the `t.test` function. However you prefer. If you are using the `t.test`, note that you have to set the `var.equal` argument (to what?).
+
+```{r compare fish and pork}
+pork_vector <- food_consumption %>% 
+   filter(food_category == "Pork") %>% 
+   pull(consumption)
+
+t.test(x = fish_vector, y = pork_vector, var.equal = T)
+
+```
+   
+   * How would you have conducted the test if the variances were assumed to be unequal?
+   
+```{r compare fish and pork unequal variance}
+t.test(x = fish_vector, y = pork_vector, var.equal = F)
+```
+
+***
+
+**Checkpoint** - solving this exercise together in class.
+
+***
+
+# Fifth exercise - visualizing the relationship between meet products and vegan products
+
+In this final part, we're going to use visualizations to examine the relationship between meat/dairy and vegan products.
+
+   * Reclassify all the `food_category` into two types of products: meet/dairy versus vegan. You can use the definition of the following tibble, along with the `left_join` function, but you will probably need to read about it in the documentation. Another option is to use another function called `case_when` or `recode_factor`.
+   
+```{r food reclassification}
+food_types <- tribble(~food_category, ~food_type,
+                      "Beef", "Meat/Dairy",
+                      "Eggs", "Meat/Dairy",
+                      "Fish", "Meat/Dairy",
+                      "Lamb & Goat", "Meat/Dairy",
+                      "Milk - inc. cheese", "Meat/Dairy",
+                      "Pork", "Meat/Dairy",
+                      "Poultry", "Meat/Dairy",
+                      "Rice", "Vegan",
+                      "Soybeans", "Vegan",
+                      "Wheat and Wheat Products", "Vegan",
+                      "Nuts inc. Peanut Butter", "Vegan")
+
+food_consumption_reclassified <- food_consumption %>% 
+   left_join(food_types)
+
+```
+
+   * In the result you got, summarize the data such that each country will appear only twice (once for Meat/Dairy and once for Vegan consumption values), with the overall consumption for that type. Select only the `consumption` and `food_type` values. You should be using the functions `group_by` and `summary`.
+   
+```{r reclassification summary}
+food_consumption_summarised <- food_consumption_reclassified %>% 
+   group_by(country, food_type) %>% 
+   summarize(consumption = sum(consumption))
+```
+
+   * We would like to create a chart in which each country is a point, the x axis is Meat/dairy and the y-axis is Vegan consumption. What kind of transformations would you need to do on the previous tibble to prepare it for such a plot?
+   
+   * Try to use `pivot_wider` in order to make that transformation, and use `ggplot` to create the chart.
+   
+```{r consumption chart}
+food_consumption_summarised %>% 
+   ungroup() %>% 
+   select(country, consumption, food_type) %>% 
+   pivot_wider(names_from = food_type, values_from = consumption) %>% 
+   ggplot(aes(x = `Meat/Dairy`, y = Vegan)) + 
+   geom_point()
+```
+
+   * Can you identify any relationships between the two variables? (consumption of Meat/Dairy versus consumption of Vegan food?)
+
+
+***
+
+**Checkpoint** - Solve exercise together in class.
+
+***

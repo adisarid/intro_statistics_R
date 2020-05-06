@@ -1,5 +1,5 @@
 ---
-title: "Lab - the data science workflow"
+title: "Lab - food consumption and carbon footprint - answers"
 author: "Adi Sarid"
 date: "`r Sys.Date()`"
 output: html_document
@@ -24,7 +24,7 @@ First, open up a new project. To do this, in RStudio go to:
 
    * File -> New Project -> New Directory -> New Project.
 
-Provide your project directory name (under directory name), and click ok. Note that everything will close and RStudio will open up in a clean window. But don't worry, you can always view this file by visiting [this link](https://github.com/adisarid/intro_statistics_R/tree/master/labs/Data_science_workflow_lab.Rmd).
+Provide your project directory name (under directory name), and click ok. Note that everything will close and RStudio will open up in a clean window. But don't worry, you can always view this file by visiting [this link](https://github.com/adisarid/intro_statistics_R/tree/master/labs/).
 
 Once a new RStudio instance has opened with a clean window of your new project, open up a new RMarkdown, which you will use to answer your questions to this lab by:
 
