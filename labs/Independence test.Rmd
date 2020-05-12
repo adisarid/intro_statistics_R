@@ -284,7 +284,7 @@ volcano_observed
 
 This yields the observed values $O_i$. Now we turn to computing the expected values. Since we are going to use the `chi.square` function, it is enough to compute the probabilities of each combination primary_volcano_type and elv_gr (if they are independent).
 
-Compute the proportion of mountains in each `elv_gr` and the proportion of mountains in each `primary_volcano_type` (out of the six common types). Make sure that you finish with just two columns in each case (proportion and the `primary_volcano_type` or `elv_gr`)
+Compute the proportion of mountains in each `elv_gr` and the proportion of mountains in each `primary_volcano_type` (out of the six common types). Make sure that you finish with just two columns in each case (proportion and the `primary_volcano_type` or `elv_gr`). The new columns should be named `prop_elv` and `prop_type` respectively.
 
 ```{r expected_table, exercise=TRUE}
 expected_elevation <- volcano_new %>% 
@@ -377,7 +377,7 @@ We are now going to connect the results so far into one big tibble, one crucial 
 
 The function we are going to use is `left_join`, to join everything (the expected values and the observed values) into one big table. We are going to provide the solution which you should discuss and interpret in the group - what each step does.
 
-The last step is about computing the probability under the null hypothesis (of independence). It is currently not included in the code, you should add it as part of the exercise, with a `mutate` command.
+The last step is about computing the probability under the null hypothesis (of independence). It is currently not included in the code, you should add it as part of the exercise, with a `mutate` command, which creates a new column `prop` (the multiplication of `prop_elv` and `prop_type`).
 
 ```{r combining_everything_into_a_tibble, exercise=TRUE}
 contingency_table <- volcano_observed %>% 
