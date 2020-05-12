@@ -282,7 +282,7 @@ volcano_observed <- volcano_new %>%
 volcano_observed
 ```
 
-This yields the observed values $O_i$. Now we turn to computing the expected values. Since we are going to use the `chi.square` function, it is enough to compute the probabilities of each combination primary_volcano_type and elv_gr (if they are independent).
+This yields the observed values $O_i$. Now we turn to computing the expected values. 
 
 Compute the proportion of mountains in each `elv_gr` and the proportion of mountains in each `primary_volcano_type` (out of the six common types). Make sure that you finish with just two columns in each case (proportion and the `primary_volcano_type` or `elv_gr`). The new columns should be named `prop_elv` and `prop_type` respectively.
 
@@ -373,11 +373,11 @@ expected_types <- volcano_new %>%
   select(-n)
 ```
 
-We are now going to connect the results so far into one big tibble, one crucial step before running our chi square test. That is, we want to be able to have a table with the volcano type, the elevation group, the observed number of volcanos and the probability under the null hypothesis (that the two are independent).
+We are now going to connect the results so far into one big tibble, one crucial step before running our chi square test. That is, we want to be able to have a table with the volcano type, the elevation group, the observed number of volcanoes and the expected number under the null hypothesis (that the two are independent).
 
 The function we are going to use is `left_join`, to join everything (the expected values and the observed values) into one big table. We are going to provide the solution which you should discuss and interpret in the group - what each step does.
 
-The last step is about computing the probability under the null hypothesis (of independence). It is currently not included in the code, you should add it as part of the exercise, with a `mutate` command, which creates a new column `prop` (the multiplication of `prop_elv` and `prop_type`).
+The last two steps are about computing the probability under the null hypothesis (of independence) and the expected number of observations. It is currently not included in the code, you should add it as part of the exercise, with a `mutate` command, which creates a new column `prop` (the multiplication of `prop_elv` and `prop_type`). Then as another step, multiply `prop` by `sum(observed)`.
 
 ```{r combining_everything_into_a_tibble, exercise=TRUE}
 contingency_table <- volcano_observed %>% 
@@ -391,7 +391,8 @@ contingency_table
 contingency_table <- volcano_observed %>% 
   left_join(expected_types) %>% 
   left_join(expected_elevation) %>% 
-  mutate(prop = ...)
+  mutate(prop = ...) %>% 
+  mutate(expected = ...*sum(observed))
 
 contingency_table
 ```
@@ -400,7 +401,8 @@ contingency_table
 contingency_table <- volcano_observed %>% 
   left_join(expected_types) %>% 
   left_join(expected_elevation) %>% 
-  mutate(prop = prop_elv*prop_type)
+  mutate(prop = prop_elv*prop_type) %>% 
+  mutate(expected = prop*sum(observed))
 
 contingency_table
 ```
@@ -409,29 +411,56 @@ contingency_table
 contingency_table <- volcano_observed %>% 
   left_join(expected_types, by = "primary_volcano_type") %>% 
   left_join(expected_elevation, by = "elv_gr") %>% 
-  mutate(prop = prop_elv*prop_type)
+  mutate(prop = prop_elv*prop_type) %>% 
+  mutate(expected = prop*sum(observed))
 ```
 
-### Use the chi-square test
+### Compute the chi-square statistic and the p-value
 
-The final step is to use the chi-square test on our contingency. We can use the `contingency_table` we defined in the previous steps. Specifically we need to use `contingency_table$observed`, and `contingency_table$prop`. 
+The final step is to use the chi-square test on our contingency. We can use the `contingency_table` we defined in the previous steps. Specifically we need to use `contingency_table$observed`, and `contingency_table$expected`. 
 
 Complete this chi square test to finish the exercise and reveal the answer:
 
-```{r chi_sqaure_test, exercise=TRUE}
-chisq.test(...)
+```{r chi_sqaure_test_manual, exercise=TRUE}
+chi_statisic <- sum((... - ...)^2/...)
+p_value <- 1 - pchisq(q = ..., df = ...)
 ```
 
-```{r chi_sqaure_test-hint-1}
-chisq.test(x = ..., p = ...)
+```{r chi_sqaure_test_manual-hint-1}
+chi_statisic <- sum((new_cont$observed - new_cont$expected)^2/new_cont$expected)
+p_value <- 1 - pchisq(q = chi_statisic, df = ...)
 ```
 
-```{r chi_sqaure_test-hint-2}
-chisq.test(x = contingency_table$..., p = contingency_table$...)
+```{r chi_sqaure_test_manual-hint-2}
+chi_statisic <- sum((new_cont$observed - new_cont$expected)^2/new_cont$expected)
+p_value <- 1 - pchisq(q = chi_statisic, df = (...rows... - 1)*(...columns... - 1))
 ```
 
-```{r chi_sqaure_test-solution}
-chisq.test(x = contingency_table$observed, p = contingency_table$prop)
+```{r chi_sqaure_test_manual-solution}
+chi_statisic <- sum((new_cont$observed - new_cont$expected)^2/new_cont$expected)
+p_value <- 1 - pchisq(q = chi_statisic, df = (6 - 1)*(3 - 1))
+
+chi_statisic
+p_value
 ```
 
 **Interpret and discuss the results in the group.**
+
+### Bonus question
+
+Why using the following code yields a wrong result? (hint: think about `df`).
+How would you use `chisq.test` differently to fix this error?
+
+```{r chi_sqaure_test, exercise = T}
+chisq.test(x = contingency_table$observed, p = contingency_table$prop)
+```
+
+```{r chi_squar_test-solution}
+cont_for_chi <- contingency_table %>% 
+  select(1:3) %>% 
+  pivot_wider(id_cols = primary_volcano_type, names_from = elv_gr, values_from = observed) %>%
+  column_to_rownames("primary_volcano_type") %>% 
+  as.matrix()
+
+chisq.test(cont_for_chi)
+```
