@@ -16,3 +16,9 @@ lectures/libs
 /exercises/12/~$ex12.docx
 /exercises/12/ex12.docx
 /exercises/13/ex 13.docx
+/lectures/*.html
+/lectures/*_files
+distribution_shiny_app/rsconnect
+labs/rsconnect/
+/labs/*_files/
+/labs/*.html
