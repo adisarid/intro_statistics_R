@@ -1,0 +1,408 @@
+---
+title: "Independence of two variables test"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(tidyverse)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Background
+
+In the following tutorial we're going to demonstrate the independence test (contingency table) using chi-square.
+
+This tutorial was developed by Adi Sarid, as part of an introduction to statistics and data analysis with R. The tutorial is provided under the [cc-by-nc-sa license](https://creativecommons.org/licenses/by-nc-sa/4.0/). Source code is available in [this repo](https://github.com/adisarid/intro_statistics_R) under the labs folder.
+
+We'll be using the [volcano eruptions dataset](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-05-12/readme.md) from tidytuesday.
+
+## Familiarize yourself with the data
+
+First, let's read the data and get familiar with it. In [this link](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-05-12/readme.md) you will find five different data sets related to volcanoes. Read the first data set into R (called volcano in the data), `glimpse` on it and create a histogram of volcano elevation using `ggplot2`.
+
+```{r initial_read_and_elevation_histogram, exercise=TRUE}
+volcano <- read_csv('')
+glimpse(...)
+ggplot(volcano, ...) + 
+  geom_...(...)
+```
+
+```{r initial_read_and_elevation_histogram-hint-1}
+volcano <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-05-12/volcano.csv')
+glimpse(...)
+ggplot(volcano, ...) + 
+  geom_...(...)
+```
+
+```{r initial_read_and_elevation_histogram-hint-2}
+volcano <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-05-12/volcano.csv')
+glimpse(volcano)
+ggplot(volcano, ...) + 
+  geom_...(...)
+```
+
+```{r initial_read_and_elevation_histogram-hint-3}
+volcano <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-05-12/volcano.csv')
+glimpse(volcano)
+ggplot(volcano, aes(elevation)) + 
+  geom_...(...)
+```
+
+```{r initial_read_and_elevation_histogram-solution}
+volcano <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-05-12/volcano.csv')
+glimpse(volcano)
+ggplot(volcano, aes(elevation)) + 
+  geom_histogram()
+```
+
+```{r prep data which s going to be used, include=FALSE}
+volcano <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-05-12/volcano.csv')
+```
+
+### Volcano types
+
+Next up, plot a bar plot detailing the number of observations for each volcano type.
+
+```{r volcano_types, exercise=TRUE}
+ggplot(volcano, ...) + 
+  ...
+```
+
+```{r volcano_types-hint-1}
+ggplot(volcano, aes(...)) + 
+  ...
+```
+
+```{r volcano_types-hint-2}
+ggplot(volcano, aes(primary_volcano_type)) + 
+  geom_...
+```
+
+```{r volcano_types-hint-3}
+ggplot(volcano, aes(primary_volcano_type)) + 
+  geom_...
+```
+
+```{r volcano_types-solution}
+ggplot(volcano, aes(y = primary_volcano_type)) + 
+  geom_bar()
+```
+
+```{r most_common_volcanos}
+quiz(
+  question("What are the top 2 (most common) volcano types?", random_answer_order = T, type = "checkbox",
+    answer("Stratovolcano", correct = TRUE),
+    answer("Shield", correct = TRUE),
+    answer("Volcanic field"),
+    answer("Pyroclastic cone(s)"),
+    answer("Caldera"),
+    answer("Complex"),
+    answer("Subglacial"),
+    answer("Tuff cone")
+  )
+)
+```
+
+Can you think of an easy way to sort and show the number of observations per volcano type?
+
+```{r sort_and_show_top_volcanos, exercise = TRUE}
+volcano %>% 
+  count(...) %>% 
+  arrange(...)
+```
+
+```{r sort_and_show_top_volcanos-hint-1}
+volcano %>% 
+  count(primary_volcano_type) %>% 
+  arrange(...)
+```
+
+```{r sort_and_show_top_volcanos-hint-2}
+volcano %>% 
+  count(primary_volcano_type) %>% 
+  arrange(n) #(not the full answer, there is another thing to do here!)
+```
+
+```{r sort_and_show_top_volcanos-solution}
+volcano %>% 
+  count(primary_volcano_type) %>% 
+  arrange(desc(n))
+```
+
+If you read closely the volcano types, you will see that there are some types which should probably be merged, for example, Shield + Shield(s), Stratovolcano + Stratovolcano(es). This requires some more carful handling, at a slightly more advanced level. 
+
+Here's a code which merges the different levels (you don't have to run it. It comes pre-loaded into this tutorial, and you will be able to use it in the next section by calling `volcano_new`).
+
+```{r merge volcanic types, include=FALSE}
+volcano_new <- volcano %>% 
+  mutate(primary_volcano_type = str_remove(primary_volcano_type, "\\(s\\)|\\(es\\)|\\?")) %>% 
+  mutate(primary_volcano_type = fct_infreq(primary_volcano_type))
+```
+
+However, we recommend you run it to see what it does to the data.
+
+```{r plot_new_types, exercise=TRUE}
+volcano_new <- volcano %>% 
+  mutate(primary_volcano_type = str_remove(primary_volcano_type, "\\(s\\)|\\(es\\)|\\?")) %>% 
+  mutate(primary_volcano_type = fct_infreq(primary_volcano_type))
+ggplot(volcano_new, aes(y = primary_volcano_type)) + 
+  geom_bar() + 
+  geom_label(aes(label = ..count..), stat = "count")
+```
+
+Next up, we're going to see if there is a significant relationship (dependence) between a volcano's elevation and its type.
+
+## Relationship between elevation and volcano type
+
+### Examine a possible relationship using a plot
+
+First, we would like to use a chart to compare the elevation distribution of different volcano types.
+
+```{r chart_types_for_distributions}
+quiz(
+  question("What kind of geom would you use to compare the elevation distribution of different volcano types?", random_answer_order = T, type = "checkbox",
+    answer("`geom_histogram`"),
+    answer("`geom_boxplot`", correct = TRUE),
+    answer("`geom_point`"),
+    answer("`geom_col`")
+  )
+)
+```
+
+Create a plot comparing the distribution of elevation of different volcano types. Before making the plot, filter the `volcano_new` data to the 6 most common types of volcano, i.e., Stratovolcano, Shield, Caldera, Pyroclastic cone, Volcanic field, Complex).
+
+```{r plot_elevation_distribution, exercise=TRUE}
+common_volcano_types <- c("Stratovolcano", "Shield", "Caldera", "Pyroclastic cone", "Volcanic field", "Complex")
+
+volcano_new %>% 
+  ... %>% 
+  ... + 
+  ...
+```
+
+```{r plot_elevation_distribution-hint-1}
+common_volcano_types <- c("Stratovolcano", "Shield", "Caldera", "Pyroclastic cone", "Volcanic field", "Complex")
+
+volcano_new %>% 
+  filter(...) %>% 
+  ggplot(...) + 
+  ...
+```
+
+```{r plot_elevation_distribution-hint-2}
+common_volcano_types <- c("Stratovolcano", "Shield", "Caldera", "Pyroclastic cone", "Volcanic field", "Complex")
+
+volcano_new %>% 
+  filter(primary_volcano_type %in% common_volcano_types) %>% 
+  ggplot(...) + 
+  ...
+```
+
+```{r plot_elevation_distribution-solution}
+common_volcano_types <- c("Stratovolcano", "Shield", "Caldera", "Pyroclastic cone", "Volcanic field", "Complex")
+
+volcano_new %>% 
+  filter(primary_volcano_type %in% common_volcano_types) %>% 
+  ggplot(aes(x = primary_volcano_type, y = elevation)) + 
+  geom_boxplot()
+```
+
+```{r retain the six common volcano types}
+common_volcano_types <- c("Stratovolcano", "Shield", "Caldera", "Pyroclastic cone", "Volcanic field", "Complex")
+```
+
+**Group discussion:** based on the chart you just plotted, do you think there is a relationship between elevation and volcano types, or that the two are independent?
+
+### Conduct a chi-square independence test (contingency table)
+
+Now we would like to take our examination a step further and answer the following hypothesis test:
+
+   * $H_0:$ Volcano type and volcano elevation are independently distributed
+   * $H_1:$ Volcano type and volcano elevation are not independently distributed (they are dependent variables)
+   
+Using just the six common volcano types, create a tibble which counts the number of volcanos in each combination of elevation and volcano types. Use the following elevations as cut-off points for the bins: 
+
+   * -3 thru 1000, i.e., (-3, 1000]
+   * 1000 thru 2000, i.e., (1000, 2000]
+   * 2000 thru 6880, i.e., (1000, 6880]
+
+Note that the resulting columns should be: `primary_volcano_type`, `elv_gr` (grouped elevation), and `observed`.
+
+```{r create_the_contingency_table, exercise = TRUE}
+volcano_observed <- volcano_new %>% 
+  filter(primary_volcano_type %in% common_volcano_types) %>% 
+  ...
+```
+
+```{r create_the_contingency_table-hint-1}
+volcano_observed <- volcano_new %>% 
+  filter(primary_volcano_type %in% common_volcano_types) %>% 
+  mutate(elv_gr = cut(elevation, breaks = c(...))) %>% 
+  ...
+```
+
+```{r create_the_contingency_table-hint-2}
+volcano_observed <- volcano_new %>% 
+  filter(primary_volcano_type %in% common_volcano_types) %>% 
+  mutate(elv_gr = 
+           cut(elevation, 
+               breaks = c(-3, 1000, 2000, 6880))) %>% 
+  count(...)
+```
+
+```{r create_the_contingency_table-hint-3}
+volcano_observed <- volcano_new %>% 
+  filter(primary_volcano_type %in% common_volcano_types) %>% 
+  mutate(elv_gr = 
+           cut(elevation, 
+               breaks = c(-3, 1000, 2000, 6880))) %>% 
+  count(primary_volcano_type, ..., name = ...)
+```
+
+```{r create_the_contingency_table-solution}
+volcano_observed <- volcano_new %>% 
+  filter(primary_volcano_type %in% common_volcano_types) %>% 
+  mutate(elv_gr = 
+           cut(elevation, 
+               breaks = c(-3, 1000, 2000, 6880))) %>% 
+  count(primary_volcano_type, elv_gr, name = "observed")
+```
+
+This yields the observed values $O_i$. Now we turn to computing the expected values. Since we are going to use the `chi.square` function, it is enough to compute the probabilities of each combination primary_volcano_type and elv_gr (if they are independent).
+
+Compute the proportion of mountains in each `elv_gr` and the proportion of mountains in each `primary_volcano_type` (out of the six common types). Make sure that you finish with just two columns in each case (proportion and the `primary_volcano_type` or `elv_gr`)
+
+```{r expected_table, exercise=TRUE}
+expected_elevation <- volcano_new %>% 
+  filter(primary_volcano_type %in% common_volcano_types) %>% 
+  mutate(elv_gr = ...) %>% 
+  count(...) %>% 
+  mutate(prop_elv = .../sum(...)) %>% 
+  select(-...)
+
+expected_types <- volcano_new %>% 
+  filter(primary_volcano_type %in% common_volcano_types) %>% 
+  count(...) %>% 
+  mutate(prop_type = .../sum(...)) %>% 
+  select(-...)
+
+```
+
+```{r expected_table-hint-1}
+expected_elevation <- volcano_new %>% 
+  filter(primary_volcano_type %in% common_volcano_types) %>% 
+  mutate(elv_gr = 
+           cut(elevation, 
+               breaks = c(-3, 1000, 2000, 6880))) %>% 
+  count(...) %>% 
+  mutate(prop_elv = .../sum(...)) %>% 
+  select(-...)
+
+expected_types <- volcano_new %>% 
+  filter(primary_volcano_type %in% common_volcano_types) %>% 
+  count(primary_volcano_type) %>% 
+  mutate(prop_type = .../sum(...)) %>% 
+  select(-...)
+
+```
+
+```{r expected_table-solution}
+expected_elevation <- volcano_new %>% 
+  filter(primary_volcano_type %in% common_volcano_types) %>% 
+  mutate(elv_gr = 
+           cut(elevation, 
+               breaks = c(-3, 1000, 2000, 6880))) %>% 
+  count(elv_gr) %>% 
+  mutate(prop_elv = n/sum(n)) %>% 
+  select(-n)
+
+expected_types <- volcano_new %>% 
+  filter(primary_volcano_type %in% common_volcano_types) %>% 
+  count(primary_volcano_type) %>% 
+  mutate(prop_type = n/sum(n)) %>% 
+  select(-n)
+
+```
+
+```{r retain the resulting expected and observed tibbles, include=FALSE}
+volcano_observed <- volcano_new %>% 
+  filter(primary_volcano_type %in% common_volcano_types) %>% 
+  mutate(elv_gr = 
+           cut(elevation, 
+               breaks = c(-3, 1000, 2000, 6880))) %>% 
+  count(primary_volcano_type, elv_gr, name = "observed")
+
+expected_elevation <- volcano_new %>% 
+  filter(primary_volcano_type %in% common_volcano_types) %>% 
+  mutate(elv_gr = 
+           cut(elevation, 
+               breaks = c(-3, 1000, 2000, 6880))) %>% 
+  count(elv_gr) %>% 
+  mutate(prop_elv = n/sum(n)) %>% 
+  select(-n)
+
+expected_types <- volcano_new %>% 
+  filter(primary_volcano_type %in% common_volcano_types) %>% 
+  count(primary_volcano_type) %>% 
+  mutate(prop_type = n/sum(n)) %>% 
+  select(-n)
+```
+
+We are now going to connect the results so far into one big tibble, one crucial step before running our chi square test. That is, we want to be able to have a table with the volcano type, the elevation group, the observed number of volcanos and the probability under the null hypothesis (that the two are independent).
+
+The function we are going to use is `left_join`, to join everything (the expected values and the observed values) into one big table. We are going to provide the solution which you should discuss and interpret in the group - what each step does.
+
+The last step is about computing the probability under the null hypothesis (of independence). It is currently not included in the code, you should add it as part of the exercise, with a `mutate` command.
+
+```{r combining_everything_into_a_tibble, exercise=TRUE}
+contingency_table <- volcano_observed %>% 
+  left_join(expected_types) %>% 
+  left_join(expected_elevation)
+```
+
+```{r combining_everything_into_a_tibble-hint-1}
+contingency_table <- volcano_observed %>% 
+  left_join(expected_types) %>% 
+  left_join(expected_elevation) %>% 
+  mutate(prop = ...)
+```
+
+```{r combining_everything_into_a_tibble-solution}
+contingency_table <- volcano_observed %>% 
+  left_join(expected_types) %>% 
+  left_join(expected_elevation) %>% 
+  mutate(prop = prop_elv*prop_type)
+```
+
+```{r create the contingency table, include=FALSE}
+contingency_table <- volcano_observed %>% 
+  left_join(expected_types, by = "primary_volcano_type") %>% 
+  left_join(expected_elevation, by = "elv_gr") %>% 
+  mutate(prop = prop_elv*prop_type)
+```
+
+### Use the chi-square test
+
+The final step is to use the chi-square test on our contingency. We can use the `contingency_table` we defined in the previous steps. Specifically we need to use `contingency_table$observed`, and `contingency_table$prop`. 
+
+Complete this chi square test to finish the exercise and reveal the answer:
+
+```{r chi_sqaure_test, exercise=TRUE}
+chisq.test(...)
+```
+
+```{r chi_sqaure_test-hint-1, exercise=TRUE}
+chisq.test(x = ..., p = ...)
+```
+
+```{r chi_sqaure_test-hint-2, exercise=TRUE}
+chisq.test(x = contingency_table$..., p = contingency_table$...)
+```
+
+```{r chi_sqaure_test-solution, exercise=TRUE}
+chisq.test(x = contingency_table$observed, p = contingency_table$prop)
+```
+
+**Interpret and discuss the results in the group.**
