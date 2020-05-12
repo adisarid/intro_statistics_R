@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## Background
 
-In the following tutorial we're going to demonstrate the independence test (contingency table) using chi-square.
+In this tutorial we're going to demonstrate the independence test (contingency table) using chi-square.
 
 This tutorial was developed by Adi Sarid, as part of an introduction to statistics and data analysis with R. The tutorial is provided under the [cc-by-nc-sa license](https://creativecommons.org/licenses/by-nc-sa/4.0/). Source code is available in [this repo](https://github.com/adisarid/intro_statistics_R) under the labs folder.
 
@@ -92,7 +92,7 @@ ggplot(volcano, aes(y = primary_volcano_type)) +
 
 ```{r most_common_volcanos}
 quiz(
-  question("What are the top 2 (most common) volcano types?", random_answer_order = T, type = "checkbox",
+  question("What are the top 2 (most common) volcano types?", random_answer_order = T, type = "checkbox", allow_retry = T,
     answer("Stratovolcano", correct = TRUE),
     answer("Shield", correct = TRUE),
     answer("Volcanic field"),
@@ -162,7 +162,7 @@ First, we would like to use a chart to compare the elevation distribution of dif
 
 ```{r chart_types_for_distributions}
 quiz(
-  question("What kind of geom would you use to compare the elevation distribution of different volcano types?", random_answer_order = T, type = "checkbox",
+  question("What kind of geom would you use to compare the elevation distribution of different volcano types?", random_answer_order = T, type = "checkbox", allow_retry = T,
     answer("`geom_histogram`"),
     answer("`geom_boxplot`", correct = TRUE),
     answer("`geom_point`"),
@@ -234,6 +234,9 @@ Note that the resulting columns should be: `primary_volcano_type`, `elv_gr` (gro
 volcano_observed <- volcano_new %>% 
   filter(primary_volcano_type %in% common_volcano_types) %>% 
   ...
+
+
+volcano_observed
 ```
 
 ```{r create_the_contingency_table-hint-1}
@@ -241,6 +244,9 @@ volcano_observed <- volcano_new %>%
   filter(primary_volcano_type %in% common_volcano_types) %>% 
   mutate(elv_gr = cut(elevation, breaks = c(...))) %>% 
   ...
+
+
+volcano_observed
 ```
 
 ```{r create_the_contingency_table-hint-2}
@@ -250,6 +256,8 @@ volcano_observed <- volcano_new %>%
            cut(elevation, 
                breaks = c(-3, 1000, 2000, 6880))) %>% 
   count(...)
+
+volcano_observed
 ```
 
 ```{r create_the_contingency_table-hint-3}
@@ -259,6 +267,8 @@ volcano_observed <- volcano_new %>%
            cut(elevation, 
                breaks = c(-3, 1000, 2000, 6880))) %>% 
   count(primary_volcano_type, ..., name = ...)
+
+volcano_observed
 ```
 
 ```{r create_the_contingency_table-solution}
@@ -268,6 +278,8 @@ volcano_observed <- volcano_new %>%
            cut(elevation, 
                breaks = c(-3, 1000, 2000, 6880))) %>% 
   count(primary_volcano_type, elv_gr, name = "observed")
+
+volcano_observed
 ```
 
 This yields the observed values $O_i$. Now we turn to computing the expected values. Since we are going to use the `chi.square` function, it is enough to compute the probabilities of each combination primary_volcano_type and elv_gr (if they are independent).
@@ -282,12 +294,15 @@ expected_elevation <- volcano_new %>%
   mutate(prop_elv = .../sum(...)) %>% 
   select(-...)
 
+expected_elevation
+
 expected_types <- volcano_new %>% 
   filter(primary_volcano_type %in% common_volcano_types) %>% 
   count(...) %>% 
   mutate(prop_type = .../sum(...)) %>% 
   select(-...)
 
+expected_types
 ```
 
 ```{r expected_table-hint-1}
@@ -300,11 +315,15 @@ expected_elevation <- volcano_new %>%
   mutate(prop_elv = .../sum(...)) %>% 
   select(-...)
 
+expected_elevation
+
 expected_types <- volcano_new %>% 
   filter(primary_volcano_type %in% common_volcano_types) %>% 
   count(primary_volcano_type) %>% 
   mutate(prop_type = .../sum(...)) %>% 
   select(-...)
+
+expected_types
 
 ```
 
@@ -318,11 +337,15 @@ expected_elevation <- volcano_new %>%
   mutate(prop_elv = n/sum(n)) %>% 
   select(-n)
 
+expected_elevation
+
 expected_types <- volcano_new %>% 
   filter(primary_volcano_type %in% common_volcano_types) %>% 
   count(primary_volcano_type) %>% 
   mutate(prop_type = n/sum(n)) %>% 
   select(-n)
+
+expected_types
 
 ```
 
@@ -360,6 +383,8 @@ The last step is about computing the probability under the null hypothesis (of i
 contingency_table <- volcano_observed %>% 
   left_join(expected_types) %>% 
   left_join(expected_elevation)
+
+contingency_table
 ```
 
 ```{r combining_everything_into_a_tibble-hint-1}
@@ -367,6 +392,8 @@ contingency_table <- volcano_observed %>%
   left_join(expected_types) %>% 
   left_join(expected_elevation) %>% 
   mutate(prop = ...)
+
+contingency_table
 ```
 
 ```{r combining_everything_into_a_tibble-solution}
@@ -374,6 +401,8 @@ contingency_table <- volcano_observed %>%
   left_join(expected_types) %>% 
   left_join(expected_elevation) %>% 
   mutate(prop = prop_elv*prop_type)
+
+contingency_table
 ```
 
 ```{r create the contingency table, include=FALSE}
@@ -393,15 +422,15 @@ Complete this chi square test to finish the exercise and reveal the answer:
 chisq.test(...)
 ```
 
-```{r chi_sqaure_test-hint-1, exercise=TRUE}
+```{r chi_sqaure_test-hint-1}
 chisq.test(x = ..., p = ...)
 ```
 
-```{r chi_sqaure_test-hint-2, exercise=TRUE}
+```{r chi_sqaure_test-hint-2}
 chisq.test(x = contingency_table$..., p = contingency_table$...)
 ```
 
-```{r chi_sqaure_test-solution, exercise=TRUE}
+```{r chi_sqaure_test-solution}
 chisq.test(x = contingency_table$observed, p = contingency_table$prop)
 ```
 
