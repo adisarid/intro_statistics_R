@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
@@ -270,7 +269,6 @@ code {
 }
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -332,6 +330,7 @@ summary {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -366,7 +365,7 @@ summary {
 <h1 class="title toc-ignore">Project Instructions</h1>
 <h3 class="subtitle">Intro to Statistics and Data Analysis with R (0560.1823)</h3>
 <h4 class="author">Adi Sarid</h4>
-<h4 class="date">January 2020</h4>
+<h4 class="date">May 2020</h4>
 
 </div>
 
@@ -392,12 +391,12 @@ summary {
 <li><p><strong>Visualizing</strong> (using ggplot2 to show distribution of variables, relationships between variables, and to hypothesize).</p></li>
 <li><p><strong>Modelling</strong>: using a few of the tools we have learned during the course (like hypothesis testing, regression, analysis of variance, etc.) to examine your hypothesis.</p></li>
 </ol></li>
-<li><p><strong>Communicate</strong> your findings via an RMarkdown report.</p></li>
+<li><p><strong>Communicate</strong> your findings via an oral and a written report</p></li>
 </ol>
 </div>
 <div id="instructions-and-schedule" class="section level2">
 <h2>Instructions and Schedule</h2>
-<p>The project should be performed individually.</p>
+<p>The project should be performed <strong>in pairs</strong>.</p>
 <div id="choosing-a-dataset" class="section level3">
 <h3>Choosing a dataset</h3>
 <p>First, you should select a dataset on which you will perform the project. I recommend using a data set from either <a href="kaggle.com">Kaggle</a> or from <a href="https://github.com/rfordatascience/tidytuesday">tidytuesday</a>. You can select something else.</p>
@@ -407,18 +406,16 @@ summary {
 <li>Source (a url with the data and documentation of the dataset)</li>
 <li>A direct link to download the raw data you will be using</li>
 </ul>
-<p>Please choose a dataset and email me the details by <strong>January 12th 2020</strong> (you can do it earlier and start the work on the project once I email you back with the green light).</p>
+<p>Please choose a dataset and email me the details by <strong>June 7th 2020</strong> (you can do it earlier and start the work on the project once I email you back with the green light).</p>
 </div>
-<div id="draft-submission-initial-submission" class="section level3">
-<h3>Draft submission (initial submission)</h3>
-<p>I’m giving you the opportunity to submit a draft of your work for a review. If needed, I will suggest revisions, and allow you to correct your work in order to improve your grade. The draft submissions will be graded and you can decide based on the grade you received if you want to improve them in order to improve your grade.</p>
-<p>You should submit your draft by <strong>Febuary 1st 2020</strong>.</p>
-<p>Please submit your file to moodle as <code>statintro_draft_studentname_studentID.zip</code> which budles an Rmd version, data files, and a knitted html version of your report. The Rmd should compile standalone in every computer.</p>
+<div id="consultation" class="section level3">
+<h3>Consultation</h3>
+<p>We will have a lab session in which the pairs will be able to present their work to me (not to the entire class), and ask questions about specific models, difficulties they had with coding, or any other related questions.</p>
 </div>
-<div id="final-submission" class="section level3">
-<h3>Final submission</h3>
-<p>Final submissions should be made by <strong>Febuary 20th 2020.</strong></p>
-<p>Please submit your file to moodle as <code>statintro_final_studentname_studentID.zip</code> which budles an Rmd version, data files, and a knitted html version of your report. The Rmd should compile standalone in every computer.</p>
+<div id="submission" class="section level3">
+<h3>Submission</h3>
+<p>Final submissions should be made by <strong>July 10th 2020.</strong></p>
+<p>Please submit your file to moodle as <code>statintro_final_studentname_studentID.zip</code> which bundles an Rmd version, data files, and a knitted html version of your report. The Rmd should compile standalone in every computer.</p>
 </div>
 </div>
 <div id="grading" class="section level2">
@@ -426,10 +423,11 @@ summary {
 <p>You will be graded along the following lines:</p>
 <ul>
 <li><p>Data import and tidying (10%): Your ability to use the proper methods to import the data, and tidy it towards the next stages.</p></li>
-<li><p>Visualizations (25%): Your ability to utilize visualizations to articulate your hypothesis and to illustrate different patterns and relationships in the data. You should be able to match the proper types of charts to what ever it is you are trying to show.</p></li>
-<li><p>Modelling (25%): Your ability to match the appropriete statistical tests/models to the problem, verifying (or highlighting) certain assumptions which are valid or invalid in this case. Please provide at least two relevant models/hypothesis tests that we learned.</p></li>
-<li><p>Communication, documentation, explanations (25%): You should be able to explain the different steps you are doing, lead the reader in a logical and appealing manner, explain your results, and highlight the research or business implications of your findings.</p></li>
+<li><p>Visualizations (20%): Your ability to utilize visualizations to articulate your hypothesis and to illustrate different patterns and relationships in the data. You should be able to match the proper types of charts to what ever it is you are trying to show.</p></li>
+<li><p>Modelling (20%): Your ability to match the appropriete statistical tests/models to the problem, verifying (or highlighting) certain assumptions which are valid or invalid in this case. Please provide at least two relevant models/hypothesis tests that we learned.</p></li>
+<li><p>Communication, documentation, explanations (20%): You should be able to explain the different steps you are doing, lead the reader in a logical and appealing manner, explain your results, and highlight the research or business implications of your findings.</p></li>
 <li><p>Code (15%): Readability, proper use and proper documentation of code.</p></li>
+<li><p>Oral exam (15%): A one-on-one session with each student (5 minutes), just to make sure you are familiar with the work (that you actually worked as a pair).</p></li>
 </ul>
 <hr />
 <p><strong>Good luck!</strong></p>
