@@ -1,0 +1,466 @@
+---
+title: "Linear regression"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(tidyverse)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Background
+
+In this tutorial we're going to use visualization and linear regression in order to **explore the relationship between tree diameter and age**.
+
+This tutorial was developed by Adi Sarid, as part of an introduction to statistics and data analysis with R. The tutorial is provided under the [cc-by-nc-sa license](https://creativecommons.org/licenses/by-nc-sa/4.0/). Source code is available in [this repo](https://github.com/adisarid/intro_statistics_R) under the labs folder.
+
+We'll be using the [San Francisco Trees](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-01-28/readme.md) data set from tidytuesday.
+
+## Familiarize yourself with the data
+
+First, let's read the data and get familiar with it. In [this link](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-01-28/readme.md) you will find the data set we will be working with. It contains many trees spread over the streets of San Francisco. Read it, `glimpse` on it. 
+
+You will notice that there is a variable called `date`, discuss in the group:
+
+   * What is the meaning of `date`? 
+   * There are some missing values in it - what should be done with them?
+   * How would you compute the tree's age? (add this to the code as a new variable `age`)
+   * There are some missing values in `dbh` (the diameter variable). Filter these out.
+
+```{r initial_read, exercise=TRUE}
+
+sf_raw <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-28/sf_trees.csv')
+
+glimpse(...)
+
+sf_trees <- sf_raw %>% 
+  filter(...) %>% 
+  mutate(age = ...)
+
+```
+
+```{r initial_read-hint-1}
+sf_raw <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-28/sf_trees.csv')
+
+glimpse(sf_raw)
+
+sf_trees <- sf_raw %>% 
+  filter(!is.na(date) & !is.na(dbh)) %>% 
+  mutate(age = 2020 - ...) # consider lubridate::year()
+
+```
+
+```{r initial_read-solution}
+sf_raw <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-28/sf_trees.csv')
+
+glimpse(sf_raw)
+
+sf_trees <- sf_raw %>% 
+  filter(!is.na(date) & !is.na(dbh)) %>% 
+  mutate(age = 2020 - lubridate::year(date))
+
+```
+
+```{r prep data which s going to be used, include=FALSE}
+sf_trees <- read_csv('data/sf_trees.csv') %>% 
+  filter(!is.na(date) & !is.na(dbh)) %>% 
+  mutate(age = 2020 - lubridate::year(date))
+```
+
+Create a tibble with the frequency of each tree species and sorted in descending order of number of appearances, then create a plot showing the frequency of the 20 most common tree species (also sorted by number of appearances).
+
+```{r plot_tree_type_frequency, exercise=TRUE}
+# You can do either one of the following (or both)
+
+# The tibble:
+sf_type_frequency <- ... %>% 
+  ...(...) %>% 
+  arrange(desc(...)) %>% 
+  mutate(species = fct_inorder(...))
+
+sf_type_frequency
+
+# The plot:
+ggplot(sf_type_frequency %>% 
+         slice(...), 
+       aes(y = ..., x = ...)) + 
+  geom_...
+
+```
+
+```{r plot_tree_type_frequency-hint-1}
+# You can do either one of the following (or both)
+
+# The tibble:
+sf_type_frequency <- sf_trees %>% 
+  count(species) %>% 
+  arrange(desc(...)) %>% 
+  mutate(species = fct_inorder(...))
+
+sf_type_frequency
+
+# The plot:
+ggplot(sf_type_frequency %>% 
+         slice(...), 
+       aes(y = ..., x = ...)) + 
+  geom_...
+
+```
+
+```{r plot_tree_type_frequency-hint-2}
+# You can do either one of the following (or both)
+
+# The tibble:
+sf_type_frequency <- sf_trees %>% 
+  count(species) %>% 
+  arrange(desc(n)) %>% 
+  mutate(species = fct_inorder(...))
+
+sf_type_frequency
+
+# The plot:
+ggplot(sf_type_frequency %>% 
+         slice(...), 
+       aes(y = ..., x = ...)) + 
+  geom_...
+
+```
+
+```{r plot_tree_type_frequency-hint-3}
+# You can do either one of the following (or both)
+
+# The tibble:
+sf_type_frequency <- sf_trees %>% 
+  count(species) %>% 
+  arrange(desc(n)) %>% 
+  mutate(species = fct_inorder(species))
+
+sf_type_frequency
+
+# The plot:
+ggplot(sf_type_frequency %>% 
+         slice(1:...), 
+       aes(y = ..., x = ...)) + 
+  geom_...
+
+```
+
+```{r plot_tree_type_frequency-hint-4}
+# You can do either one of the following (or both)
+
+# The tibble:
+sf_type_frequency <- sf_trees %>% 
+  count(species) %>% 
+  arrange(desc(n)) %>% 
+  mutate(species = fct_inorder(species))
+
+sf_type_frequency
+
+# The plot:
+ggplot(sf_type_frequency %>% 
+         slice(1:20), 
+       aes(y = species, x = ...)) + 
+  geom_...
+
+```
+
+```{r plot_tree_type_frequency-solution}
+# You can do either one of the following (or both)
+
+# The tibble:
+sf_type_frequency <- sf_trees %>% 
+  count(species) %>% 
+  arrange(desc(n)) %>% 
+  mutate(species = fct_inorder(species))
+
+sf_type_frequency
+
+# The plot:
+ggplot(sf_type_frequency %>% 
+         slice(1:20), 
+       aes(y = species, x = n)) + 
+  geom_col()
+
+```
+
+```{r invalid-category}
+quiz(
+  question_text(
+    "Do you see any category which is not actually a tree species? write down its name.",
+    allow_retry = T,
+    answer("Tree(s) ::", correct = T),
+    answer("Tree(s)::", correct = T),
+    answer("Tree(s) :: ", correct = T),
+    answer("Tree(s):: ", correct = T),
+    answer("Tree(s)", correct = T)
+  )
+)
+```
+
+## Linear regression
+
+Discuss in the group: 
+
+   1. What variables in the data set, other than age, might influence or be related to the tree's diameter at breast height (`dbh`)?
+
+   2. What are the difficulties involved in using them in a linear regression model?
+
+```{r dependent-and-independent-variables}
+quiz(
+  question("In a model which examines the relationship between the tree's age and diameter, what would you define as the dependent variable $y$ and what would you define as the independent variable $x$?", allow_retry = T, random_answer_order = T,
+    answer("$y$ is the diameter, $x$ is the age", correct = TRUE),
+    answer("$y$ is the age, $x$ is the diameter"),
+    answer("It doesn't really matter because mathematically it's the same"),
+    answer("You can't use the two variables in a linear regression model, because both are continuous. First, one of them must be grouped"),
+    answer("Depending on what other variables are also used in the model")
+  )
+)
+```
+
+The following plot which depicts the relationship between age and diameter of the two species: *Brisbane Box* and *Swamp Myrtle*. Under the plot there is a code chunk which was used to create the plot. Complete the blanks in the code chunk to recreate the plot.
+
+```{r brisbane_box-and-swamp_myrtle_plot_answer, echo = FALSE}
+sf_trees %>% 
+  filter(str_detect(species, "Brisbane Box|Swamp Myrtle")) %>% 
+  ggplot(aes(x = age, y = dbh, color = species)) + 
+  geom_point() + 
+  stat_smooth(method = "lm", formula = y ~ x) + 
+  theme(legend.position = "top")
+```
+
+```{r brisbane_box-and-swamp_myrtle_plot, exercise=TRUE}
+sf_trees %>% 
+  filter(...) %>% 
+  ggplot(...) + 
+  geom_... + 
+  stat_... + 
+  theme(legend.position = "top")
+```
+
+```{r brisbane_box-and-swamp_myrtle_plot-hint-1}
+sf_trees %>% 
+  filter(str_detect(species, "Brisbane Box|Swamp Myrtle")) %>% 
+  ggplot(...) + 
+  geom_... + 
+  stat_... + 
+  theme(legend.position = "top")
+```
+
+```{r brisbane_box-and-swamp_myrtle_plot-hint-2}
+sf_trees %>% 
+  filter(str_detect(species, "Brisbane Box|Swamp Myrtle")) %>% 
+  ggplot(aes(x = age, y = dbh, color = species)) + 
+  geom_... + 
+  stat_... + 
+  theme(legend.position = "top")
+```
+
+```{r brisbane_box-and-swamp_myrtle_plot-hint-3}
+sf_trees %>% 
+  filter(str_detect(species, "Brisbane Box|Swamp Myrtle")) %>% 
+  ggplot(aes(x = age, y = dbh, color = species)) + 
+  geom_point() + 
+  stat_smooth(method = ...) + 
+  theme(legend.position = "top")
+```
+
+```{r brisbane_box-and-swamp_myrtle_plot-solution}
+sf_trees %>% 
+  filter(str_detect(species, "Brisbane Box|Swamp Myrtle")) %>% 
+  ggplot(aes(x = age, y = dbh, color = species)) + 
+  geom_point() + 
+  stat_smooth(method = "lm", formula = y ~ x) + 
+  theme(legend.position = "top")
+```
+
+Discuss in the group:
+
+   1. What happens when you place the `color` aesthetics in the `ggplot2` function versus the `geom_...()``` function?
+   2. What is the difference between the two species, in terms of how age affects diameter?
+   
+Using the `lm` function we have shown in class build two linear regression models, for each species and show a summary of the two models.
+
+```{r tree_model_regression, exercise = TRUE}
+brisbane <- sf_trees %>% 
+  ...
+
+myrtle <- sf_trees %>% 
+  ...
+
+brisbane_lm <- lm(...)
+myrtle_lm <- lm(...)
+
+summary(brisbane_lm)
+summary(...)
+```
+
+```{r tree_model_regression-hint-1}
+brisbane <- sf_trees %>% 
+  filter(...)
+
+myrtle <- sf_trees %>% 
+  filter(...)
+
+
+brisbane_lm <- lm(...)
+myrtle_lm <- lm(...)
+
+summary(brisbane_lm)
+summary(...)
+```
+
+```{r tree_model_regression-hint-2}
+brisbane <- sf_trees %>% 
+  filter(str_detect(species, "Brisbane Box"))
+
+myrtle <- sf_trees %>% 
+  filter(...)
+
+
+brisbane_lm <- lm(...)
+myrtle_lm <- lm(...)
+
+summary(brisbane_lm)
+summary(...)
+```
+
+```{r tree_model_regression-hint-3}
+brisbane <- sf_trees %>% 
+  filter(str_detect(species, "Brisbane Box"))
+
+myrtle <- sf_trees %>% 
+  filter(str_detect(species, "Swamp Myrtle"))
+
+
+brisbane_lm <- lm(dbh ~ age, data = brisbane)
+myrtle_lm <- lm(...)
+
+summary(brisbane_lm)
+summary(...)
+```
+
+```{r tree_model_regression-solution}
+
+brisbane <- sf_trees %>% 
+  filter(str_detect(species, "Brisbane Box"))
+
+myrtle <- sf_trees %>% 
+  filter(str_detect(species, "Swamp Myrtle"))
+
+
+brisbane_lm <- lm(dbh ~ age, data = brisbane)
+myrtle_lm <- lm(dbh ~ age, data = myrtle)
+
+summary(brisbane_lm)
+summary(myrtle_lm)
+```
+
+```{r load models into env, include=FALSE}
+brisbane <- sf_trees %>% 
+  filter(str_detect(species, "Brisbane Box"))
+
+myrtle <- sf_trees %>% 
+  filter(str_detect(species, "Swamp Myrtle"))
+
+
+brisbane_lm <- lm(dbh ~ age, data = brisbane)
+myrtle_lm <- lm(dbh ~ age, data = myrtle)
+
+summary(brisbane_lm)
+summary(myrtle_lm)
+```
+
+Discuss and interpret the models' summaries. Answer the following:
+
+```{r grow-pace}
+quiz(
+  question_radio(
+    "Which tree grows faster? (in terms of diameter)",
+    allow_retry = T, random_answer_order = T,
+    answer("On average, Brisbane Box grows twice as fast as Swamp Myrtle", correct = T),
+    answer("On average, Swamp Myrtle grows twice as fast as Brisbane Box"),
+    answer("The answer cannot be deduced from the models' summaries, further analysis should be done"),
+    answer("Both trees grow in almost the same pace")
+  )
+)
+```
+
+## Validating regression assumptions
+
+In the previous section we created two linear models. Using a proper plot examine the first model's residuals (the Brisbane Box model) with a qqplot and also with a scatter plot (residual as a function of tree age). Do linear assumptions hold? Which assumptions are violated?
+
+To assist you with the exercise, here are the two charts which you should get by the end of this section:
+
+```{r validating example of charts, echo = FALSE, fig.height=3, fig.width=6}
+plot1 <- brisbane %>% 
+  mutate(bris_resid = brisbane_lm$residuals) %>% 
+  ggplot(aes(sample = bris_resid)) +
+  geom_qq() + 
+  ggtitle("QQ-plot of residuals")
+
+plot2 <- brisbane %>% 
+  mutate(bris_resid = brisbane_lm$residuals) %>% 
+  ggplot(aes(y = bris_resid, x = age)) +
+  geom_point() + 
+  ggtitle("Residuals as a function of age")
+
+cowplot::plot_grid(plot1, plot2)
+```
+
+
+```{r linear-regression-assumptions, exercise = TRUE}
+# qqplot:
+brisbane %>% 
+  mutate(bris_resid = ...) %>% 
+  ggplot(aes(... = ...)) +
+  geom_...()
+
+# scatter plot:
+brisbane %>% 
+  mutate(bris_resid = ...) %>% 
+  ggplot(aes(y = ..., x = ...)) +
+  geom_...()
+```
+
+```{r linear-regression-assumptions-hint-1}
+# qqplot:
+brisbane %>% 
+  mutate(bris_resid = brisbane_lm$residuals) %>% 
+  ggplot(aes(... = ...)) +
+  geom_...()
+
+# scatter plot:
+brisbane %>% 
+  mutate(bris_resid = brisbane_lm$residuals) %>% 
+  ggplot(aes(y = ..., x = ...)) +
+  geom_...()
+```
+
+```{r linear-regression-assumptions-hint-2}
+# qqplot:
+brisbane %>% 
+  mutate(bris_resid = brisbane_lm$residuals) %>% 
+  ggplot(aes(sample = bris_resid)) +
+  geom_...()
+
+# scatter plot:
+brisbane %>% 
+  mutate(bris_resid = brisbane_lm$residuals) %>% 
+  ggplot(aes(y = bris_resid, x = ...)) +
+  geom_...()
+```
+
+```{r linear-regression-assumptions-solution}
+brisbane %>% 
+  mutate(bris_resid = brisbane_lm$residuals) %>% 
+  ggplot(aes(sample = bris_resid)) +
+  geom_qq()
+
+brisbane %>% 
+  mutate(bris_resid = brisbane_lm$residuals) %>% 
+  ggplot(aes(y = bris_resid, x = age)) +
+  geom_point()
+
+```

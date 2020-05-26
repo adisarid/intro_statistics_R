@@ -22,3 +22,7 @@ distribution_shiny_app/rsconnect
 labs/rsconnect/
 /labs/*_files/
 /labs/*.html
+
+# ignore temporary files declared via tmp_*.*
+tmp_*.*
+/tmp_bug_example
