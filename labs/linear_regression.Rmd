@@ -464,3 +464,69 @@ brisbane %>%
   geom_point()
 
 ```
+
+
+
+## Bonus: plotting interactive maps (with the leaflet package)
+
+This part is not related to linear regression, however, our data has location coordinates, so this is a nice opportunity to show the `leaflet` package.
+
+This is not something you will be required to do in the project or the test, just good knowledge to have.
+
+First, create a tibble called `rare_tree` which includes 50 observations of the rarest tree species in SF.
+
+```{r prep-leaflet-tibble, exercise=TRUE}
+
+rare_sf_trees <- sf_trees %>% 
+  add_count(...) %>% 
+  arrange(...) %>% 
+  slice(...)
+
+```
+
+```{r prep-leaflet-tibble-solution}
+
+rare_sf_trees <- sf_trees %>% 
+  add_count(species) %>% 
+  arrange(n) %>% 
+  slice(1:50)
+
+```
+
+```{r save prep-leaflet-tibble}
+
+rare_sf_trees <- sf_trees %>% 
+  add_count(species) %>% 
+  arrange(n) %>% 
+  slice(1:50)
+
+```
+
+Use the following code and `leaflet` vignette to render an interactive map of these trees. You should map the longitude and latitude to the proper function parameters (of `addMarkers`) and also map a label (i.e., the tree species). Beware to only use the filtered version (i.e., `rare_sf_trees` with the 50 trees, otherwise you might crash the server).
+
+```{r leaflet-tree-map, exercise=TRUE}
+
+library(leaflet)
+
+rare_sf_trees %>% 
+  leaflet() %>% 
+  addTiles() %>% 
+  addMarkers(lng = ~...,
+             lat = ~...,
+             label = ~...)
+
+```
+
+
+
+```{r leaflet-tree-map-solution}
+library(leaflet)
+
+rare_sf_trees %>% 
+  leaflet() %>% 
+  addTiles() %>% 
+  addMarkers(lng = ~longitude,
+             lat = ~latitude,
+             label = ~species)
+
+```
