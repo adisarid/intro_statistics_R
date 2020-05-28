@@ -8,6 +8,9 @@ runtime: shiny_prerendered
 library(learnr)
 library(tidyverse)
 knitr::opts_chunk$set(echo = FALSE)
+sf_raw <- read_csv('https://raw.githubusercontent.com/adisarid/intro_statistics_R/master/labs/data/sf_trees.csv', col_types = cols()) 
+sf_trees <- sf_raw %>% 
+  mutate(age = 2020 - lubridate::year(date))
 ```
 
 ## Background
@@ -25,13 +28,6 @@ First, let's read the data and get familiar with it. The original dataset contai
    * What is the meaning of `date`? 
    * How can we compute the tree's `age` using the date?
    * Implement this and put it in a new tibble called `sf_trees`
-
-```{r prep data which s going to be used, include=FALSE}
-sf_raw <- read_csv('https://raw.githubusercontent.com/adisarid/intro_statistics_R/master/labs/data/sf_trees.csv') 
-
-sf_trees <- sf_raw %>% 
-  mutate(age = 2020 - lubridate::year(date))
-```
 
 ```{r initial_read, exercise=TRUE}
 
