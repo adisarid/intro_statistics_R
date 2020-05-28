@@ -20,53 +20,40 @@ We'll be using the [San Francisco Trees](https://github.com/rfordatascience/tidy
 
 ## Familiarize yourself with the data
 
-First, let's read the data and get familiar with it. In [this link](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-01-28/readme.md) you will find the data set we will be working with. It contains many trees spread over the streets of San Francisco. Read it, `glimpse` on it. 
-
-You will notice that there is a variable called `date`, discuss in the group:
+First, let's read the data and get familiar with it. The original dataset contains many records of trees. Follow [this link](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-01-28/readme.md) to read more. For the purposes of this tutorial we have taken a smaller portion of it and put it in `sf_raw`. It contains many trees spread over the streets of San Francisco. `glimpse` on it, you will notice that there is a variable called `date`, discuss in the group:
 
    * What is the meaning of `date`? 
-   * There are some missing values in it - what should be done with them?
-   * How would you compute the tree's age? (add this to the code as a new variable `age`)
-   * There are some missing values in `dbh` (the diameter variable). Filter these out.
+   * How can we compute the tree's `age` using the date?
+   * Implement this and put it in a new tibble called `sf_trees`
+
+```{r prep data which s going to be used, include=FALSE}
+sf_raw <- read_csv('https://raw.githubusercontent.com/adisarid/intro_statistics_R/master/labs/data/sf_trees.csv') 
+
+sf_trees <- sf_raw %>% 
+  mutate(age = 2020 - lubridate::year(date))
+```
 
 ```{r initial_read, exercise=TRUE}
 
-sf_raw <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-28/sf_trees.csv')
+glimpse(sf_raw)
 
-glimpse(...)
-
-sf_trees <- sf_raw %>% 
-  filter(...) %>% 
+sf_trees <- sf_raw %>%  
   mutate(age = ...)
 
 ```
 
 ```{r initial_read-hint-1}
-sf_raw <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-28/sf_trees.csv')
-
-glimpse(sf_raw)
 
 sf_trees <- sf_raw %>% 
-  filter(!is.na(date) & !is.na(dbh)) %>% 
-  mutate(age = 2020 - ...) # consider lubridate::year()
+  mutate(age = 2020 - lubridate::...)
 
 ```
 
 ```{r initial_read-solution}
-sf_raw <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-28/sf_trees.csv')
-
-glimpse(sf_raw)
 
 sf_trees <- sf_raw %>% 
-  filter(!is.na(date) & !is.na(dbh)) %>% 
   mutate(age = 2020 - lubridate::year(date))
 
-```
-
-```{r prep data which s going to be used, include=FALSE}
-sf_trees <- read_csv('data/sf_trees.csv') %>% 
-  filter(!is.na(date) & !is.na(dbh)) %>% 
-  mutate(age = 2020 - lubridate::year(date))
 ```
 
 Create a tibble with the frequency of each tree species and sorted in descending order of number of appearances, then create a plot showing the frequency of the 20 most common tree species (also sorted by number of appearances).
