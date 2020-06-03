@@ -85,3 +85,15 @@ You will be graded along the following lines:
 ***
 
 **Good luck!**
+
+\newpage
+
+# Appendix: Questions and answers
+
+Some more questions and answers.
+
+How should you report the results?
+
+In tests such as t-test or goodness of fit, you should explain in plain text what you are doing, what assumptions the test entails and if they indeed hold in this case or not. The add the code chunk and include the output.
+
+For example, in linear regression, you should also report a qqplot of the residuals and check homoscedasticity. 
