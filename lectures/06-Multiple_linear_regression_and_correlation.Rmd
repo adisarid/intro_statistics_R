@@ -505,6 +505,9 @@ $$y^ty - (\sum y_i)^2/n = SS_T = SS_R + SS_E = SS_R + y^ty-\hat\beta^t X^ty$$
 Hence,
 
 $$SS_R = \hat\beta^tX^ty-\left(\sum_{i=1}^n y_i\right)^2/n$$
+--
+
+Example in file `mult_lin_reg_example.R`.
 
 ---
 
