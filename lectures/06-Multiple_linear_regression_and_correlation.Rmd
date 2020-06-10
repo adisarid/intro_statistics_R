@@ -491,7 +491,8 @@ $$SS_E = \sum(y_i-\hat y_i)^2=e^te$$
 
 Substitute $e = y-\hat y = y- X\hat\beta$ we obtain:
 
-$$SS_E = e^te = (y-X\hat\beta)^t(y-X\beta)=y^ty-2\hat\beta^t X^ty+\hat\beta^t(X^tX)\hat\beta=y^ty-2\hat\beta^t X^ty + \beta^t(X^tX)(X^tX)^{-1}X^ty=y^ty-\hat\beta^t X^ty$$
+$$SS_E = e^te = (y-X\hat\beta)^t(y-X\beta)=y^ty-2\hat\beta^t X^ty+\hat\beta^t(X^tX)\hat\beta=y^ty-2\hat\beta^t X^ty + \beta^t(X^tX)(X^tX)^{-1}X^ty=\\
+=y^ty-\hat\beta^t X^ty$$
 
 --
 
@@ -505,15 +506,11 @@ Hence,
 
 $$SS_R = \hat\beta^tX^ty-\left(\sum_{i=1}^n y_i\right)^2/n$$
 
---
-
-Remember these for later!
-
 ---
 
 # Overfitting a Regression Model: $R^2$ and adjusted $R^2$
 
-Overfitting is a phenomena which occurrs when the number of parameters, $p$ is very large compared to $n$
+Overfitting is a phenomena which occurs when the number of parameters, $p$ is very large compared to $n$
 
    * In such a case a model is able to fit very well on the data
    

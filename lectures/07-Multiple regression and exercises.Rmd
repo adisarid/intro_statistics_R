@@ -509,5 +509,3 @@ chick_residuals_plot <- ggplot(chick_residuals, aes(x = Time, y = resid)) +
    ggtitle("Residuals as a function of time")
 cowplot::plot_grid(chick_qqplot, chick_residuals_plot)
 ```
-
----
