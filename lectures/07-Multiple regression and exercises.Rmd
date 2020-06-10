@@ -1,5 +1,5 @@
 ---
-title: "Regression, Design and Analysis of Single-Factor Experiments"
+title: "Multiple Linear Regression and Stepwise Selection"
 subtitle: "Lecture #8, #9, #10"
 author: "Adi Sarid"
 institute: "Tel-Aviv University"
