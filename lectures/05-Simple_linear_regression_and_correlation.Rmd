@@ -1,6 +1,6 @@
 ---
 title: "Simple Linear Regression and Correlation"
-subtitle: "Lecture #6"
+subtitle: ""
 author: "Adi Sarid"
 institute: "Tel-Aviv University"
 date: "updated: `r Sys.Date()`"

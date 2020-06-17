@@ -1,6 +1,6 @@
 ---
 title: "Analysis of Single-Factor Experiments (ANOVA)"
-subtitle: "Lecture #10"
+subtitle: ""
 author: "Adi Sarid"
 institute: "Tel-Aviv University"
 date: "updated: `r Sys.Date()`"

@@ -1,6 +1,6 @@
 ---
 title: "Point Estimation Methods and Intervals"
-subtitle: "Lecture #2"
+subtitle: ""
 author: "Adi Sarid"
 institute: "Tel-Aviv University"
 date: "updated: `r Sys.Date()`"

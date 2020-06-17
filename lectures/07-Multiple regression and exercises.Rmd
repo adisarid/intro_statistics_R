@@ -1,6 +1,6 @@
 ---
 title: "Multiple Linear Regression and Stepwise Selection"
-subtitle: "Lecture #8, #9, #10"
+subtitle: ""
 author: "Adi Sarid"
 institute: "Tel-Aviv University"
 date: "updated: `r Sys.Date()`"

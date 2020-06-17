@@ -1,6 +1,6 @@
 ---
 title: "Statistical inference for Two Samples"
-subtitle: "Lecture #5"
+subtitle: ""
 author: "Adi Sarid"
 institute: "Tel-Aviv University"
 date: "updated: `r Sys.Date()`"

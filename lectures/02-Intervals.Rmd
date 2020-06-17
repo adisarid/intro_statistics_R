@@ -1,6 +1,6 @@
 ---
 title: "Intervals"
-subtitle: "Lecture #3"
+subtitle: ""
 author: "Adi Sarid"
 institute: "Tel-Aviv University"
 date: "updated: `r Sys.Date()`"

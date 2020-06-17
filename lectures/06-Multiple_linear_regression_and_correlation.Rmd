@@ -1,6 +1,6 @@
 ---
 title: "Multiple Linear Regression and Correlation"
-subtitle: "Lecture #7"
+subtitle: ""
 author: "Adi Sarid"
 institute: "Tel-Aviv University"
 date: "updated: `r Sys.Date()`"
