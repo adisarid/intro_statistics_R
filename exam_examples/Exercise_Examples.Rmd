@@ -202,12 +202,33 @@ A company operates four machines three shift each day. From production records, 
 
 ```{r shifts vs machines, echo = FALSE}
 
-tribble(~shift, ~Machine_A, ~ Machine_B, ~Machine_C, ~Machine_D,
-        1, 41, 20, 12, 16,
-        2, 31, 11, 9, 14,
-        3, 15, 17, 16, 10) %>% 
+contingency_orig <- tribble(~shift, ~Machine_A, ~ Machine_B, ~Machine_C, ~Machine_D,
+        "1", 41, 20, 12, 16,
+        "2", 31, 11, 9, 14,
+        "3", 15, 17, 16, 10)
+
+contingency_orig %>% 
    knitr::kable(format = "markdown")
 
+```
+
+```{r answer, include=FALSE, echo=FALSE}
+contingency_new <- contingency_orig %>% 
+   gather(machine, malfunctions, -shift) %>% 
+   group_by(machine) %>% 
+   mutate(total_shift = sum(malfunctions)) %>% 
+   group_by(shift) %>% 
+   mutate(total_machine = sum(malfunctions)) %>% 
+   mutate(expected = total_shift*total_machine/212) %>% 
+   select(shift, machine, malfunctions, expected) %>% 
+   mutate(O_minus_E = ((malfunctions - expected)^2)/expected)
+
+chisq_val <- sum(contingency_new$O_minus_E)
+
+1-pchisq(chisq_val, df = (3-1)*(4-1))
+
+# just to check
+chisq.test(contingency_orig %>% select(2:5) %>% as.matrix())
 ```
 
 Test the hypothesis (using $\alpha=0.05$) that breakdowns are independent of the shift. Find the p-value for this test.
