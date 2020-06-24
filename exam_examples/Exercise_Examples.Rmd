@@ -1,7 +1,7 @@
 ---
 title: "Test Exercises - Examples"
 author: "Adi"
-date: "Feb 2020"
+date: "June 2020"
 output:
   pdf_document: default
   html_document: default
@@ -28,7 +28,7 @@ The test will be comprised of four questions, which will cover the following top
       
       * Regression
       
-      * ANOVA
+      * ~~ANOVA~~
    
 In total you will be given four questions with 25 points each. Following are a few examples.
 
@@ -244,7 +244,7 @@ A random sample of $n=100$ car owners show that in the state of Virginia, a car 
    
    b. What can we assert with a 99% confidence interval about the possible size of our error if we estimate the average number of kilometers driven by car owners in Virgina to be 23,500 km?
    
-   c. Danny has just moved to Virginia, provide an upper bound (one sided prediction interval) at a 95% confidence interval to the amount of kilometers Danny will drive in the next year.
+   c. Danny has just moved to Virginia, provide an upper bound (one sided) 95% prediction interval to the amount of kilometers Danny will drive in the next year.
    
 \newpage
 # Example 10: Two Sample Tests, p-value
