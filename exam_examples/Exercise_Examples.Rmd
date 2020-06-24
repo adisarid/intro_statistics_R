@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 ```
 
-The test will be comprised of four questions, which will cover the following topics:
+The test will be comprised of five questions, which will cover the following topics:
 
    * Visualizations
    
@@ -30,7 +30,7 @@ The test will be comprised of four questions, which will cover the following top
       
       * ~~ANOVA~~
    
-In total you will be given four questions with 25 points each. Following are a few examples.
+In total you will be given five questions with 20 points each. Following are a few examples.
 
 \newpage
 # Visualizations
