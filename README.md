@@ -39,7 +39,7 @@ The prerequisites for this course are:
    * Introduction to Probability (0560.2801 or equivalent). 
    * Mathematical Methods 1 (0560.2802 or equivalent).
    
-This course is mainly designed for undergraduates with prior knowledge in probability and basic knowledge in math (a bit of Algebra and a bit if Infi), doing a BA/BSc with a "Sciences for High-Tech" track. However, it would also fit graduate students which want to strengthen their knowledge in statistics and data analysis (or learn the very basics of R).
+This course is mainly designed for undergraduates with prior knowledge in probability and basic knowledge in math (a bit of Algebra and a bit of Infi), doing a BA/BSc with a "Sciences for High-Tech" track. However, it would also fit graduate students which want to strengthen their knowledge in statistics and data analysis (or learn the very basics of R).
 
 ## Goals
 
