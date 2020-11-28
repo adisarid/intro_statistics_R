@@ -1,0 +1,262 @@
+---
+title: "FIFA 2019 Analysis - Inbar Siloni"
+author: "Inbar Siloni"
+date: "18 1 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Background
+
+In this markdown, I analyze [this](https://www.kaggle.com/karangadiya/fifa19/download) data of fifa players.
+
+## Goals
+
+In my research, I will focus on two main questions:
+
+  * Is there a correlation between a player's abilities, his age and his value?
+  
+  * Do players score the same if they are right footed and left footed?
+  
+
+```{r libraries, message=FALSE,warning=FALSE, echo=FALSE}
+library(tidyverse)
+library(broom)
+library(knitr)
+library(readxl)
+library(here)
+library(janitor)
+library(dplyr)
+library(ggcorrplot)
+library(scales)
+library(RColorBrewer)
+library(stringi)
+library(agricolae)
+```
+
+## importing the data set
+
+The dataset was in an excel file- a convenient format to work with. I had to filter the clubs I wanted to focus on- the 16 top clubs of the champions league of 2019. Also, I formatted the column names for my convenience. I deleted a few data columns that I will not be using for more approachable data.
+```{r read fifa dataset,message=FALSE, warning=FALSE, echo=FALSE}
+alufot <- c("Atlético Madrid", "FC Barcelona", "Real Madrid",
+                     "FC Bayern München", "Tottenham Hotspur", "Paris Saint-Germain",
+                     "Juventus", "Chelsea", "Borussia Dortmund", "Liverpool", "Atalanta",
+                     "Valencia CF", "RB Leipzig", "Napoli", "Olympique Lyonnais", "Manchester City")
+
+fifa_data <- read_excel("fifa_data.xlsx") %>%
+  clean_names() %>% 
+  filter(club %in% alufot)
+fifa_data <- fifa_data[, c(4,8:10,12,15,22,55:88)]
+View(fifa_data)
+```
+
+# Transformation, Visualization, and Modelling
+
+## doing some transformation
+First, I did a little transformation for several variables.
+```{r transforming the dataset, echo=FALSE}
+positions <- unique(fifa_data$position)
+gk <- "GK"
+defs <- positions[str_detect(positions, "B$")]
+mids <- positions[str_detect(positions, "M$")]
+f1 <- positions[str_detect(positions, "F$")]
+f2 <- positions[str_detect(positions, "S$")]
+f3 <- positions[str_detect(positions, "T$")]
+f4 <- positions[str_detect(positions, "W$")]
+fwds <- c(f1, f2, f3, f4)
+fifa_data <- fifa_data %>% 
+  mutate(position_group = ifelse(position %in% gk, "GK", ifelse(position %in% defs, "DEF", ifelse(position %in% mids, "MID", ifelse(position %in% fwds, "FWD", "Unknown")))))
+fifa_data <- fifa_data %>%
+                mutate(
+                  value_multiplier = ifelse(str_detect(value, "K"), 1000,
+                                           ifelse(str_detect(value, "M"), 1000000, 1)),
+                  value_numeric_pounds = as.numeric(str_extract(value,"[[:digit:]]+\\.*[[:digit:]]*"))
+                                           * value_multiplier,
+                  age_group = ifelse(age <= 20, "20 and under", 
+                                    ifelse(age > 20 & age <=25, "21 to 25",
+                                           ifelse(age > 25 & age <= 30, "25 to 30",
+                                                  ifelse(age > 30 & age <= 35, "31 to 35", "Over 35")))),
+                  club=stri_trans_general(club, "Latin-ASCII"),
+                  )
+View(fifa_data)
+glimpse(fifa_data)
+```
+
+
+## doing some visualization
+
+Let's take a look at the clubs who's players we are going to analyze! Ladies and gentlemen, I present you UEFA champions league's top 16 clubs of 2019:
+
+```{r clubs}
+ fifa_data %>% 
+  group_by(club) %>% 
+  summarize()
+```
+
+
+Now let's take a look at the age distribution of the players:
+
+```{r age distribution}
+ggplot(data=fifa_data, aes(x=age))+
+  geom_density(fill="violet")
+```
+
+
+```{r age range}
+fifa_data %>%
+  summarise(
+    min = min(age),
+    median = median(age),
+    max = max(age)
+  )
+```
+
+
+```{r age group count}
+fifa_data %>%
+  group_by(age_group) %>%
+  count()
+```
+
+We can see that most of the players are under the age of 30 and over the age of 20. The biggest group age is 21 to 25.
+
+Let's see how their value is distributed:
+
+```{r players value distribution}
+ggplot(data=fifa_data, aes(x=value_numeric_pounds))+
+  geom_density(fill="lavenderblush")+
+  scale_x_log10(labels = dollar_format(prefix = "€"))
+```
+
+So, as we can see there are two "humps" is this distribution. A possible explanation to this is the difference of values for the squad players (those who play in the league, for example) and players in the club's teen groups and substitutes to substitutes. Both players' types values distribute normally, but most of the subs are valued at max as the min for squad players.
+
+## modelling
+
+Let's get down to business.
+
+First, we will check if there is a correlation between preferred foot and scoring: 
+
+```{r finishing/preferred leg distribution}
+fit1<-lm(formula = finishing~preferred_foot, data= fifa_data)
+summary(fit1)
+fifa_data %>%
+  ggplot(aes(x = preferred_foot, y = finishing,
+           fill = preferred_foot))+
+  geom_boxplot()+
+  scale_fill_brewer(palette = "Pastel1") 
+```
+```{r another finishing/preferred leg distribution}
+t.test(fifa_data$finishing~fifa_data$preferred_foot)
+fifa_data %>%
+  ggplot(aes(x = finishing,
+           fill = preferred_foot))+
+  geom_histogram()
+```
+
+
+
+My null hypothesis was that preferred foot and scoring are not correlated. As we can see in the t-test and linear regression above, the p-value is 0.07948, so we can't say in significance level of 0.05 that there is a correlation, so we do not reject the null hypothesis. 
+
+Now to the next research question- let's see if there is a correlation between abilities, age and value!
+
+First, let's take a look at age vs. value:
+
+```{r players value/age distribution}
+fit2<-lm(formula = log1p(value_numeric_pounds)~age_group, data= fifa_data)
+summary(fit2)
+fifa_data %>%
+  ggplot(aes(x=age_group, y=value_numeric_pounds, fill=age_group))+
+  geom_boxplot()+
+  scale_y_log10(labels = dollar_format(prefix = "€"))+
+  stat_smooth(method = "lm")+
+  scale_fill_brewer(palette = "Pastel1")
+```
+
+From the regression and chart we can see that players aged 21-35 earn more, and more specifically in age group 25-30. This supports my explanation to the "humps" in the value distribution chart.
+
+Let's see the correlation for different abilities:
+
+So, obviously, field players require different abilities than goal keepers. We will check the correlation for all players and for each group individually.
+
+Here we check for all players:
+
+```{r abilities correlation}
+abilities <- fifa_data %>% select(crossing:gk_reflexes)
+ability_corr <- cor(abilities)
+ggcorrplot(ability_corr, type = "upper", hc.order = T, hc.method = "complete",
+           colors = c("lightskyblue","white","brown1"))
+```
+
+We see that some abilities are correlated with others, and some aren't. Let's see if we can explain this. 
+Here we check just for field players:
+
+```{r field players abilities correlation}
+abilities <- fifa_data %>% filter(!position == "GK") %>% select(crossing:sliding_tackle)
+ability_corr <- cor(abilities)
+ggcorrplot(ability_corr, type = "upper", hc.order = T, hc.method = "complete",
+           colors = c("lightskyblue","white","brown1"))
+```
+
+Once again we see a very strong correlation of some abilities while others don't correlate at all. The reason for this can be that abilities like short passing and long passing must be related to the same physical abilities, while agility and jumping do not. Overall we learn that most of the abilities are correlated to one another.
+And here we check just for goal keepers:
+
+```{r goal keepers abilities correlation}
+abilities <- fifa_data %>% filter(position == "GK") %>% select(gk_diving:gk_reflexes)
+ability_corr <- cor(abilities)
+ggcorrplot(ability_corr, type = "upper", hc.order = T, hc.method = "complete",
+          colors = c("lightskyblue","white","indianred1"))
+```
+
+for goal keepers the situation is different. Since their abilities are measured only for, well, goal keeping, it makes sense that all the abilities will be correlated. Still we see that kicking is not as correlated as the other abilities, which makes sense because it relates to foot ability and not body ability (the others are related mostly to hands).
+
+Now that we have established the relation between different abilities, let's see if there is a correlation between the value of a player and his abilities:
+
+```{r abilities/value distribution}
+fit6<-lm(formula = log1p(value_numeric_pounds) ~ overall, data = fifa_data)
+summary(fit6)
+fifa_data %>% 
+  ggplot(aes(y=value_numeric_pounds, x= overall))+
+  geom_point(color="seagreen3")+
+  scale_y_log10(labels = dollar_format(prefix = "€"))+
+  stat_smooth(method = "lm",color="black")
+```
+
+We see there definitely is a correlation! The p-value is very small and the chart shows a strong connection. But does age matter?
+
+Lets check if there is a correlation between abilities, value and age:
+
+```{r value/age+abilities destribution}
+fit <- lm(formula = log1p(value_numeric_pounds) ~ age_group+overall, data = fifa_data)
+summary(fit)
+fit.av <- aov(fit)
+summary(fit.av)
+fifa_data %>%
+  ggplot(aes(y=value_numeric_pounds, x=overall,
+             group = age_group,
+             color = age_group))+
+  geom_point(size = 2)+
+  scale_y_log10(labels = dollar_format(prefix = "€"))+
+  stat_smooth(method = "lm")+
+  scale_color_brewer(palette = "Set1")
+```
+
+
+So, as we can see, while value and abilities are correlated, age does affect this correlation. We see that for young players, the same abilities will earn higher value- while for older players the same abilities will earn lower value (drastically lower if the player is over 35). All the tests show a clear correlation of value with age and abilities (low p-values). Also, in all of the tests we can clearly see the for players over 35 value drops much faster.
+
+
+# conclusion
+
+I checked two main questions-
+
+  *Is there a correlation between a player's abilities, his age and his value?
+  
+  *Do players score the same if they are right footed and left footed?
+  
+The first question showed a strong correlation between the three variables, but the second one did not.
+I have learned that it doesn't matter if you are a leftie or a rightie, as long as you stay young and talented- football is the right place for you.
+
+Also I really held myself back the entire project because I know I'm not supposed to show my opinions but Real Madrid are the best club in  the world and my next project will show that they rule in every aspect.
+
+Thank you for reading!
