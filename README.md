@@ -92,6 +92,8 @@ Additional books:
 
 You can find various online videos teaching statistics theory along with R coding examples. One such place is the Statistics of DOOM channel on youtube: [https://www.youtube.com/channel/UCMdihazndR0f9XBoSXWqnYg](https://www.youtube.com/channel/UCMdihazndR0f9XBoSXWqnYg).
 
+A recorded workshop on R [https://tau.cloud.panopto.eu/Panopto/Pages/Sessions/List.aspx?folderID=63ae0b2d-6a79-4d4d-82d5-ac8f0160961b](https://tau.cloud.panopto.eu/Panopto/Pages/Sessions/List.aspx?folderID=63ae0b2d-6a79-4d4d-82d5-ac8f0160961b).
+
 Online course in R from Tel-Hai College, available in Campus-IL [here](https://campus.gov.il/course/telhai-acd-rfp4-telhai-r/).
 
 The friendly guide for moving from Excel to R on my [youtube channel](https://www.youtube.com/watch?v=yRTD1zP5iEM&list=PLvH84evAlP42YtWm3XTjfK2ksC4evTg_U).
