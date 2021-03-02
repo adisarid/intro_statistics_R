@@ -2,7 +2,7 @@
 
 # Introduction to Statistics and Data Analysis with R
 
-This is the repository for the course of **introduction to statistics and data analysis**, taught in Tel-Aviv university (0560.1823). The course is taught in the Engineering faculty in the "Sciences for High Tech" track.
+This is the repository for the course of **introduction to statistics and data analysis**, taught in Tel-Aviv university (0560.1823). The course is taught in the Engineering faculty in the "Digital Sciences for High Tech" track.
 
 In this repository you will find all the required materials including lecture notes, references, class code, exercises, and more.
 
@@ -10,27 +10,27 @@ In this repository you will find all the required materials including lecture no
 
 In this course there are 3 lecture hours + 1 exercise (instructor) hour.
 
-Lecturer: Mr. Adi Sarid.
+Lecturer: Dr. Adi Sarid.
 
-   * Office hours: Sundays 13:00-14:00. Please **coordinate in advance**. Transportation lab (Wolfson 451).
+   * Office hours: Please **coordinate in advance** via email.
    * E-mail: adi@sarid-ins.co.il.
    * Twitter: @SaridResearch
    * Mobile Phone: +972-50-8455450 (Please please try to reach out via email first).
    * Personal website: [adisarid.github.io](adisarid.github.io)
 
-Instructor: Mr. Afek Adler.
+Instructor: Mr. Raphael Shuhendler.
 
-   * Office hours: Sundays, 18:00. **Please coordinate in advance and send the question you want to discuss** (HW or the EX/L), location LAMBDA (Wolfson 451).
-   * E-mail: afekilayadler@gmail.com.
+   * Office hours: Please **coordinate in advance** via email.
+   * E-mail: shuhendler@mail.tau.ac.il.
 
 The course will be given in Hebrew, but all the supporting materials will be provided in English.
 
 Garding will be based on: 
 
-   * Final exam (70%)
-   * Final project, individually (30%)
+   * Final exam (60%)
+   * Final project, individually (40%)
 
-You will have homework but its up to you to make sure you do them and understand them, we will not be grading them.
+You will have homework but it's up to you to make sure you do them and understand them, we will not be grading them (only verifying that you submitted them).
 
 ## Prerequisites
 
@@ -39,11 +39,11 @@ The prerequisites for this course are:
    * Introduction to Probability (0560.2801 or equivalent). 
    * Mathematical Methods 1 (0560.2802 or equivalent).
    
-This course is mainly designed for undergraduates with prior knowledge in probability and basic knowledge in math (a bit of Algebra and a bit of Infi), doing a BA/BSc with a "Sciences for High-Tech" track. However, it would also fit graduate students which want to strengthen their knowledge in statistics and data analysis (or learn the very basics of R).
+This course is mainly designed for undergraduates with prior knowledge in probability and basic knowledge in math (a bit of Algebra and a bit of Infi), doing a BA/BSc with a "Digital Sciences for High-Tech" track. However, it would also fit graduate students which want to strengthen their knowledge in statistics and data analysis (or learn the very basics of R).
 
 ## Goals
 
-This is a course in introduction to statistics and data analysis. The course covers fundemantal terms in statistics, such as significance, hypothesis testing, inference, sampling methods, variable types, modelling (regression, ANOVA), a-parametric tests.
+This is a course in introduction to statistics and data analysis. The course covers fundemantal terms in statistics, such as significance, hypothesis testing, inference, sampling methods, variable types, modelling (regression).
 
 During the course we will use the [R](https://www.r-project.org) language for demonstrations and exercises.
 
@@ -61,7 +61,7 @@ We will use publicly available "open data sets" (e.g., from [Kaggle](https://kag
    * Planning experiments (multiple-comparisons), sample size calculations, power calculations.
    * Linear regression.
    * Correlation.
-   * Logistic regression.
+   * Logistic regression (if time permits).
 
 ## Software Prerequisites
 
@@ -91,6 +91,10 @@ Additional books:
 ## Additional Sources
 
 You can find various online videos teaching statistics theory along with R coding examples. One such place is the Statistics of DOOM channel on youtube: [https://www.youtube.com/channel/UCMdihazndR0f9XBoSXWqnYg](https://www.youtube.com/channel/UCMdihazndR0f9XBoSXWqnYg).
+
+Online course in R from Tel-Hai College, available in Campus-IL [here](https://campus.gov.il/course/telhai-acd-rfp4-telhai-r/).
+
+The friendly guide for moving from Excel to R on my [youtube channel](https://www.youtube.com/watch?v=yRTD1zP5iEM&list=PLvH84evAlP42YtWm3XTjfK2ksC4evTg_U).
 
 ## How this Repository is Arranged
 
