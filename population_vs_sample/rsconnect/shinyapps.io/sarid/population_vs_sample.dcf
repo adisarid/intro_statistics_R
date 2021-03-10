@@ -1,0 +1,12 @@
+name: population_vs_sample
+title: population_vs_sample
+username:
+account: sarid
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3766450
+bundleId: 4324931
+url: https://sarid.shinyapps.io/population_vs_sample/
+when: 1615360163.46147
+asMultiple: FALSE
+asStatic: FALSE
