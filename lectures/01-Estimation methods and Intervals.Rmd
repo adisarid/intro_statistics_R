@@ -680,3 +680,23 @@ ggplot(t_dist_example, aes(x, y, color = distribution, linetype = distribution))
 
 ```
 ]
+
+---
+
+# Summary
+
+   * .gray-out[Population versus sample]
+   
+   * .gray-out[Point estimates]
+   
+   * .gray-out[Bias and variance of point estimates]
+   
+   * .gray-out[Estimation using maximum likelihood]
+   
+   * .gray-out[Estimation using the moments method]
+   
+   * .gray-out[Confidence intervals (incl. examples)]
+   
+Next week we will continue our discussion of confidence intervals and see the implementation in R.
+   
+---
