@@ -52,6 +52,10 @@ small-slide {
    font-size: 70% !important;
 }
 
+.gray-out {
+   color: #BEBEBE;
+}
+
 ```
 
 ```{r setup, include=FALSE}
@@ -61,7 +65,7 @@ library(tidyverse)
 ```
 
 
-# Reminder from previous lecture (1/3)
+# Reminder from previous lecture
 
 Last lesson we talked about:
 
@@ -83,30 +87,115 @@ Last lesson we talked about:
    
 --
 
-   * Demonstration of the grammer of graphics (`ggplot2`)
+   * We did a lab about COVID19 mobility data with some visualizations
    
 --
 
-Then, we also discussed **theory**:
+   * Descriptive statistics (average, median, standard deviation)
+   
+---
+
+# What we will discuss today
+
+   * Population versus sample
+   
+   * Point estimates
+   
+   * Bias and variance of point estimates
+   
+   * Estimation using maximum likelihood
+   
+   * Estimation using the moments method
+   
+   * Confidence intervals (incl. examples)
+   
+---
+
+# Population versus sample
+
+We would like information about a **population**, however:
+
+   * Most of the times it is impossible to get to the whole population (why? can you think of examples where we *can* reach the whole population?)
+
+--
+
+   * Instead of using a whole population we use a **sample** of the population. For example:
+   
+      * Probability based: random, cluster, stratified.
+      
+      * Non-probability: Snowball / respondent-driven-sample.
+      
+--
+
+   * **The problem** - when we use a sampling process we will never be accurate.
+
+   * We use statistics to bridge this gap: understand our errors, understand our uncertainty
+  
+---
+
+# Parameters, estimators, and estimates
+
+   * Example here: [https://sarid.shinyapps.io/population_vs_sample/](https://sarid.shinyapps.io/population_vs_sample/)
 
 --
 
    * What are point estimates, i.e.:
    
-      * $\theta$ is a *population parameter*
+      * $\theta$ is a *population parameter* (e.g., $\mu$)
       
-      * Estimated by the statistic $\hat{\Theta}$, a *point estimator*
+      * Estimated by the statistic $\hat{\Theta}$, a *point estimator* (e.g., $\bar{X}=\frac{1}{n}\sum{x_i}$)
       
       * When it is computed (from a sample), it is called a *point estimate* 
       
 ---
 
-# Reminder from previous lecture (2/3)
+# An estimator is a **random variable**
 
-   * Desired properties of point estimates are:
+   * An estimator is the result of sampling
+
+--
+
+   * An estimator is random variable
+
+--
    
-      * Unbiased: $E\hat{\Theta} - \theta = 0$
-      * Low variance: $V(\hat{\Theta})$ as low as possible
+   * For example, $\bar{X}$
+   
+      * We can represent its expectancy and variance: $E[\bar{X}] = \mu, \operatorname{Var}(\bar{X}) = \frac{\sigma^2}{n}$
+      
+      * If $n$ is "large enough" (i.e., $n\geq30$) is also approximately normally distributed (central limit theorem)
+      
+--
+
+   * We will use this property **A lot** during this course
+      
+---
+
+# Contents
+
+   * .gray-out[Population versus sample]
+   
+   * .gray-out[Point estimates]
+   
+   * Bias and variance of point estimates
+   
+   * Estimation using maximum likelihood
+   
+   * Estimation using the moments method
+   
+   * Confidence intervals (incl. examples)
+   
+---
+
+# Desired properties of point estimators
+   
+   * Unbiased: $E\hat{\Theta} - \theta = 0$
+   
+      * In the case of $\bar{X}$ the bias is indeed 0, i.e.: $E\bar{X}-\mu=0$
+
+--
+
+   * Low variance: $\operatorname{Var}(\hat{\Theta})$ as low as possible
 
 --
    
@@ -121,32 +210,21 @@ I've shown that:
    
 --
    
-   * We've also seen the bias-variance decomposition, i.e. the Mean Square Error is decomposed into:
+   * Question: let's say we sampled $n$ observation but only use $x_1$ as our estimator. 
+   
+      * What is its bias? 
       
-$$E[(\hat{\Theta}-\theta)^2]=V(\hat{\Theta}) + (E\hat{\Theta} - \theta)^2$$
+      * What is its variance?
 
 ---
 
-# Reminder from previous lecture (3/3)
-
-We talked about *quantiles*/*percentiles*/*median*:
-
-   * A quantile $q(f)$ of a sample is the **value** for which a specified fraction $f$ of the data values is $\leq q(f)$
-   * Note that quartile, quantile, percentile are related/interchangable: 
-   
-      * 2 quartile = .5 quantile = 50 percentile = median
+# Another example $S^2$
       
-## To sum up
-
-   * The average: $\bar{X}=\sum_{i=1}^n{x_i}$ is an **unbiased** estimator of $E[X]=\mu$
-   
-   * Sample variance: $S^2=\frac{\sum_{i=1}^n(x_i-\bar{X})^2}{n-1}$ **unbiased** estimator of $V(X)=\sigma^2$
+   * Sample variance: $S^2=\frac{\sum_{i=1}^n(x_i-\bar{X})^2}{n-1}$ is an **unbiased** estimator of $V(X)=\sigma^2$
    
       * $V(X)=E(X-E[X])^2=EX^2-(EX)^2$
    
-   * Standard deviation: $S$ is a **biased** estimator for $\sigma$ (can't enjoy both worlds)
-
-
+   * Standard deviation: $S$ is a **biased** estimator for $\sigma$
 
 ---
 
@@ -166,7 +244,7 @@ Using the fact that $E(x_i^2)=\mu^2+\sigma^2$ and that $E(\bar{X}^2)=\mu^2+\sigm
 
 --
 
-$$E(S^2)=\frac{1}{n-1}\sum_{i=1}^n(\mu^2+\sigma^2)-n(\mu^2+\sigma^2/n)=\sigma^2$$
+$$E(S^2)=\frac{1}{n-1}\left[\sum_{i=1}^n(\mu^2+\sigma^2)-n(\mu^2+\sigma^2/n)\right]=\sigma^2$$
 
 $$\square$$
 
@@ -196,34 +274,11 @@ $$\sigma-E(S)\cong\frac{\sigma}{4n}$$ (see [here](https://stats.stackexchange.co
 
 ---
 
-# Estimating $S^2$ - demonstration
-
-Take a normal distribution with
-.tiny[
-```{r s as a function of n}
-set.seed(0)
-rv <- tibble(x = rnorm(500, mean = 0, sd = 5)) %>% 
-  mutate(cumsum_x = cumsum(x),
-         n = seq_along(x),
-         average_x = cumsum_x/n,
-         sample_var = (1/(n-1))*cumsum((x-average_x)^2)) %>% 
-  slice(-1)
-
-ggplot(rv, aes(x = n, y = sample_var)) + 
-  geom_line() + 
-  geom_hline(aes(yintercept=25), color = "red") +
-  theme_bw()
-
-```
-]
-
----
-
 # Short quiz - identify the distributions
 
 Before we continue, **identify the distributions using the plot**, and write them down on a piece of paper, in pairs.
 
-Here are your options: Normal, Chi-square, Bernulli, Exponential, Poisson.
+Here are your options: Normal, Chi-square, Bernoulli, Exponential, Poisson.
 
 ```{r recognize the distribution quiz, echo=FALSE, fig.dim=c(8, 6)}
 
@@ -266,18 +321,16 @@ Try increasing `sample_size` and see what happens to the chart.
 --
 
 .tiny[
-```{r example how a sum of exp becomes normal}
-
+```{r example how a sum of exp becomes normal, message=FALSE, warning=FALSE}
 sample_size <- 1
 lambda <- 1
 
-suppressMessages(
 rv_binom <- matrix(rexp(n = sample_size*1000, rate = lambda), nrow = sample_size, ncol = 1000) %>% 
   as_tibble(.name_repair = "unique") %>% 
   pivot_longer(cols = everything(), names_to = "var", values_to = "value") %>% 
   group_by(var) %>% 
   summarize(mean = mean(value)) %>% 
-  mutate(standardized = (mean - 1/lambda)/((1/lambda)/sqrt(sample_size))))
+  mutate(standardized = (mean - 1/lambda)/((1/lambda)/sqrt(sample_size)))
 
 ggplot(rv_binom, aes(x = standardized)) + 
   geom_histogram(bins = 100) + 
@@ -288,15 +341,29 @@ ggplot(rv_binom, aes(x = standardized)) +
 
 ---
 
+# Contents
+
+   * .gray-out[Population versus sample]
+   
+   * .gray-out[Point estimates]
+   
+   * .gray-out[Bias and variance of point estimates]
+   
+   * Estimation using maximum likelihood
+   
+   * Estimation using the moments method
+   
+   * Confidence intervals (incl. examples)
+   
+---
+
 # Methods of point estimation
 
 So far we discussed some estimators (i.e., $\bar{X}, S^2$), and the desired properties they hold. But how can we find additional estimators (new statistics)?
 
-We will show three methods:
+We will show two methods:
 
-   * Maximum Liklihood Estimation (MLE)
-   
-   * The Bayesian method
+   * Maximum Likelihood Estimation (MLE)
    
    * Moment method
 
@@ -379,7 +446,7 @@ This is indeed a maximum $\frac{d^2\log{L(\lambda)}}{d\lambda^2}=-\left(\sum_{i=
 
 # MLE example - Bernulli distribution
 
-Let's assume we conducted $n$ experiments each with probability $p$ for success and $q=1-p$ for failure. These are Bernulli i.i.d variables.
+Let's assume we conducted $n$ experiments each with probability $p$ for success and $q=1-p$ for failure. These are Bernoulli i.i.d variables.
 
 $$B_i=\left\{\begin{array}{ll}1 & \text{w.p. } p\\ 0 & \text{w.p. } 1-p\end{array}\right.$$
 
@@ -388,8 +455,6 @@ Assume we got $v$ success, $n-v$ failures.
    * What is the Liklihood?
    * What is the log-Liklihood?
    * Find the optimal $\hat{p}$.
-
-You will do this in the homework.
 
 ---
 
@@ -435,175 +500,20 @@ As you have seen, $(\sigma^*)^2$ is a **biased** estimator to the variance (the 
 
 ---
 
-# The Bayesian method (reminder: Bayes' rule)
+# Contents
 
-First, a reminder about **Bayes' rule**.
-
-The definition of conditional probability is given by:
-
---
-
-$$P(A|B)=\frac{P(A\cap B)}{P(B)}$$
-For $P(B)>0$. Then, since: $P(A\cap B)=P(B\cap A)$ we also have:
-
---
-
-$$P(A|B)=\frac{P(B|A)P(A)}{P(B)}$$
-
---
-
-If we have a partition $E_1,\ldots, E_k$ (i.e., $\cup E_i=\Omega$ , $E_i\cap E_j=\phi$) we get:
-
-$$P(B) = P(B|E_1)P(E_1)+\ldots+P(B|E_k)P(E_k)$$
-
---
-
-And finally, we arrive at the general form of Bayes' theorem:
-
-$$P(E_1|B)=\frac{P(B|E_1)P(E_1)}{P(B|E_1)P(E_1)+\ldots+P(B|E_k)P(E_k)}$$
-
----
-
-# Bayesian Methods of Estimation
-
-We have a parameter $\theta$ for a population with a distribution $f(x|\theta)$. We assume some prior distribution $\pi(\theta)$ (represents our belief on the unknown value of $\theta$).
-
-Assume a sample $x=(x_1,\ldots,x_n)$, then the sampling distribution is $f(x|\theta)$.
-
-We want to use the sampling distribution (obtained from data), and our prior belief in order to yield a *posterior* distribution, i.e., an estimate, of $\theta$.
-
-We use Bayes' rule
-
-$$\pi(\theta|x)=\frac{f(x|\theta)\pi(\theta)}{g(x)}$$
-
-Where:
-
-$$g(x)=\left\{\begin{array}{ll}\sum_\theta f(x|\theta)\pi(\theta) & \theta\text{ discrete}\\\int_{-\infty}^\infty f(x|\theta)\pi(\theta)d\theta & \theta\text{ continuous}\end{array}\right.$$
-
----
-
-# Bayesian Methods of Estimation - Example (1/3)
-
-We have a machine with either 10% or 20% defects (w.p. 0.6 or 0.4 respectively). 
-.center[
-| p        	| 0.1 	| 0.2 	|
-|----------	|-----	|-----	|
-| $\pi(p)$ 	| 0.6 	| 0.4 	|
-]
-
-
---
-
-We sampled the assembly line with two items, $n=2$, and find out $x$ defects $x\in\{0,1,2\}$. What is the Bayesian estimator $\pi(p|x)$ for $p$?
-
-$$\pi(p|x)=\frac{f(x|p)\pi(p)}{g(x)}$$
-
---
-
-Let's compute all the elements. $x$ is binomially distributed. Its probability function is:
-
-$$f(x|p)=\left(\begin{array}{l}2\\x\end{array}\right)p^x(1-p)^{2-x}$$
-
---
-
-The marginal distribution of $x$ is:
-
-$$g(x)=\sum_p{\pi(p)\times f(x|p)}=\pi(0.1)\times f(x|0.1)+\pi(0.2)\times f(x|0.2)=0.6\times f(x|0.1) + 0.4\times f(x|0.2)$$
-
----
-
-# Bayesian Methods of Estimation - Example (2/3)
-
-We can easily compute the binomial probability using `R`.
-
-.small[
-```{r compute posterior}
-f_x_p <- function(x, p){
-   dbinom(x, size = 2, prob = p)
-}
-
-pi_p <- function(p){
-   if (p == 0.1){
-      0.6
-   } else if (p == 0.2){
-      0.4
-   } else {
-      0
-   }
-}
-
-g_x <- function(x){
- pi_p(0.1)*f_x_p(x, 0.1) + 
-      pi_p(0.2)*f_x_p(x, 0.2)
-}
-
-pi_p_x <- function(p, x){
-   (f_x_p(x, p)*pi_p(p)) / (g_x(x))
-}
-```
-]
-
----
-
-# Bayesian Method of Estimation - Example (3/3)
-
-Now we can compute $\pi(p|x)$ for any possible combination of $p$ and sample yielding $x$ defects.
-```{r results of pi_p_x}
-
-res <- tibble(p = c(0.1, 0.1, 0.1, 0.2, 0.2, 0.2),
-              x = c(0:2, 0:2)) %>% 
-   mutate(pi_p_x = map2_dbl(p, x, pi_p_x))
-
-knitr::kable(res, format = "html", padding = 3)
-
-```
-
----
-
-# Mean of the posterior distribution
-
-The mean of the posterior distribution $p^*=E_p[\pi(p|x)]$ is called the **Bayes estimate of $p$**. In the previous example, if we find one defect (1 of 2 sampled) we get:
-
-$$p^*=(0.1)\times0.46 + (0.2)\times0.54 \approx 0.154$$
-
-Note the big difference from the classical estimator (the average). The average in this case is $\bar{p}=x/n=1/2=0.5$.
-
----
-
-# Bayesian methods - continuous example
-
-This time, we are going to assume that $p$ can obtain any value within $[0,1]$. 
-
-**First, answer (write on a piece of paper) in pairs:**
-
-   * What distribution should we use a-priori to describe the value of $p$?
+   * .gray-out[Population versus sample]
    
-      1. Normal with $\mu=0.5$ and $\sigma = 0.001$
-      2. Uniform $[0,1]$
-      3. Exponential $\operatorname{Exp}(\lambda=0.001)$
+   * .gray-out[Point estimates]
    
-   * What is $\pi(p)$?
-      
-      * According to your answer to the previous question write $\pi(p)=\ldots$?
-
----
-
-# Bayesian methods - continuous example - cont.
-
-Uniform distribution! The others have a positive probability for values higher than $1$, and since our parameter $p$ reflects distribution, it can only obtain values in $[0,1]$.
-
-$$\pi(p)=\left\{\begin{array}{ll}1 & p\in[0,1]\\0 & \text{Otherwise}\end{array}\right.$$
-
-$$\pi(p|x) = \frac{f(x|p)\pi(p)}{\int{f(x|p)\pi(p)dp}}=\frac{\left(\begin{array}{}2\\x\end{array}\right)p^x(1-p)^{2-x}}{\int_0^1{\left(\begin{array}{}2\\x\end{array}\right)p^x(1-p)^{2-x}dp}}$$
-
---
-
-Take for example $x=1$ then:
-
-$$p^*=\int_0^1p\times\pi(p|x=1)dp=3\left(\begin{array}{l}2\\1\end{array}\right)\int_0^1{p\times p^1(1-p)^{2-1}dp}=1/2$$
-
-   * Exactly the same we would have got with $\bar{p}=x/n=1/2$.
-
+   * .gray-out[Bias and variance of point estimates]
+   
+   * .gray-out[Estimation using maximum likelihood]
+   
+   * Estimation using the moments method
+   
+   * Confidence intervals (incl. examples)
+   
 ---
 
 # Method of Moments Estimation
@@ -642,8 +552,22 @@ $$\hat{\sigma}^2 = \frac{1}{n}\sum_{i=1}^n{x_i^2} - \left(\frac{1}{n}\sum_{i=1}^
 
 Again, this is a biased estimator for $\sigma^2$, usually we will use $s^2$ seen earlier.
 
-In the homework, you will be requested to use the moment method on two distributions (the exponential distribution and another distribution) to find estimators for parameters of the distributions.
+---
 
+# Contents
+
+   * .gray-out[Population versus sample]
+   
+   * .gray-out[Point estimates]
+   
+   * .gray-out[Bias and variance of point estimates]
+   
+   * .gray-out[Estimation using maximum likelihood]
+   
+   * .gray-out[Estimation using the moments method]
+   
+   * Confidence intervals (incl. examples)
+   
 ---
 
 # Statistical Intervals
@@ -727,8 +651,6 @@ $$\sqrt{n}\geq z_{\alpha/2}\frac{2\sigma}{2r}$$
 $$n\geq \left(z_{\alpha/2}\frac{\sigma}{r}\right)^2$$
 
 Ever wondered why surveys have $n=500$ respondents? it comes from a $\pm 4.4\%$ margin of error with a $95\%$ confidence interval (using a binomial distribution). 
-
-Maybe in the next homework.
 
 ---
 
