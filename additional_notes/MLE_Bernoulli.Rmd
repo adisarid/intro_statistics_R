@@ -1,0 +1,41 @@
+---
+title: "MLE for Bernoulli parameter $p$"
+author: "Adi Sarid"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The likelihood function of a Bernoulli random variable is the probability of the results, i.e. a probability of a binomial random variable with $v$ success out of $n$ trials, with a probability $p$ for success:
+
+$$L(p)=p^v(1-p)^{(n-v)}$$
+Taking the $\log(L)$ we get:
+
+$$\log(L(p)) = v\log(p) + (n-v)\log{(1-p)}$$
+Then
+
+$$\frac{d\log(L(p))}{dp}=\frac{v}{p}-\frac{n-v}{1-p}$$
+
+Require that this derivative is 0 (to find the maximum):
+
+$$\frac{v}{p} = \frac{n-v}{1-p}$$
+
+If and only if:
+
+$$v(1-p) = p(n-v)$$
+
+If and only if:
+
+$$np=v$$
+Hence
+
+$$\hat{p}=\frac{v}{n}$$
+Using the second derivative (to make sure that this is indeed a **maximum** of the likelihood):
+
+$$\frac{d\log(L(p))}{d^2p}=-\frac{v}{p^2}-\frac{n-v}{(1-p)^2} < 0$$
+$$\square$$
+
+
