@@ -1,5 +1,5 @@
 ---
-title: "Intervals"
+title: "Point Estimates and Confidence Intervals"
 subtitle: ""
 author: "Adi Sarid"
 institute: "Tel-Aviv University"
@@ -64,6 +64,11 @@ th, td {
   float: right;
   padding-left: 1%;
 }
+
+.gray-out {
+   color: #BEBEBE;
+}
+
 ```
 
 ```{r setup, include=FALSE}
@@ -72,103 +77,117 @@ knitr::opts_chunk$set(fig.dim=c(3, 3), fig.align = "center")
 library(tidyverse)
 ```
 
-# Interim summary: probability concepts/reminder
+# Reminder from last week
 
-A short recap of probability theoretical concepts we have used so far:
+We discussed
 
-   * A random variable $X$ - is a function from a set of (probabilistic) outcomes into a measureable space (e.g., real numbers).
-
-   * For the most part, we don't think of it as a function but as an object which can get different values.
-
---
-
-   * A random variable has a probability distribution $P_X(x)$ function which describes the probability of getting different values, i.e., $P(X\leq x), P(X=x), P(X>x)$, etc.
+   * Population versus sample
    
-   * A random variable can be either discrete or continuous.
+   * Point estimates $\bar{X}, S^2$
+   
+   * Bias $E\hat{\Theta} - \theta$ and variance of point estimates
+   
+   * Estimation using maximum likelihood $L(\theta)$
 
 --
 
-   * If the random variable is continuous (can get any real value in a certain range), then it also has a **density function**: $f_X(x)=P(X=x)$. We also have a cumulative distribution function defined by $F_X(x)=P(X\leq x)$.
-
---
-
-   * Two random variables are considered **independent** if $P_{X,Y}(x,y)=P_X(x)\cdot P_Y(y)$
+Today we will discuss:
+   
+   * Estimation using the moments method
+   
+   * Confidence intervals (incl. examples)
 
 ---
 
-# Interim summary: probability concepts/reminder (2)
+# Reminder (2) motivation for point estimates
 
-These concepts allow us to define the following:
+   * We want to be able to represent a population parameter via a statistic (estimator)
    
-   * Expectancy $E[X]$ is the expected value of a random variable, defined as:
+   * This will help us estimate the population parameter's value
+   
+   * We used the maximum likelihood method for that:
+   
+      * Assume a density function $f(x_i,\theta)$ or distribution function $P(x_i,\theta)$.
       
-$$\int_{-\infty}^\infty{xf(x)dx}$$
-   * This is equivalent to checking each possible value of $X$ and multiplying it by its weight.
+      * Represent the sample liklihood $L(x_1,\ldots,x_n,\theta)$ as a multiplication of the functions.
       
-   * In the discrete case this becomes a sum: 
+      * Use $\frac{d\ln(L(\theta))}{d\theta}$ to find the value of $\theta$ which yields the maximum value
       
-$$\sum_{x=-\infty}^\infty{xP(X=x)}$$
---
-
-   * Some properties of expectancy:
-   
-      * A number $a$: $Ea=a$
-      * It is linear $E[aX+bY + c]=aE[X]+bE[Y] + c$
-      * If two random variables $X,Y$ are **independent**, then $E[XY]=E[X]E[Y]$.
-   
-   * We use the letter $\mu$ for the expected value.
-      
----
-
-# Interim summary: probability concepts/reminder (3)
-
-   * The dispersion of a random variable is measured by its **Variance** $\operatorname{Var}(X)$.
-   
-   * The variance is defined as $E\left[(X-E[X])^2\right]$, i.e., the **expected** squared distance from the random variable to its expectancy (how far is it from its expected value).
-   
-   * It can be shown that $E\left[(X-E[X])^2\right]=EX^2-(EX)^2$.
-   
-   * It holds the following properties: $\operatorname{Var}(aX+b)=a^2\operatorname{Var}(X)$.
-
---
-
-   * If $X,Y$ are independent then $\operatorname{Var}(X+Y)=\operatorname{Var}(X)+\operatorname{Var}(Y)$
-   
-   * We use the letter $\sigma^2$ for the variance.
-   
-   * The standard deviation is the square root of the variance, i.e., $\sigma = \sqrt{\operatorname{Var}(X)}$
-   
-   * Moments: $E[X]$ is called the first moment, $E[X^2]$ is called the second moment, $E[X^k]$ is called the $k$-th moment.
+      * Make sure you express $\theta$ as a function of $x_1,\ldots,x_n$.
 
 ---
 
-# Reminder from previous lecture
+# Method of Moments Estimation
 
-Last lesson we talked about:
+In this method, we use knowledge about the moments of the distribution (i.e. $E[X], E[X^2], E[X^3], \ldots$), express the parameters as functions of these moments, and then use the sample moments to compute our estimator.
 
---
+Let $f(x)$ be a density function for $X_1,\ldots,X_n$, then:
 
-   * Biased/unbiased estimators, variance of estimators (and standard errors)
+| Moment | Continuous | Discrete | Sample |
+|--------|------------|----------|--------|
+| $E[X]$ | $\int{xf(x)dx}$ | $\sum_k{kP(X=k)}$ | $(1/n)\sum_{i=1}^{n}{x_i}$ |
+| $E[X^2]$ | $\int{x^2f(x)dx}$ | $\sum_k{k^2P(X=k)}$ | $(1/n)\sum_{i=1}^{n}{x_i^2}$ |
+| $E[X^m]$ | $\int{x^mf(x)dx}$ | $\sum_k{k^mP(X=k)}$ | $(1/n)\sum_{i=1}^{n}{x_i^m}$ |
 
---
+The sample mean $\bar{X}=(1/n)\sum_{i=1}^n{x_i}$ is the moment estimator of the population mean.
 
-   * We discussed two methods of estimation
-   
-      1. Maximum Likelihood Estimation (MLE) $L(\theta)=\prod_i{f(x_i;\theta)}$; examples: Poisson, Normal.
-      
-      2. The moment method (use $EX^k=\sum{x_i^k}$ across $k=1,2,\ldots$)
-      
-      3. Another method is called the Bayesian method (which we did not discuss).
-   
---
-
-   * The central limit theorem: $Z=\frac{\bar{X}-\mu}{\sigma/\sqrt{n}}$ converges to a normal disribution
-
---
-
-   * We started talking about statistical intervals $P(\hat{\Theta}_l<\theta<\hat{\Theta}_u)=1-\alpha$
-   
 ---
+
+# Method of Moments - Example - the Normal disribution
+
+The first moment is $E[X]=\mu$, hence $\hat{\mu}=\bar{X}$ is the moment estimator for the population mean.
+
+--
+
+The second moment is $E[X^2] = \mu^2 + \sigma^2$ require:
+
+$$\mu^2 + \sigma^2 = \frac{1}{n}\sum_{i=1}^n{x_i^2}$$
+
+--
+
+Set $\mu^2=\left(\frac{1}{n}\sum_{i=1}^n{x_i}\right)^2$
+
+--
+
+$$\hat{\sigma}^2 = \frac{1}{n}\sum_{i=1}^n{x_i^2} - \left(\frac{1}{n}\sum_{i=1}^n{x_i}\right)^2=\frac{\sum{x_i^2}-(\sum{x_i})^2/n}{n}=\frac{\sum_{i=1}^n(x_i-\bar{X})^2}{n}$$
+
+Again, this is a biased estimator for $\sigma^2$, usually we will use $s^2$ seen earlier.
+
+---
+
+# Method of Moments - Example - the log-Normal disribution
+
+A random variable $X$ is *log-normally* distributed if $\ln(X)\sim\mathcal{N}(\mu,\sigma^2)$.
+The mean and variance of $X$ are given by:
+
+   * $\mu_X = EX=e^{\mu+\frac{\sigma^2}{2}}$
+   * $\sigma_X^2 = \operatorname{Var}(X)=(e^{\sigma^2} - 1)e^{2\mu + \sigma^2}$
+
+Let $X_i, i=1,\ldots,n$ be a sample taken from a log-normal distribution. Use the method of moments to find estimates for $\mu_X$, $\sigma_X$, $\mu$, and $\sigma$. Make sure that in your final answer you only use expressions such as $x_i$ and $\bar{x}$.
+
+---
+
+# Method of Moments - Example - the log-Normal disribution - Answer
+
+$$\hat{\mu}_X = \bar{X}, \\ \hat{\sigma}_X = \frac{\sum{(X_i-\bar{X})^2}}{n}$$
+--
+
+$$\bar{X}^2=e^{2\hat\mu + \hat\sigma^2}$$
+
+--
+
+$$\hat{\sigma}_X^2 = (e^{\hat\sigma^2}-1)e^{2\hat\mu + \hat\sigma^2} = (e^{\hat\sigma^2}-1)\bar{X}^2$$
+
+--
+
+$$\hat{\sigma} = \sqrt{\ln\left(\frac{\hat{\sigma}_X^2}{\bar{X}^2} + 1\right)}$$
+--
+
+$$\hat{\mu} = \ln(\bar{X}) - 0.5\ln\left(\frac{\hat{\sigma}_X^2}{\bar{X}^2} + 1\right)$$
+
+
+---
+
 
 # Before we dive into statistical intervals
 
@@ -715,35 +734,3 @@ $$\bar{X}-t_{\alpha/2,n-1}\times s\sqrt{1+\frac{1}{n}}\leq x_{n+1} \leq \bar{X} 
 **Question:** Reflecting back on the problem we started the lecture with (the drive duration problem). Should we have used a confidence interval or a prediction interval instead?
 
 ---
-
-# Hypothesis testing
-
-A *statistical hypothesis* is a statement about the parameters of one or more populations.
-
---
-
-In empirical research, we first formulate our hypothesis, and then we try to find empirical results to support our hypothesis (never the other way around, that's called HARK-ing).
-
---
-
-For example:
-
-  * $H_0$: The average time to reach TLV from Netanya $=$ 40 minutes
-  
-  * $H_1$: The average time to reach TLV from Netanya $\neq$ 40 minutes 
-  
---
-  
-The $H_0$ is called the *null hypothesis* and the $H_1$ is called the *alternative hypothesis*.
-
---
-
-The same situation can be descrived with different hypothesis (with a different meaning):
-
-  * $H_0$: The average time to reach TLV from Netanya $=$ 40 minutes
-  
-  * $H_1$: The average time to reach TLV from Netanya $>$ 40 minutes
-
---
-
-In the next lecture we will discuss how to devise hypothesis tests, what are type-I and type-II errors, what is the meaning of rejecting a null hypothesis, what are p-values and what is the connection to the statistical intervals we were discussing.
