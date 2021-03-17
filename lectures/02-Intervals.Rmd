@@ -96,6 +96,8 @@ Today we will discuss:
    * Estimation using the moments method
    
    * Confidence intervals (incl. examples)
+   
+   * `R` Lab about data transformations and wrangling
 
 ---
 
@@ -169,7 +171,7 @@ Let $X_i, i=1,\ldots,n$ be a sample taken from a log-normal distribution. Use th
 
 # Method of Moments - Example - the log-Normal disribution - Answer
 
-$$\hat{\mu}_X = \bar{X}, \\ \hat{\sigma}_X = \frac{\sum{(X_i-\bar{X})^2}}{n}$$
+$$\hat{\mu}_X = EX=e^{\mu+\frac{\sigma^2}{2}} = \bar{X}, \\ \hat{\sigma}_X^2 =  (e^{\sigma^2} - 1)e^{2\mu + \sigma^2} = \frac{\sum{(X_i-\bar{X})^2}}{n}$$
 --
 
 $$\bar{X}^2=e^{2\hat\mu + \hat\sigma^2}$$
@@ -199,7 +201,11 @@ $$\hat{\mu} = \ln(\bar{X}) - 0.5\ln\left(\frac{\hat{\sigma}_X^2}{\bar{X}^2} + 1\
 
 --
 
-We'll get back into this later on today.
+[https://bechirot24.bechirot.gov.il/election/Decisions/Pages/Surveys.aspx](https://bechirot24.bechirot.gov.il/election/Decisions/Pages/Surveys.aspx)
+
+--
+
+Today we will see how **some** of the uncertainties can be modeled using confidence intervals.
 
 ---
 
@@ -303,9 +309,15 @@ We previously mentioned the central limit theorem and that
 
 $$Z = \frac{\bar{X}-\mu}{\sigma/\sqrt{n}}$$
 
+
+
 Is normally distributed as $n\rightarrow\infty$. Hence:
 
 $$P(z_{\alpha/2} < Z < z_{1-\alpha/2}) = 1-\alpha$$
+
+--
+
+What does that mean? [https://sarid.shinyapps.io/distribution_shiny_app/](https://sarid.shinyapps.io/distribution_shiny_app/)
 
 --
 
@@ -732,5 +744,3 @@ $$\bar{X}-t_{\alpha/2,n-1}\times s\sqrt{1+\frac{1}{n}}\leq x_{n+1} \leq \bar{X} 
 --
 
 **Question:** Reflecting back on the problem we started the lecture with (the drive duration problem). Should we have used a confidence interval or a prediction interval instead?
-
----
