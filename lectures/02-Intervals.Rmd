@@ -661,7 +661,7 @@ Examples [here](https://bechirot22.bechirot.gov.il/election/Decisions/Pages/Surv
 
 --
 
-**Question 2**: What is the sampling method? (random? layers? "convinience" sampling?)
+**Question 2**: What is the sampling method? (random? layers? "convenience" sampling?)
 
 ---
 
