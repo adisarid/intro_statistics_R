@@ -1,0 +1,724 @@
+---
+title: "Hypothesis Tests (part B)"
+subtitle: ""
+author: "Adi Sarid"
+institute: "Tel-Aviv University"
+date: "updated: `r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "16:9"
+    css: [metropolis, rutgers-fonts]
+---
+
+```{css, echo = FALSE}
+.remark-code, .remark-inline-code {
+  background: #f0f0f0;
+}
+.remark-code {
+  font-size: 24px;
+}
+
+.huge { 
+  font-size: 200%;
+}
+.tiny .remark-code {
+  font-size: 50%;
+}
+
+.small .remark-code{
+   font-size: 85% !important;
+}
+
+.small {
+   font-size: 85% !important;
+}
+
+.remark-slide-content {
+    font-size: 20px;
+    padding: 1em 4em 1em 4em;
+}
+
+table { display: inline-block; }
+
+th, td {
+   padding: 5px;
+}
+
+.small-slide {
+   font-size: 70% !important;
+}
+
+.image-50 img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
+.right-plot {
+   width: 60%;
+   float: right;
+   padding-left: 1%;
+   bottom: 0px;
+   right: 0px;
+   position: absolute;
+}
+
+
+
+```
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE, fig.width = 3, fig.height = 3)
+knitr::opts_chunk$set(fig.dim=c(3, 3), fig.align = "center")
+library(tidyverse)
+library(countdown)
+```
+
+# So far in our course - A bird's eye view
+
+<img src="images/birds_eye_view1.svg" style="zoom:70%;">
+
+---
+
+# In the previous lecture - confidence intervals
+
+Last lesson we talked about:
+
+--
+
+   * Confidence intervals, e.g.:
+   
+$$P(\bar{X} - z_{\alpha/2}\frac{\sigma}{\sqrt{n}} < \mu < \bar{X} + z_{\alpha/2}\frac{\sigma}{\sqrt{n}}) = 1-\alpha$$
+
+--
+
+   * We've seen confidence intervals for
+   
+      * Normal distribution (for $\mu$ and for $\sigma$)
+      
+      * Using Student's T (variance unknown)
+      
+      * Population proportion (binomial)
+      
+      * Setting the sample size for target interval length
+      
+   * Prediction intervals
+
+---
+
+# Also in the previous lecture
+
+   * Hypothesis tests (e.g., of proportion in the attractive flu shot experiment)
+   
+      * Type-I and Type-II errors $\alpha=P(H_1|H_0), \beta=P(H_0|H_1)$
+   
+      * General framework for hypothesis testing (the 8 steps)
+   
+         * Parameter -> Null hypothesis -> Alternative -> Significance -> Statistic -> Rejection criteria
+         * Sample, computation -> Decision
+   
+      * P-value and the relationship to confidence intervals
+
+
+---
+
+# What we will cover today
+
+   * Determining the sample size based on a desired power, i.e. $1-\beta$
+   
+   * Two tailed hypothesis tests
+   
+   * The relationship between confidence intervals and hypothesis tests
+   
+   * Comparing distributions (goodness-of-fit hypothesis tests)
+   
+   * If time permits - we will discuss the grammar of graphics (`ggplot2`)
+
+---
+
+# The example we talked about (the attractive flu shot)
+
+Let's simplify things: say that the percent of patients taking flu vaccinations is about 20% (known based on previous years). We want to see if our experiment led to an increase in that percent, that is *significantly* higher.
+
+   * $H_0$: $p_\text{treatment} = 0.2$
+   
+   * $H_1$: $p_\text{treatment} > 0.2$
+   
+--
+
+What would you say if we measure after the intervention the following rates...?
+
+   * $\hat{p} = 0.19$
+
+--
+
+   * $\hat{p} = 0.60$
+
+--
+   
+   * $\hat{p} = 0.25$
+   
+--
+
+We need a clear statistical *criteria* for deciding what is significant and what is not.
+
+--
+
+class: small-slide
+
+```{r binomial distribution and criteria, echo = FALSE, fig.dim=c(4.5,4.5)}
+
+binomial_dist <- tibble(x = seq(0, 100, 1)) %>% 
+   mutate(binom_dens = dbinom(x, size = 100, prob = 0.2))
+
+ggplot(binomial_dist, aes(x = x, y = binom_dens)) + 
+   geom_line() + 
+   geom_vline(xintercept = 19, color = "red") + 
+   geom_vline(xintercept = 25, color = "darkgreen") + 
+   geom_vline(xintercept = 60, color = "darkblue") + 
+   theme_bw()
+
+```
+
+---
+
+# Two types of errors
+
+In order to set a decision rule, we need to consider two types of errors:
+
+   * **Type-I** error (aka False-positive): **rejecting** $H_0$ when it is **true**.
+   
+   * **Type-II** error (aka False-negative): **failing** to reject $H_0$ when it is **false**.
+   
+--
+
+In medical decision making, this would look like $H_0$: not pregnant
+.image-50[
+![](images/Type_IandType_II_errors.jpg)
+]
+[(source)](http://www.statisticssolutions.com/to-err-is-human-what-are-type-i-and-ii-errors/])
+
+---
+
+# General framework for hypothesis testing
+
+This is the procedure for hypothesis testing:
+
+   1. Identify the parameter of interest (i.e., proportion, expectancy, std, etc.)
+   
+   2. State the null hypothesis $H_0$
+   
+   3. Specify the alternative hypothesis $H_1$ (one sided, two sided, etc.) 
+   
+   4. Choose significance level $\alpha$
+   
+   5. Determine what test statistic to use (e.g., $Z, T, X^2$)
+    
+   6. State the rejection region for the statistic
+   
+   7. Compute the sample quantities, plug-in into the test statistic and compute it
+   
+   8. Decide if $H_0$ should be rejected based on 6-7
+   
+--
+
+Steps 1-4 must be done before starting the research (a-priori and not posteriori, we'll see why later on)
+
+---
+
+# Example for attraction effect hypothesis test decision rule (computation)
+
+Let's create an $\alpha=0.05$ decision rule for classifying if the attraction effect worked in our experiment.
+
+--
+
+.small[
+  * The parameter is $p$ (vaccinations after intervention)
+]
+.small[
+  * $H_0$: p = 0.2 (no attraction effect)
+]
+.small[
+  * $H_1$: p > 0.2 (interevntion was successful)
+]
+.small[
+  * $\alpha = 0.05$
+]
+
+--
+
+.small[
+   
+   * The test statistic
+   
+$$z_0 = \frac{x-np_0}{\sqrt{np_0(1-p_0)}}$$
+
+   * Reject $H_0$ if $z_0>z_{1-\alpha}=1.96$
+   
+   * Compute $z_0$, given experiment results: $x=29$ successes, $n = 100$ subjects
+   
+$$z_0 = \frac{29-100\times0.2}{\sqrt{100\times0.2\times0.8}}=2.25>1.96 = z_{0.95}$$
+]
+
+--
+
+.small[
+
+   * Conclusion: we reject $H_0$, and therefor claim that the experiment nudged patients to vaccinate.
+]
+
+---
+
+# P-value versus specified $\alpha$ value
+
+   * The p-value is the smallest level of significance that would lead to rejection of the null hypothesis $H_0$ with the given data.
+   
+   * Equivalently, the p-value is the probability of obtaining test results at least as extreme as the results we observe in the experiment (under the null hypothesis).
+
+--
+
+$$z_0 = \frac{29-100\times0.2}{\sqrt{100\times0.2\times0.8}}=2.25>1.65 = z_{0.95} = z_{1-\alpha}$$
+
+The p-value is:
+
+$$\text{p-value}=1-\Phi(z_0=2.25) = 0.012$$
+
+.small[
+```{r computing p value for normal dist}
+1-pnorm(q=2.25)
+```
+]
+
+---
+
+# Type-II error and determining the sample size (1/3)
+
+So far, we've only considered the choice of $\alpha$, i.e., the type-I error. However, we can also influence $\beta$ by choice of the sample size $n$ (and sometimes also by the type of test - *out of scope*).
+
+Let's see how a change in $n$ can increase the power (decrease the type-II error, $\beta$).
+
+--
+
+In our example, we had $p_0=0.2$, let's assume now that in the alternative hypothesis we use $p_1=p_0+\delta$ (one sided "greater than" test).
+
+--
+
+$$\beta=P(\text{Not rejecting } H_0 | H_1 \text{ true}) = P\left(\frac{x-np_0}{\sqrt{np_0(1-p_0)}}\leq z_{1-\alpha} | p_1=p_0+\delta\right)$$
+
+--
+
+Note that
+
+$$Z_0=\frac{x-np_0}{\sqrt{np_0(1-p_0)}}=\frac{x-(np_0 + n\delta)}{\sqrt{np_0(1-p_0)}} + \frac{\delta\sqrt{n}}{\sqrt{p_0(1-p_0)}}$$
+
+Given $H_0$, the distribution of $Z_0\sim\mathcal{N}\left(\delta\sqrt{n/p_0(1-p_0)}, 1\right)$, hence
+
+---
+
+# Type-II error and determining the sample size (2/3)
+
+$$\beta = P\left(\frac{x-(np_0+n\delta)}{\sqrt{np_0(1-p_0)}}<z_{1-\alpha} - \frac{\delta\sqrt{n}}{\sqrt{p_0(1-p_0)}} | p_1=p_0+\delta\right) =$$ 
+$$=P\left(\frac{x-(np_0+n\delta)}{\sqrt{n(p_0+\delta)(1-p_0-\delta)}}<\frac{z_{1-\alpha}\sqrt{np_0(1-p_0)}-\delta n}{\sqrt{n(p_1+\delta)(1-p_1-\delta)}}\quad|\quad p_0+\delta\right)$$
+
+$$\beta=\Phi\left(\frac{z_{1-\alpha}\sqrt{np_0(1-p_0)}-\delta n}{\sqrt{n(p_0+\delta)(1-p_0-\delta)}}\right)$$
+
+Now we can use `qnorm(beta)`, i.e.: $\Phi^{-1}(\beta)$, and given $\beta$, $p_0$, $\delta$ compute $n$.
+
+--
+
+Luckily, we have a function for that. From package `pwr`, function `pwr.p.test`.
+
+---
+
+# Type-II error and determining the sample size (3/3)
+
+.tiny[
+```{r power computation example}
+beta <- 0.2
+delta <- 0.05
+alpha <- 0.05
+p_0 <- 0.2
+
+library(pwr)
+p_out <- pwr::pwr.p.test(h = ES.h(p1 = p_0 + delta, p2 = p_0),
+                sig.level = alpha,
+                power = 1-beta,
+                alternative = "greater")
+p_out
+```
+]
+.right-plot[
+```{r plot, echo = FALSE, fig.dim=c(5,5)}
+plot(p_out)
+```
+]
+
+---
+
+# One-tailed versus two-tailed hypothesis
+
+So far, in our example, we've used a one-tailed hypothesis:
+
+   * $H_0$: $p=0.2$
+   * $H_1$: $p>0.2$
+
+--
+   
+Depending on context, we can also have the other direction:
+   
+   * $H_0$: $p=0.2$
+   * $H_1$: $p<0.2$
+   
+--
+
+Or a two sided hypothesis:
+
+   * $H_0$: $p=0.2$
+   * $H_1$: $p\neq0.2$
+   
+---
+
+# Two tailed hypothesis in the vaccination example
+
+If we were to use a two tailed hypothesis (the attraction had some effect, either increase or decrease vaccination rates), then our rejection criteria would become:
+
+   * Reject $H_0$ if $z_0>z_{1-\alpha/2}$ or $z_0<z_{\alpha/2}$
+
+--
+   
+   * I.e., for $\alpha=0.05$:
+   * Reject $H_0$ if $z_0>1.96$ or $z_0<-1.96$
+
+--
+
+The p-value would be in this case:
+
+$$\text{p-value}=2[1-\Phi(|z_0|)] = 0.0244$$
+
+```{r the pvalue in two sided test}
+2*(1-pnorm(q = 2.25))
+```
+
+---
+
+# The relationship between hypothesis testing and confidence intervals
+
+For confidence intervals of the proportion $p$ we used:
+
+$$1-\alpha = P\left(\hat{p}+z_{\alpha/2}\sqrt{p(1-p)/n}<p<\hat{p}+z_{1-\alpha/2}\sqrt{p(1-p)/n}\right)$$
+
+.small[(We had similar confidence intervals for the average of a population normally distributed, for variance, etc.)]
+
+--
+
+Negating the expression $\ldots$ within the probability $P(\ldots)$, we get:
+
+$$\alpha = 1-(1-\alpha) = 1-P\left(\hat{p}+z_{\alpha/2}\sqrt{p(1-p)/n}<p<\hat{p}+z_{1-\alpha/2}\sqrt{p(1-p)/n}\right)=$$
+
+$$=P\left(\hat{p}+z_{\alpha/2}\sqrt{p(1-p)/n}\geq p\right)+P\left(p\geq\hat{p}+z_{1-\alpha/2}\sqrt{p(1-p)/n}\right)$$
+
+--
+
+When the parameter under $H_0$ is "outside" a 95% confidence interval based on the sample, the null hypothesis is rejected at $\alpha=0.05$
+
+   * E.g., $p=0.2$ in the previous example is outside the confidence interval for $p\in(0.216,1)$.
+
+---
+
+# Hypothesis testing for expectancy - normal distribution
+
+In this example, we implement a two sided hypothesis test on the power lifting data.
+.tiny[
+```{r power lifting}
+# data source:
+#https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-10-08/ipf_lifts.csv
+set.seed(42)
+male_deadlift <- read_csv("data/ipf_lifts.csv", col_types = cols()) %>% 
+   filter(sex == "M") %>% 
+   select(best3deadlift_kg) %>% 
+   filter(best3deadlift_kg > 0) %>% 
+   sample_n(500)
+
+ggplot(male_deadlift, aes(best3deadlift_kg)) + 
+   geom_histogram() + 
+   theme_bw()
+```
+]
+
+---
+
+# Hypothesis testing for expectancy - normal distribution - power lifting example
+
+Parameter $\mu$ is the expected weight a power lifter can pull in a deadlift
+   
+   * $H_0$: $\mu=225$ kg
+   * $H_0$: $\mu\neq225$ kg
+   * $\alpha=0.05$
+   * Test statistic $T_0 = \frac{\bar{X}-\mu_0}{s/\sqrt{n}}$
+   * $T_0 < t_{\alpha/2,n-1}$ or $T_0> t_{1-\alpha/2,n-1}$
+.tiny[
+```{r ttest computation}
+t.test(x = male_deadlift$best3deadlift_kg, 
+       alternative = "two.sided", 
+       mu = 225, conf.level = 0.95)
+```
+]
+
+---
+
+class: small-slide
+
+# Explicit computations
+
+The $\bar{X}$, and $s$:
+
+.small[
+```{r calc mean}
+mean(male_deadlift$best3deadlift_kg)
+sd(male_deadlift$best3deadlift_kg)
+
+```
+]
+
+In our null hypothesis $\mu_0 = 225$, and the experiment's sample size $n=500$.
+
+The statistic $T_0$ then becomes:
+
+.small[
+```{r calc statistic}
+(mean(male_deadlift$best3deadlift_kg) - 225)/(sd(male_deadlift$best3deadlift_kg)/sqrt(500))
+```
+]
+
+Our rejection criteria is $T_0 \leq t_{0.025, 499}$ or $T_0\geq t_{0.975, 499}$ (and indeed we reject H0).
+
+.small[
+```{r the rejection criteria}
+qt(p = c(0.025, 0.975), df = 499)
+```
+]
+
+The p-value is the probability of obtaining values which are at least as extreme as our statistic, i.e.:
+
+.small[
+```{r calc pvalue}
+mu_0 <- 225
+T0 <- (mean(male_deadlift$best3deadlift_kg) - mu_0)/
+   (sd(male_deadlift$best3deadlift_kg)/sqrt(500))
+2*(1-pt(q = T0, df = 499))
+```
+]
+
+---
+
+# To reiterate the relationship of hypothesis tests and confidence intervals
+
+Our null hypothesis was $\mu_0=255$. Our confidence interval was $\mu\in(250, 259)$.
+
+The null hypothesis was rejected, and indeed $\mu_0\notin(250, 259)$.
+
+Also:
+
+$$0.05 = 1-\Pr\left(\bar{X} + t_{\alpha/2}\frac{s}{\sqrt{n}}\leq\mu\leq\bar{X} + t_{1-\alpha/2}\frac{s}{\sqrt{n}}\right)$$
+
+Therefor
+
+$$0.05=\Pr\left(\mu\leq\bar{X} + t_{\alpha/2}\frac{s}{\sqrt{n}}\right) + \Pr\left(\mu\geq\bar{X} + t_{1-\alpha/2}\frac{s}{\sqrt{n}}\right)$$
+
+---
+
+
+# Comparing distributions - qqplot
+
+So far, we discussed tests related to parameters' values, however, sometimes we want to compare entire distributions. For example, is the deadlift max weight normally distributed?
+
+--
+
+A qqplot draws the sample (on y axis) versus the theoretical distribuion (on x-axis). If the two are on $y=x$ this means that the distributions match. 
+
+--
+
+Would you say that the following are from the same distribution?
+.tiny[
+```{r deadlift weight qqplot}
+
+ggplot(male_deadlift, aes(sample = best3deadlift_kg)) + 
+   geom_qq(distribution = stats::qnorm, dparams = list(mean = 250, sd = 50)) + 
+   theme_bw() + 
+   geom_abline(slope = 1, intercept = 0)
+
+```
+]
+
+---
+
+# Comparing distributions - qqplot - another example
+
+Now with both genders.
+.tiny[
+```{r qqplot example}
+set.seed(0)
+deadlift <- read_csv("data/ipf_lifts.csv", col_types = cols()) %>% 
+   select(best3deadlift_kg) %>% 
+   filter(best3deadlift_kg > 0) %>% 
+   sample_n(500)
+
+ggplot(deadlift, aes(sample = best3deadlift_kg)) + 
+   geom_qq(distribution = stats::qnorm, dparams = list(mean = 223, sd = 63)) + 
+   theme_bw() + 
+   geom_abline(slope = 1, intercept = 0)
+
+```
+]
+
+--
+
+Looks like there's a heavy tail towards higher weights in the sample than the theoretical. How do we quantify this as a statistical hypothesis test of "goodness of fit"?
+
+---
+
+# Hypothesis testing - goodness of fit
+
+Goodness of fit tests are used to test how good is the fit of our empirical distribution to that of a theoretical distribution.
+
+--
+
+Arrange the empirical distribution in $k$ bins, and let $O_i$ be the observed frequency in the $i$th class bin. Let $E_i$ be the expected probability. The test statistic is:
+
+$$\chi^2_0=\sum_{i=1}^k\frac{(O_i-E_i)^2}{E_i}$$
+
+If the population follows the hypothesized distribution, then the expression is approximately distributed $\chi^2_{k-p-1}$, where $p$ os the number of parameters of the hypothesized distribution estimated by sample statistics.
+
+The approximation improves as $n$ increases.
+
+--
+
+When using the approximation, make sure that $E_i$ is "big enough" (i.e., $E_i\geq5, \forall i$)
+
+---
+
+# Hypothesis testing - goodness of fit - procedure
+
+We would reject the hypothesis if $\chi_0^2>\chi_{\alpha,k-p-1}^2$.
+
+   1. We are interested in the form of the distribution of maximum deadlift weight
+   2. $H_0$: The deadlift weight is normally distributed
+   3. $H_1$: The deadlift weight is not normally distributed
+   4. $\alpha = 0.05$
+   5. The test statistic is: $\chi^2_0=\sum_{i=1}^k{\frac{(O_i-E_i)^2}{E_i}}$
+   6. Reject $H_0$ if $\chi_0^2>\chi^2_{0.05,k-p-1}$
+
+---
+
+# Goodness of fit - example
+
+.tiny[
+```{r}
+interval_breaks <- c(0, 120, 190, 250, 320, 600)
+sample_size <- 500
+
+deadlift_gfit <- deadlift %>% 
+   mutate(weight_gr = cut(best3deadlift_kg, breaks = interval_breaks))
+
+mu <- mean(deadlift_gfit$best3deadlift_kg)
+sigma <- sd(deadlift_gfit$best3deadlift_kg)
+
+deadlift_chi_prep <- deadlift_gfit %>% 
+   count(weight_gr, name = "observed") %>% 
+   mutate(upper_bound = interval_breaks[-1]) %>% 
+   mutate(lower_bound = interval_breaks[1:5]) %>% 
+   mutate(expected_prob = pnorm(q = upper_bound, mean = mu, sd = sigma)-
+             pnorm(q = lower_bound, mean = mu, sd = sigma)) %>% 
+   mutate(expected_prob =  expected_prob/sum(expected_prob)) %>% 
+   mutate(expected = expected_prob*500) %>% 
+   mutate(chi_comp = (observed-expected)^2/expected)
+
+chi2_0 <- sum(deadlift_chi_prep$chi_comp)
+chi2_0
+qchisq(p = 1-0.05, df = 5-1)
+
+```
+]
+
+Since $26.3=\chi^2_0>\chi^2_{500, 3}=9.49$ we reject the null hypothesis. This distribution is not normal.
+
+What is the p-value? (really small)
+
+--
+
+.tiny[
+```{r compute p-value}
+1-pchisq(q = chi2_0, df = 5-1)
+```
+]
+
+---
+
+# Goodness of fit - example - using R's *chisq.test* command
+
+```{r goodness of fit example R code native}
+chisq.test(x = deadlift_chi_prep$observed, 
+           p = deadlift_chi_prep$expected_prob)
+```
+
+---
+
+# Words of caution 
+
+Two common mistakes when analyzing data are:
+
+   1. HARKing (Hypothesizing After Results are Known)
+   2. Using multiple comparisons without compensating for them
+
+In essense, Since we have a $\alpha$ error rate (e.g. 5%), when we perform 100 hypothesis tests we are bound to get 5% false positives.
+
+--
+
+For (1) that's something you shouldn't do! Some organizations offer *preregistration* as means of avoiding HARKing and improving research. I.e., [https://cos.io/prereg/](https://cos.io/prereg/)
+
+--
+
+For (2) there are procedures to control the false discovery rate (FDR). In R, there is a command called `p.adjust` for example. Out of the scope for this course.
+
+---
+
+# Abusing hypothesis tests - example (don't try this at home!)
+
+.tiny[
+```{r example for many hypothesis tests errors}
+set.seed(0)
+
+# let's get random numbers
+random_normal <- matrix(rnorm(n=100*100, mean = 0, sd = 1),
+                        nrow = 100, ncol = 100) %>% 
+   as_tibble(.name_repair = "unique")
+```
+]
+
+---
+
+# Abusing hypothesis tests - example (don't try this at home!)
+
+.tiny[
+```{r example for many hypothesis tests errors results}
+# we have 100 variables which are standard normal distributed
+# let's take the one with the highest average
+random_normal %>% 
+   pivot_longer(cols = everything(), names_to = "variable", values_to = "value") %>%
+   group_by(variable) %>% 
+   summarize(mean_val = mean(value)) %>% 
+   arrange(desc(mean_val))
+
+# H_0: this variable (..78) has mu=0, H_1: otherwise
+
+t.test(random_normal$...78)
+
+```
+]
+
