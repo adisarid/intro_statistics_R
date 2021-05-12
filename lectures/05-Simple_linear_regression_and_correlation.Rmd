@@ -154,16 +154,22 @@ The project should be submitted in and Rmd format, with code and data, by June 2
       * Create one sided confidence interval for a standard deviation
       
       * Check independence of two variables
-   
+
 ---
 
 # Project like exercise in `R`
 
+How to kickstart your project? with an example.
+
 Use the IKEA dataset [Analyze the IKEA data set](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-11-03/readme.md).
 
+   * Read the data
+   
+   * Compare two types of product categories (visualize + test)
+   
+   * Examine the relationship between volume and price (visualize + model)
+
 ---
-
-
 
 # Simple Linear Regression: background
 
