@@ -28,7 +28,7 @@ The course will be given in Hebrew, but all the supporting materials will be pro
 Garding will be based on: 
 
    * Final exam (60%)
-   * Final project, individually (40%)
+   * Final project, pairs (40%)
 
 You will have homework but it's up to you to make sure you do them and understand them, we will not be grading them (only verifying that you submitted them).
 
