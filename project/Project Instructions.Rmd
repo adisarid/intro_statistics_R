@@ -62,7 +62,7 @@ I'm dedicating a weekly reception hour, Thursdays 09:00, in zoom. You can bring 
 
 ### Submission
 
-Final submissions should be made by **July 24th 2021.**
+Final submissions should be made by **June 24th 2021.**
 
 Please submit your file to moodle as `statintro_final_studentname_studentID.zip` which bundles an Rmd version, data files, and a knitted html version of your report. The Rmd should compile standalone in every computer.
 
