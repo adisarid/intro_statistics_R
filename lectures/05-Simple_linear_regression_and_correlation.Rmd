@@ -82,131 +82,88 @@ library(countdown)
 
 We talked about two sample statistics
    
-   * Hypothesis testing of means, e.g.: $H_0: \mu_1=\mu_2 \text{ vs } H_1: \mu_1\neq\mu_2$
+   * Comparing variance using the $F$ test.
+   
+   * Goodness of fit for examining variable independence, i.e., using $\chi^2$ test.
+   
+   * Independence test (contingency table), also using $\chi^2$.
+
+---
+
+# Today
+
+   * The project and some technicalities.
+   
+   * Some notes about learning `R`.
+   
+   * Assisted `R` Exercise.
+   
+   * Linear regression.
+
+---
+
+# Project
+
+In the project you need to demonstrate your ability to conduct a statistical analysis on a new dataset, including
+   
+   * Importing and tidying
+   
+   * Transformations
+   
+   * Visualizations
+   
+   * Modeling
+   
+   * Communicating the results
+   
+The project should be submitted in and Rmd format, with code and data, by June 24th.
+
+   * Weekly regular office hours are set Thursdays 9-10.
+
+
+---
+
+# Some hints to improving your `R` skills
+
+   * One of the challenges in this course is learning `R`.
+   
+   * Most of this relies on self-learning.
+   
+   * The tools you can use:
+   
+      * The code from the lectures.
       
-   * Confidence intervals, e.g.: $\mu_1-\mu_2\in \bar{x}_1-\bar{x}_2 + [z_{\alpha/2},z_{1-\alpha/2}]\sqrt{\sigma_1^2/n_1+\sigma_2^2/n_2}$
-   
-   * Power computations desired sample size with two sample statistics
-   
-   * Paired versus unpaired tests
-   
-   * Comparing variance using the $F$ test
-   
-   * Goodness of fit for examining variable independence, i.e., using $\chi^2$ test
-   
-   * We saw some examples (men vs. women, mobile phone and health)
-   
----
-
-# Inference on two population proportions
-
-We consider the case of two binomial parameters $p_1, p_2$. Let $X_1, X_2$ represent the number of successes in each sample. $\hat{P}_i=X_i/n_i$, have approximately normal distributions.
-
-$$Z=\frac{\hat{P}_1-\hat{P}_2-(p_1-p_2)}{\sqrt{\frac{p_1(1-p_1)}{n_1} + \frac{p_2(1-p_2)}{n_2}}}$$
-Is distributed approximately as $Z\sim\mathcal{N}(0,1)$.
-
---
-
-Under the null hypothesis $H_0: p_1=p_2=p$ we have:
-
-$$Z = \frac{\hat{P}_1-\hat{P}_2}{\sqrt{p(1-p)(1/n_1 + 1/n_2)}}$$
-
---
-
-Where an estimator to $p$ is given by:
-
-$$\hat{P}=\frac{X_1+X_2}{n_1+n_2}$$
+      * Workshop recordings: https://tau.cloud.panopto.eu/Panopto/Pages/Sessions/List.aspx?folderID=63ae0b2d-6a79-4d4d-82d5-ac8f0160961b
+      
+      * The R4DS book [https://r4ds.had.co.nz/](https://r4ds.had.co.nz/).
+      
+      * Additional video sources (see the syllabus, for example here https://www.youtube.com/channel/UCMdihazndR0f9XBoSXWqnYg).
+      
+      * Most importantly! google and stackoverflow.
 
 ---
 
-# The test procedure for comparing two population proportions
+# Example 
 
-Null hypothesis: $H_0: p_1=p_2$
+   * Try finding what functions should be used in `R`, and how to use them.
 
-Test statistic: $Z_0=\frac{\hat{P}_1-\hat{P}_2}{\sqrt{\hat{P}(1-\hat{P})(1/n_1 + 1/n_2)}}$
-
-Alternative hypothesis (rejection criteria):
-
-   * $H_1:p_1\neq p_2 \quad(z_0>z_{1-\alpha/2} \text{ or } z_0<z_{\alpha/2})$
+   * Take a theoretical problem and find how to solve it in `R`:
    
-   * $H_1:p_1>p_2 \quad (z_0>z_{1-\alpha})$
+      * Compare means of two paired samples
    
-   * $H_1:p_1<p_2 \quad (z_0<z_{\alpha})$
+      * Create one sided confidence interval for a standard deviation
+      
+      * Check independence of two variables
    
 ---
 
-# Setting the sample sizes when comparing two population proportions
+# Project like exercise in `R`
 
-Very similar to what we've shown in the last lecture for one sample, but with a slightly different computation for the standard deviation under $H_1$. For example, in the two sided case we have:
-
-$$\beta=\Phi\left[\frac{z_{1-\alpha/2}\sqrt{\bar{p}\bar{q}(1/n_1+1/n_2)}-(p_1-p_2)}{\sigma_{\hat{P}_1-\hat{P}_2}}\right]-\Phi\left[\frac{z_{\alpha/2}\sqrt{\bar{p}\bar{q}(1/n_1+1/n_2)}-(p_1-p_2)}{\sigma_{\hat{P}_1-\hat{P}_2}}\right]$$
-
---
-
-With $\bar{p}=\frac{n_1p_1+n_2p_2}{n_1+n_2}, \bar{q}=\frac{n_1(1-p_1)+n_2(1-p_2)}{n_1+n_2}$ and
-
-$$\sigma_{\hat{P}_1-\hat{P}_2}=\sqrt{\frac{p_1(1-p_1)}{n_1} + \frac{p_2(1-p_2)}{n_2}}$$
-
---
-
-We can obtain the suggested sample (or power) using `pwr::pwr.2p.test` or `pwr::pwr2p2n.test`.
-
-.small[
-```{r demonstration for sample size using pwr}
-pwr::pwr.2p2n.test(h = pwr::ES.h(p1 = 0.2, p2 = 0.3),
-                   n1 = 150, n2 = NULL,
-                   sig.level = 0.05,
-                   power = 0.8,
-                   alternative = "less")
-```
-]
+Use the IKEA dataset [Analyze the IKEA data set](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-11-03/readme.md).
 
 ---
 
-# Effect Size
 
-We discussed p-value as the extent to which a statistical finding is significant. However, it is not the sole measure for the strength of a statistical finding.
-
---
-
-In this context, see the ASA statement on $p$-Values [here](https://amstat.tandfonline.com/doi/full/10.1080/00031305.2016.1154108)
-
---
-
-**Effect size** measures the magnitude of a phenomena. Effect size is a generic name for various measures such as:
-
-   * $R^2$ in linear regression
-   
-   * $\rho$ Pearson correlation coefficient between two variables
-   
-   * Cohen's $d$ which relates to the difference between means (which we will now discuss)
-   
-   * Many more
-
----
-
-# Effect Size - Cohen's $d$
-
-The difference between two means divided by standard deviation, i.e.:
-
-$$d=\frac{\bar{X}_1-\bar{X}_2}{S_p}$$
-
-Where $S_p$ is the pooled standard deviation:
-
-$$S_p=\sqrt{\frac{(n_1-1)S_1^2+(n_2-1)S_2^2}{n_1+n_2-2}}$$
-.small[
-```{r example for cohens d}
-
-set.seed(0)
-ipf <- read_csv("data/ipf_lifts.csv", col_types = cols()) %>% 
-   filter(best3squat_kg > 0) %>% 
-   sample_n(1000)
-
-effsize::cohen.d(formula = best3squat_kg ~ sex, data = ipf)
-```
-]
-
----
 
 # Simple Linear Regression: background
 
@@ -214,7 +171,7 @@ Linear regression is an important modeling technique in statistics. It was devel
 
 --
 
-   * In essense, it allows us to model the relationship between two or more variables, utilizing some basic assumptions such as linearity, and normality.
+   * In essence, it allows us to model the relationship between two or more variables, utilizing some basic assumptions such as linearity, and normality.
 
 --
 
@@ -236,7 +193,7 @@ A very troubling problem for aviation is bird strikes
 
    * From a monetary perspective - causing damages to planes
    
-   * From a safety perspective - endangers the passanges and crew
+   * From a safety perspective - endangers the passengers and crew
    
    * (Obviously it's not that fun to the birds either)
    
