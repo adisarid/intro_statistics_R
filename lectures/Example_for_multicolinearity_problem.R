@@ -9,3 +9,5 @@ ex1 %>%
 summary(lm(y ~ x1, ex1))
 summary(lm(y ~ x2, ex1))
 summary(lm(y ~ x1 + x2, ex1))
+
+car::vif(lm(y ~ x1 + x2, ex1))

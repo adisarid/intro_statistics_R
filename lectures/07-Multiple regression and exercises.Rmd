@@ -288,12 +288,6 @@ countdown::countdown(minutes = 10L, top = "10px")
 
 ---
 
-# Multicolinearity
-
-aaa
-
----
-
 # Interactions
 
 Using the `palmerpenguins` data:
@@ -335,7 +329,7 @@ We can either build three models (one for each species like in `ggplot2`) or use
 
 # The models with and without interaction
 
-Set $l=$length, $d=$depth.
+Set $l=$length, $d=$depth, Chinstrap=Species is Chinstrap (0/1), Gentoo=Species is Gentoo (0/1).
 
 Without interaction:
 
@@ -350,7 +344,7 @@ $$l=\beta_0 + \beta_1 \times d +
 
 In action:
 
-.tiny[
+.small[
 ```{r example}
 
 lm(formula = bill_length_mm ~ bill_depth_mm*species, data = penguins) %>% 
@@ -358,6 +352,75 @@ lm(formula = bill_length_mm ~ bill_depth_mm*species, data = penguins) %>%
 
 ```
 ]
+
+---
+
+# Multicolinearity
+
+When using multiple variables we need to check for correlations between the explanatory variables (the $x$'s), otherwise we might get misleading results.
+
+See example:
+
+```{r example for multicolinearity, eval=FALSE}
+set.seed(42)
+ex1 <- tibble(x1 = runif(100)) %>% 
+  mutate(y = 5 + 3*x1 + rnorm(100, mean = 0, sd = 0.05),
+         x2 = 2*x1 + rnorm(100, mean = 0, sd = 0.01))
+
+ex1 %>% 
+  cor()
+
+summary(lm(y ~ x1, ex1))
+summary(lm(y ~ x2, ex1))
+summary(lm(y ~ x1 + x2, ex1))
+```
+
+
+---
+
+# Handling multicolinearity
+
+Let's move to a real example - `penguins`, only the Gentoo speceis.
+
+.small[
+```{r penguins correlation, fig.dim=c(5, 5)}
+penguin_cor <- penguins %>% 
+   filter(species == "Gentoo") %>% 
+   select_if(is.numeric) %>% select(-year) %>% 
+   cor(use = "pairwise.complete.obs")
+
+ggcorrplot::ggcorrplot(penguin_cor, lab = T)
+```
+]
+
+---
+
+# Handling multicolinearity with VIF
+
+The variance inflation factor, or VIF for short:
+
+$$\operatorname{VIF}_j=\frac{1}{1-R^2_j}$$
+
+Where $R^2_j$ is the $R^2$ for a regression model where $X_j$ is the dependent variable and the rest are independent variables.
+
+--
+
+.small[
+```{r penguin vif}
+
+gentoo <- penguins %>% filter(species == "Gentoo")
+gentoo_lm <- lm(bill_length_mm ~ bill_depth_mm + flipper_length_mm + body_mass_g, data = gentoo)
+
+```
+]
+
+--
+
+A "rule of thumb" is applied to VIF (to see if $\operatorname{VIF}>5$). 
+
+--
+
+If $\operatorname{VIF}<5$, we can keep all variables.
 
 ---
  
@@ -487,11 +550,25 @@ The following exercise is similar to Walpole, *et al.* (Chapter 9, page 245, ex.
 
 A random sample of $n=100$ car owners show that in the state of Virginia, a car drives 23,500 km per year with a sample standard deviation of 3900 km.
 
-   a. Construct a 99% confidence interval for the average number of kilometers a car is driven annually in Virginia.
+   a. Construct a 95% confidence interval for the average number of kilometers a car is driven annually in Virginia.
    
-   b. What can we assert with a 99% confidence interval about the possible size of our error if we estimate the average number of kilometers driven by car owners in Virgina to be 23,500 km?
+   b. What can we assert with a 95% confidence interval about the possible size of our error if we estimate the average number of kilometers driven by car owners in Virgina to be 23,500 km?
    
-   c. Danny has just moved to Virginia, provide an upper bound (one sided prediction interval) at a 95% confidence interval to the amount of kilometers Danny will drive in the next year.
+   c. Danny has just moved to Virginia, provide a prediction interval at a 95%  to the amount of kilometers Danny will drive in the next year.
+   
+---
+
+# Test-like Exercises: Confidence and Prediction Intervals
+
+The following exercise is similar to Walpole, *et al.* (Chapter 9, page 245, ex. 7).
+
+A random sample of $n=100$ car owners show that in the state of Virginia, a car drives 23,500 km per year with a sample standard deviation of 3900 km.
+
+   a. Construct a 95% confidence interval for the average number of kilometers a car is driven annually in Virginia. `23500 + c(-1, 1)*qt(p = 0.995, df = 99)*3900/sqrt(100)`.
+   
+   b. What can we assert with a 95% confidence interval about the possible size of our error if we estimate the average number of kilometers driven by car owners in Virgina to be 23,500 km? *Up to 1550 km*.
+   
+   c. Danny has just moved to Virginia, provide a prediction interval at a 95%  to the amount of kilometers Danny will drive in the next year. `23500 + c(-1, 1)*qt(p = 0.975, df = 99)*3900*sqrt(1 + 1/sqrt(100))`
    
 ---
 
@@ -557,4 +634,29 @@ chick_residuals_plot <- ggplot(chick_residuals, aes(x = Time, y = resid)) +
    theme_bw() + 
    ggtitle("Residuals as a function of time")
 cowplot::plot_grid(chick_qqplot, chick_residuals_plot)
+```
+
+---
+
+# Test-like Exercises: Two Sample Tests, p-value
+
+The following exercise is from Walpole, *et al.*, (chapter 9, page 319, ex. 9).
+
+A study at the University of Colorado shows that running increases the percent resting metabolic rate (RMR) in older women. The average RMR of 30 elderly women runners was 34.0% higher than the average RMR of 30 sedentary elderly women. The standard deviations were 10.5 and 10.2 respectively. 
+
+Was there a significant increase in RMR of the women runnders over the sedentary women?
+
+Assume the populations are normally distributed with equal variances. Use a p-value to report you conclusions.
+
+$$H_0: RMR_{running} = RMR_{sedentary}$$
+$$H_1: RMR_{running} > RMR_{sedentary}$$
+
+$$T = \frac{\bar{X}_1 - \bar{X}_2 - 0}{s_p\sqrt{\frac{1}{n_1} + \frac{1}{n_2}}}$$
+
+Where $s_p^2 = \frac{(n_1-1)s_1 + (n_2-1)s_2}{n_1 + n_2 - 2}$
+
+```{r}
+s_p <- sqrt(29*10.5 + 29*10.2)
+34/(s_p*(sqrt(2/29)))
+1-pt(q = 34/(s_p*(sqrt(2/29))), df = 29*2)
 ```
