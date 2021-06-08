@@ -138,9 +138,11 @@ $$T_0=\frac{\hat{\beta}_1 - 0}{\sqrt{\hat{\sigma}_\epsilon^2/S_{xx}}}$$
 
 --
 
-We've also seen the decomposition of the overall variance to the regression variance and error variance, i.e.:
+We may decompose the overall variance of $Y$ to the regression variance and error variance, i.e.:
 
 $$\sum_{i=1}^n{(y_i-\bar{y})^2} = \sum_{i=1}^n{(\hat{y}_i-\bar{y})^2} + \sum_{i=1}^n{(y_i-\hat{y})^2}$$
+
+([see why](https://math.stackexchange.com/questions/709419/prove-sst-ssessr)).
 
 --
 
@@ -148,19 +150,17 @@ $$SS_T=SS_R + SS_E$$
 
 Where $SS_R$ has 1 degree of freedome, $SS_E$ has $n-2$ degrees of freedom, and $SS_T$ has $n-1$ degrees of freedom.
 
---
-
-Under a null hypothesis of $H_0: \beta_1=0$, both $SS_R, SS_E$  are $\chi^2$ distributed, with $1, n-2$ degrees of freedom respectively.
-
---
-
-This led us to an additional test, using analysis of variance.
 
 ---
 
+
 # Analysis of Variance for Regression Significance
 
-Then, the following statistic would be F-distributed, under the null hypothesis:
+It turns out that under a null hypothesis of $H_0: \beta_1=0$, both $SS_R, SS_E$  are $\chi^2$ distributed, with $1, n-2$ degrees of freedom respectively.
+
+--
+
+This leads us to an additional test, using analysis of variance. The following statistic would be F-distributed, under the null hypothesis:
 
 $$F_0=\frac{SS_R/1}{SS_E/(n-2)} = \frac{MS_R}{MS_E}$$
 --
@@ -178,9 +178,9 @@ The intuition behind the statistic is:
 
    * Hence, the null hypothesis of no model, i.e., $\beta_1=0$, is rejected
 
---
+---
 
-## ANOVA (Analysis of Variance) Table
+# ANOVA (Analysis of Variance) Table
 
 .small[
 | Source of Variation | Sum of Squares | df | Mean Squares | $F_0$ |
@@ -318,27 +318,6 @@ $$Y = \sin(X_1) + \cos(X_1X_2) + \epsilon$$
 The principles and assumptions we discussed still hold, but some careful handling is needed, and this is what we will discuss today.
 ]
 
-.tiny[
-```{r some complex relationship}
-ex1 <- crossing(x1 = seq(0, 5, 0.05),
-         x2 = seq(0, 5, 0.05)) %>% 
-  mutate(y = sin(x1) + cos(x2*x1) + rnorm(NROW(x1), sd = 0.05))
-p1 <- ggplot(ex1, aes(x = x1, y = x2, z = y)) + 
-  geom_contour() + 
-  theme_bw()
-p2 <- ggplot(ex1, aes(x = x1, y = x2, fill = y)) + 
-  geom_tile() + 
-  theme_bw()
-#cowplot::plot_grid(p1, p2)
-```
-]
-
-.right-plot[
-```{r some complex relationship the plot, fig.dim=c(8,3), echo = FALSE}
-cowplot::plot_grid(p1, p2)
-```
-]
-
 ---
 
 # Motivation
@@ -419,17 +398,11 @@ Is an unbiased estimate of $\sigma_\epsilon^2$
 
 # Hypothesis Tests
 
-The vector $\hat\beta$ is an unbiased estimate:
-
-$$E\hat\beta = E[(X^tX)^{-1}X^ty]=E[(X^tX)^{-1}X^t(X\beta+\epsilon)]=E[I\beta + (X^tX)^{-1}X^t\epsilon] = \beta$$
+The $\beta$ coefficients' variance is given by diagonal elements of $(X^tX)^{-1}$ times $\sigma^2$, and $E\hat{\beta}=\beta$.
 
 --
 
-The $\beta$ coefficients' variance is given by diagonal elements of $(X^tX)^{-1}$ times $\sigma^2$.
-
---
-
-Now that we have found the expected value and the variance, we are ready for some hypothesis tests.
+Now that we have noted the expected value and the variance, we are ready for some hypothesis tests.
 
 --
 
@@ -475,39 +448,39 @@ We discussed $R^2 = 1-\frac{SS_E}{SS_T}$ however, as the number of parameters in
 
 To mitigate this phenomena we adjust the $R^2$.
 
-$$R^2_{\text{adj}} = 1 - \frac{SS_E/(n-p)}{SS_T/(n-1)}$$
+$$R^2_{\text{adj}} = 1 - \frac{SS_E/(n-p-1)}{SS_T/(n-1)}$$
 
 --
 
 As the number of parameters increases the numerator increases, which makes the overall $R^2_\text{adj}$ decrease.
 
----
+<!-- --- -->
 
-# Some Formulas for $SS_E, SS_R, SS_T$
+<!-- # Some Formulas for $SS_E, SS_R, SS_T$ -->
 
-Some formulas that we will use later on today. However, in practice the computer will calculate all the sizes we need.
+<!-- Some formulas that we will use later on today. However, in practice the computer will calculate all the sizes we need. -->
 
-$$SS_E = \sum(y_i-\hat y_i)^2=e^te$$
+<!-- $$SS_E = \sum(y_i-\hat y_i)^2=e^te$$ -->
 
-Substitute $e = y-\hat y = y- X\hat\beta$ we obtain:
+<!-- Substitute $e = y-\hat y = y- X\hat\beta$ we obtain: -->
 
-$$SS_E = e^te = (y-X\hat\beta)^t(y-X\beta)=y^ty-2\hat\beta^t X^ty+\hat\beta^t(X^tX)\hat\beta=y^ty-2\hat\beta^t X^ty + \beta^t(X^tX)(X^tX)^{-1}X^ty=\\
-=y^ty-\hat\beta^t X^ty$$
+<!-- $$SS_E = e^te = (y-X\hat\beta)^t(y-X\beta)=y^ty-2\hat\beta^t X^ty+\hat\beta^t(X^tX)\hat\beta=y^ty-2\hat\beta^t X^ty + \beta^t(X^tX)(X^tX)^{-1}X^ty=\\ -->
+<!-- =y^ty-\hat\beta^t X^ty$$ -->
 
---
+<!-- -- -->
 
-Since $SS_T = \sum(y_i-\bar{y})^2 = \sum y_i^2 - (\sum y_i)^2/n = y^ty - (\sum y_i)^2/n$ we get:
+<!-- Since $SS_T = \sum(y_i-\bar{y})^2 = \sum y_i^2 - (\sum y_i)^2/n = y^ty - (\sum y_i)^2/n$ we get: -->
 
-$$y^ty - (\sum y_i)^2/n = SS_T = SS_R + SS_E = SS_R + y^ty-\hat\beta^t X^ty$$
+<!-- $$y^ty - (\sum y_i)^2/n = SS_T = SS_R + SS_E = SS_R + y^ty-\hat\beta^t X^ty$$ -->
 
---
+<!-- -- -->
 
-Hence,
+<!-- Hence, -->
 
-$$SS_R = \hat\beta^tX^ty-\left(\sum_{i=1}^n y_i\right)^2/n$$
---
+<!-- $$SS_R = \hat\beta^tX^ty-\left(\sum_{i=1}^n y_i\right)^2/n$$ -->
+<!-- -- -->
 
-Example in file `mult_lin_reg_example.R`.
+<!-- Example in file `mult_lin_reg_example.R`. -->
 
 ---
 
@@ -545,7 +518,7 @@ Sometimes, we are interested in the significance of a specific variable. I.e.,
    
    * $H_1: \beta_j\neq0$
 
-First, remember that we noted that the $j$-th element on the diagonal of $\sigma^2(X^tX)^{-1}$ contains the variance of of the $\hat\beta_j$ (for an intuitive explanation see [here](https://stats.stackexchange.com/questions/267948/intuitive-explanation-of-the-xtx-1-term-in-the-variance-of-least-square)).
+First, remember that we noted that the $j$-th element on the diagonal of $\sigma^2(X^tX)^{-1}$ contains the variance of the $\hat\beta_j$ (for an intuitive explanation see [here](https://stats.stackexchange.com/questions/267948/intuitive-explanation-of-the-xtx-1-term-in-the-variance-of-least-square)).
 
 Set $C=(X^tX)^{-1}$ then under the null hypothesis, we have the following student's-t statistic:
 
@@ -557,70 +530,70 @@ The null hypothesis is rejected when $|t_0|>t_{1-\alpha/2, n-p}$
 
 ---
 
-# Hypothesis Testing - Subset of Coefficients
+<!-- # Hypothesis Testing - Subset of Coefficients -->
 
-We now want to generalize the previous approach, which treated the null hypothsis of one variable into an arbitrary **subset** of variables.
+<!-- We now want to generalize the previous approach, which treated the null hypothsis of one variable into an arbitrary **subset** of variables. -->
 
-Let $\vec{\beta}_1$ be a coefficient vector of $(r\times1)$ and $\vec{\beta}_2$ a coefficient vector of $[(p-r)\times1]$, i.e.:
+<!-- Let $\vec{\beta}_1$ be a coefficient vector of $(r\times1)$ and $\vec{\beta}_2$ a coefficient vector of $[(p-r)\times1]$, i.e.: -->
 
-$$\beta = \left[\begin{array}{c}\vec\beta_1\\\vec\beta_2\end{array}\right]$$
+<!-- $$\beta = \left[\begin{array}{c}\vec\beta_1\\\vec\beta_2\end{array}\right]$$ -->
 
---
+<!-- -- -->
 
-We want to test the hypothesis:
+<!-- We want to test the hypothesis: -->
 
-   * $H_0: \vec\beta_1=\vec0$
-   
-   * $H_1: \vec\beta_1\neq\vec0$
+<!--    * $H_0: \vec\beta_1=\vec0$ -->
 
---
+<!--    * $H_1: \vec\beta_1\neq\vec0$ -->
 
-This yields two models: 
+<!-- -- -->
 
-The reduced null model: $y = X_2\vec\beta_2 + \epsilon\quad$   (the $\vec\beta_1$ variables are all $0$).
+<!-- This yields two models:  -->
 
-The alternative full model $y = X\beta + \epsilon$.
+<!-- The reduced null model: $y = X_2\vec\beta_2 + \epsilon\quad$   (the $\vec\beta_1$ variables are all $0$). -->
 
----
+<!-- The alternative full model $y = X\beta + \epsilon$. -->
 
-# Hypothesis Testing - Subset of Coefficients (2)
+<!-- --- -->
 
-Compute $SS_R(\cdot)$ for each of the models (the full model, the reduced model), also compute the contribution of the addition of $\vec\beta_1$:
+<!-- # Hypothesis Testing - Subset of Coefficients (2) -->
 
-$$SS_R(\beta) = \hat\beta^tX^ty, \quad \text{ with } p=k+1 \text{ degrees of freedom}$$
+<!-- Compute $SS_R(\cdot)$ for each of the models (the full model, the reduced model), also compute the contribution of the addition of $\vec\beta_1$: -->
 
---
+<!-- $$SS_R(\beta) = \hat\beta^tX^ty, \quad \text{ with } p=k+1 \text{ degrees of freedom}$$ -->
 
-$$SS_R(\vec\beta_2)=\vec\beta_2^tX^t_2y, \quad \text{ with } p-r \text{ degrees of freedom}$$
+<!-- -- -->
 
---
+<!-- $$SS_R(\vec\beta_2)=\vec\beta_2^tX^t_2y, \quad \text{ with } p-r \text{ degrees of freedom}$$ -->
 
-The regression sum of squares due to $\vec\beta_1$ given that $\vec\beta_2$ is already in the model, is:
+<!-- -- -->
 
-$$SS_R(\vec\beta_1|\vec\beta_2) = SS_R(\beta) - SS_R(\vec\beta_2), \quad \text{ with } r \text{ degrees of freedom}$$
+<!-- The regression sum of squares due to $\vec\beta_1$ given that $\vec\beta_2$ is already in the model, is: -->
 
---
+<!-- $$SS_R(\vec\beta_1|\vec\beta_2) = SS_R(\beta) - SS_R(\vec\beta_2), \quad \text{ with } r \text{ degrees of freedom}$$ -->
 
-Our test statistic uses the partial $F$ test (with $df=r, n-p$), i.e.,
+<!-- -- -->
 
-$$F_0 = \frac{SS_R(\vec\beta_1|\vec\beta_2)/r}{MS_E}$$
+<!-- Our test statistic uses the partial $F$ test (with $df=r, n-p$), i.e., -->
 
---
+<!-- $$F_0 = \frac{SS_R(\vec\beta_1|\vec\beta_2)/r}{MS_E}$$ -->
 
-Reject the null hypothesis if $f_0 > f_{1-\alpha, r,n-p}$ (the right tail of the $F$-distribution).
+<!-- -- -->
 
---
+<!-- Reject the null hypothesis if $f_0 > f_{1-\alpha, r,n-p}$ (the right tail of the $F$-distribution). -->
 
-Later we will discuss the stepwise algorithm, which aims to find good $\left\{\beta_i\right\}_i$ subsets, for improving the model.
+<!-- -- -->
 
----
+<!-- Later we will discuss the stepwise algorithm, which aims to find good $\left\{\beta_i\right\}_i$ subsets, for improving the model. -->
 
-# Hypothesis Testing - Subset of Coefficients - Example
+<!-- --- -->
 
-Demonstration for a subset hypothesis test:
+<!-- # Hypothesis Testing - Subset of Coefficients - Example -->
 
-.small[
-```{r subset of coefficients example}
+<!-- Demonstration for a subset hypothesis test: -->
+
+<!-- .small[ -->
+```{r subset of coefficients example, include=FALSE}
 full_model <- lm(formula = log10(n) ~ ., data = wildlife_medium)
 partial_model <- lm(formula = log10(n) ~ rounded_height + num_engs, data = wildlife_medium) # omitted sky, rounded_speed
 SS_T <- sum((log10(wildlife_medium$n) - mean(log10(wildlife_medium$n)))^2)
@@ -638,13 +611,13 @@ F_0 <- (SS_R_add/3)/(SS_E_full/(698))
 df(F_0, df1 = 3, df2=698)
 qf(0.95, df1 = 3, df2 = 698)
 ```
-]
+<!-- ] -->
 
---
+<!-- -- -->
 
-We reject the null hypothesis with a p-value of $`r df(F_0, df1 = 3, df2=698)`$.
+<!-- We reject the null hypothesis with a p-value of $`r df(F_0, df1 = 3, df2=698)`$. -->
 
----
+<!-- --- -->
 
 # Confidence Intervals
 
@@ -695,18 +668,20 @@ $$\frac{\hat\mu_{Y|x_0} - \mu_{Y|x_0}}{\sqrt{\hat\sigma^2x_0^t(X^tX)^{-1}x_0}}$$
 --
 
 $$\hat\mu_{Y|x_0} + t_{\alpha/2, n-p}\sqrt{\hat\sigma^2x_0^t(X^tX)^{-1}x_0} \leq \mu_{Y|x_0} \leq \hat\mu_{Y|x_0} + t_{1-\alpha/2, n-p}\sqrt{\hat\sigma^2x_0^t(X^tX)^{-1}x_0}$$
+Let's see this in action, in the following R Shiny app: 
+[https://sarid.shinyapps.io/intervals_demo/](https://sarid.shinyapps.io/intervals_demo/)
 
----
+<!-- --- -->
 
-# Prediction Intervals for New Observations
+<!-- # Prediction Intervals for New Observations -->
 
-In case of a prediction interval for a new observation, the point estimate remains the same:
+<!-- In case of a prediction interval for a new observation, the point estimate remains the same: -->
 
-$\hat y_0 = x_0^t\hat\beta$
+<!-- $\hat y_0 = x_0^t\hat\beta$ -->
 
-And the prediction interval is given by:
+<!-- And the prediction interval is given by: -->
 
-$$\hat y_0 + t_{\alpha/2, n-p}\sqrt{\hat\sigma^2(1+x_0^t(X^tX)^{-1}x_0)} \leq Y_0 \leq \hat y_0 + t_{1-\alpha/2, n-p}\sqrt{\hat\sigma^2(1+x_0^t(X^tX)^{-1}x_0)}$$
+<!-- $$\hat y_0 + t_{\alpha/2, n-p}\sqrt{\hat\sigma^2(1+x_0^t(X^tX)^{-1}x_0)} \leq Y_0 \leq \hat y_0 + t_{1-\alpha/2, n-p}\sqrt{\hat\sigma^2(1+x_0^t(X^tX)^{-1}x_0)}$$ -->
 
 ---
 
@@ -723,10 +698,10 @@ new_responses_pi <- predict(full_model, newdata = wildlife_new, interval = "pred
    select(-fit) %>% 
    rename_all(~{paste0(., "_pi")})
 wildlife_tib <- wildlife_new %>% 
-   bind_cols(new_responses_ci,
-             new_responses_pi) %>% 
-   mutate_at(vars(fit:upr_pi), ~10^(.)) %>% 
-   pivot_longer(cols = fit:upr_pi, names_to = "type", values_to = "value")
+   bind_cols(new_responses_ci) %>% #,
+             #new_responses_pi) %>% 
+   mutate_at(vars(fit:upr_ci), ~10^(.)) %>% 
+   pivot_longer(cols = fit:upr_ci, names_to = "type", values_to = "value")
 ggplot(wildlife_tib, aes(x = rounded_height, y = value, color = type, linetype = type)) + 
    geom_line(size = 1) +
    facet_wrap(~sky) + 

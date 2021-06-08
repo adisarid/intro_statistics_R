@@ -254,13 +254,13 @@ cowplot::plot_grid(wildlife_hist, wildlife_points)
 
 It would seem as though each additional $5k$ feet decrease the number of bird strikes by a ratio of $10$, or in other words:
 
-$$\log(\text{Bird strikes}) \approx 3784 - 0.168\times h$$
+$$\log(\text{Bird strikes}) \approx 3.784 - 0.168\times h$$
 
 --
 
 Equivalently, we can also write:
 
-$$\text{Bird strikes} \approx 10^{3784-0.168\times h}$$
+$$\text{Bird strikes} \approx 10^{3.784-0.168\times h}$$
 
 --
 
@@ -282,11 +282,11 @@ This relationship is generalized as:
 
 $$Y=\beta_0+\beta_1x + \epsilon$$
 
-Where $\epsilon$ is assumed to be distributed as $\mathcal{N}(0, \sigma_\epsilon)$.
+Where $\epsilon$ is assumed to be distributed as $\mathcal{N}(0, \sigma_\epsilon)$, we will also assume it is **homoscedastic**.
 
 --
 
-This model is called a **simple linear regression model**
+This model is called a **simple linear regression model**.
 
    * Only one independent variable (only a single $x$, aka regressor)
 
@@ -300,7 +300,7 @@ $$\operatorname{Var}(Y|x)=\operatorname{Var}(\beta_0+\beta_1x)+\operatorname{Var
 
 ---
 
-# Properties of the least squares estimators
+# How does the linear regression model "look like"?
 
 The most common method to find the linear relationship is called the least squares estimate. I.e., we are looking for the line which brings to minimum the suqared errors. I.e.: 
 
@@ -369,7 +369,7 @@ $$S_{xy}=\sum_{i=1}^n{(y_i-\bar{y})(x_i-\bar{x})} = \sum_{i=1}^nx_iy_i-\frac{1}{
 
 Then:
 
-$$\hat{\beta}_0=\hat{y}-\hat{\beta}_1\bar{x}$$
+$$\hat{\beta}_0=\bar{y}-\hat{\beta}_1\bar{x}$$
 
 $$\hat{\beta}_1=\frac{S_{xy}}{S_{xx}}$$
 
@@ -421,17 +421,41 @@ summary(wildlife_lm)
 ]
 ---
 
+# Question
+
+Why should you be be interested in 
+
+   * $E\hat{\beta_0}$, 
+   * $E\hat{\beta_1}$, 
+   * $\operatorname{Var}{\hat{\beta_0}}$
+   * $\operatorname{Var}{\hat{\beta_1}}$
+
+--
+
+   * Confidence intervals and hypothesis tests.
+   
+--
+   
+   * What does it mean if $\beta_1\neq0$?
+   
+   * What hypothesis test can we derive to test this hypothesis?
+
+---
+
 # Properties of the Least Squares Estimators
 
 The estimators $\hat{\beta}_0$ and $\hat{\beta}_1$ are a result of a computation based on our sample, i.e., $\bar{y},\bar{x}, S_{xx}, S_{xy}$. 
 
 --
 
-Specifically, they depend on the observed $y$'s and hence they are random variables themselves. Both coefficients are unbiased, i.e., $E[\hat{\beta}_0]=\beta_0$ and $E[\hat{\beta}_1]=\beta_1$. 
+Specifically, they depend on the observed $y$'s and hence they are random variables themselves. 
 
---
+Both coefficients are unbiased, i.e., $E[\hat{\beta}_0]=\beta_0$ and $E[\hat{\beta}_1]=\beta_1$. 
 
-The variance of the coefficients is given by:
+
+---
+
+# The variance of the coefficients
 
 $$\operatorname{Var}(\hat{\beta}_1)= \frac{\sigma_\epsilon^2}{S_{xx}}$$
 
@@ -528,13 +552,31 @@ $$SS_T=SS_R + SS_E$$
 
 Where $SS_R$ has 1 degree of freedome, $SS_E$ has $n-2$ degrees of freedom, and $SS_T$ has $n-1$ degrees of freedom.
 
---
+---
 
-The expectancy of each element is $E[SS_E/(n-2)]=\sigma_\epsilon^2$, $E[SS_R]=\sigma^2_\epsilon+\beta_1^2S_{xx}$.
+# Analysis of Variance for Regression
+
+$$SS_T=SS_R + SS_E$$
+
+The expectancy of each element is: 
+
+   * $E[SS_E]=\sigma_\epsilon^2(n-2)$, 
+   * $E[SS_R]=\sigma^2_\epsilon+\beta_1^2S_{xx}$,
+   * $E[SS_T]=\sigma^2_\epsilon(n-1)$.
 
 --
 
 Under a null hypothesis of $H_0: \beta_1=0$ we obtain that both sum of squares are $\chi^2$ distributed.
+
+--
+
+Intuitively, What does it mean if $SS_R$ is large and $SS_E$ is extremely small?
+
+I.e., if $\frac{SS_R/1}{SS_E/(n-2)}$ is very large?
+
+--
+
+We can use the $F$-statistic to compare the two variances
 
 ---
 

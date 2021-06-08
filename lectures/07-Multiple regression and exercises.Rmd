@@ -1,5 +1,5 @@
 ---
-title: "Multiple Linear Regression and Stepwise Selection"
+title: "Multiple Linear Regression: Intervals, Multicolinearity, Interactions, Stepwise Selection"
 subtitle: ""
 author: "Adi Sarid"
 institute: "Tel-Aviv University"
@@ -104,59 +104,59 @@ $$Y=\beta_0 + \beta_1X_1 + \beta_2X_2 + \ldots + \beta_pX_p + \epsilon$$
 
 ---
 
-# Reminder from Previous Lecture (2) - Solution of the Multiple Linear Regression
+<!-- # Reminder from Previous Lecture (2) - Solution of the Multiple Linear Regression -->
 
-We represented the multiple linear regression as a matrix equation:
+<!-- We represented the multiple linear regression as a matrix equation: -->
 
-$$y = X\beta+\epsilon$$
+<!-- $$y = X\beta+\epsilon$$ -->
 
-Where:
+<!-- Where: -->
 
-$$y = \left[\begin{array}{c}y_1\\\vdots\\y_n\end{array}\right], \quad X=\left[\begin{array}{cccc}1 & x_{11} & \ldots & x_{1k}\\\vdots & \vdots & \ddots & \vdots\\1 & x_{n1} & \ldots & x_{nk}\end{array}\right], \quad \beta = \left[\begin{array}{c}\beta_0\\\vdots\\\beta_k\end{array}\right],\quad \epsilon=\left[\begin{array}{c}\epsilon_1\\\vdots\\\epsilon_n\end{array}\right]$$
+<!-- $$y = \left[\begin{array}{c}y_1\\\vdots\\y_n\end{array}\right], \quad X=\left[\begin{array}{cccc}1 & x_{11} & \ldots & x_{1k}\\\vdots & \vdots & \ddots & \vdots\\1 & x_{n1} & \ldots & x_{nk}\end{array}\right], \quad \beta = \left[\begin{array}{c}\beta_0\\\vdots\\\beta_k\end{array}\right],\quad \epsilon=\left[\begin{array}{c}\epsilon_1\\\vdots\\\epsilon_n\end{array}\right]$$ -->
 
---
+<!-- -- -->
 
-We are looking for $\beta$ which minimizes $L = \epsilon^t\epsilon=(y-X\beta)(y-X\beta)$
+<!-- We are looking for $\beta$ which minimizes $L = \epsilon^t\epsilon=(y-X\beta)(y-X\beta)$ -->
 
-$$\frac{\partial L}{\partial\beta}=0$$
+<!-- $$\frac{\partial L}{\partial\beta}=0$$ -->
 
----
+<!-- --- -->
 
-# Reminder (3) - Least Squares Estimation of the Parameters
+<!-- # Reminder (3) - Least Squares Estimation of the Parameters -->
 
-The resulting equations are given by:
+<!-- The resulting equations are given by: -->
 
-$$X^tX\hat\beta=X^ty$$
+<!-- $$X^tX\hat\beta=X^ty$$ -->
 
---
+<!-- -- -->
 
-In case that $X^tX$ is a non-singular matrix (i.e., invertible), the solution is unique and equals
+<!-- In case that $X^tX$ is a non-singular matrix (i.e., invertible), the solution is unique and equals -->
 
-$$\hat\beta = (X^tX)^{-1}X^ty$$
+<!-- $$\hat\beta = (X^tX)^{-1}X^ty$$ -->
 
---
+<!-- -- -->
 
-Once $\hat{\beta}$ is found, we can use it to predict our values:
+<!-- Once $\hat{\beta}$ is found, we can use it to predict our values: -->
 
-$$\hat{y} = X\hat{\beta}$$
+<!-- $$\hat{y} = X\hat{\beta}$$ -->
 
---
+<!-- -- -->
 
-We can also compute the residuals:
+<!-- We can also compute the residuals: -->
 
-$$e = y-\hat{y}$$
+<!-- $$e = y-\hat{y}$$ -->
 
---
+<!-- -- -->
 
-Let $p=k+1$ (the number of parameters including the constant $\beta_0$), then:
+<!-- Let $p=k+1$ (the number of parameters including the constant $\beta_0$), then: -->
 
-$$\hat\sigma^2=\frac{\sum{e_i^2}}{n-p}=\frac{SS_E}{n-p}$$
+<!-- $$\hat\sigma^2=\frac{\sum{e_i^2}}{n-p}=\frac{SS_E}{n-p}$$ -->
 
-Is an unbiased estimate of $\sigma_\epsilon^2$
+<!-- Is an unbiased estimate of $\sigma_\epsilon^2$ -->
 
----
+<!-- --- -->
 
-# Reminder (4) - Hypothesis Tests on Individual Coefficients
+# Reminder (2) - Hypothesis Tests on Individual Coefficients
 
 We used the fact that:
 
@@ -176,7 +176,7 @@ $$T_0=\frac{\hat\beta_j}{\sqrt{\hat\sigma^2C_{jj}}}=\frac{\hat\beta_j}{\operator
 
 ---
 
-# Reminder (5) - Hypothesis Tests on All Coefficients
+# Reminder (3) - Hypothesis Tests on All Coefficients
 
 We used the F-statistic 
 
@@ -206,109 +206,158 @@ To devise a broader test:
 
 We defined the adjusted $R_\text{adj}^2$: 
 
-$$R^2_\text{adj}= 1 - \frac{SS_E/(n-p)}{SS_T/(n-1)}$$
+$$R^2_\text{adj}= 1 - \frac{SS_E/(n-p-1)}{SS_T/(n-1)}$$
 
 Which provides a penalty for increasing the number of parameters, however it does not necessarily help us avoid over-fitting.
 
 ---
 
-# Confidence and prediction intervals
+# Today
 
-We talked about confidence and prediction intervals:
+   * Confidence and prediction intervals
+   
+   * Multicolinearity
+   
+   * Interactions
+   
+   * Stepwise selection
+
+---
+
+# Mean Response Confidence Interval and Prediction intervals
+
+The point estimate for a new response at a point $x_0=[1, x_{01}, \dots, x_{0k}]^t$ is:
+
+$$\hat\mu_{Y|x_0} = x_0^t\hat\beta=\beta_0 + \beta_1x_1+\ldots+\beta_px_p$$
 
 --
 
-Confidence interval:
+The estimator is unbiased and its variance is:
+
+$$\operatorname{Var}(\hat\mu_{Y|x_0}) = \sigma^2x_0^t(X^tX)^{-1}x_0$$
+
+--
+
+Hence, we can use the following statistic for building confidence and prediction intervals:
+
+$$\frac{\hat\mu_{Y|x_0} - \mu_{Y|x_0}}{\sqrt{\hat\sigma^2x_0^t(X^tX)^{-1}x_0}}$$
+
+--
+
+Let's see this in action and discuss it with the following R Shiny app:
+[https://sarid.shinyapps.io/intervals_demo/](https://sarid.shinyapps.io/intervals_demo/)
+
+--
+
+.small[
+Confidence and prediction intervals:
 
 $$\hat\mu_{Y|x_0} + t_{\alpha/2, n-p}\sqrt{\hat\sigma^2x_0^t(X^tX)^{-1}x_0} \leq \mu_{Y|x_0} \leq \hat\mu_{Y|x_0} + t_{1-\alpha/2, n-p}\sqrt{\hat\sigma^2x_0^t(X^tX)^{-1}x_0}$$
 
---
-
-Prediction interval:
-
 $$\hat y_0 + t_{\alpha/2, n-p}\sqrt{\hat\sigma^2(1+x_0^t(X^tX)^{-1}x_0)} \leq Y_0 \leq \hat y_0 + t_{1-\alpha/2, n-p}\sqrt{\hat\sigma^2(1+x_0^t(X^tX)^{-1}x_0)}$$
-
---
-
-Let's see this in action, in the following R Shiny app: 
-[https://sarid.shinyapps.io/intervals_demo/](https://sarid.shinyapps.io/intervals_demo/)
+]
 
 ---
 
-# Note About Extrapolation - Thought Experiment
+# Questions about confidence and prediction intervals
 
-What do you think is the problem with trying to provide an extrapolation (fit) and intervals (confidence for mean and prediction for a new observation) for the number of bird strikes with the following parameters:
+   * Note that confidence interval relates to the linear relationship itself.
+   
+   * Prediction interval relates to future observations.
 
-   * Flight height = 22 thousand feet
-   
-   * Flight speed = 42 kts
-   
-   * Sky = "No Cloud"
-   
-   * Number of engines = $2$
+--
 
-Can you think of a similar example but from a different domain?
+In groups, use the confidence and prediction intervals simulation, and answer the following questions:
+
+   * The *"define error sigma"* controls $\sigma_{\epsilon}$. Try moving it to 0 and start increasing it. Follow the $y$ axis closely while doing so. What happens and why?
+
+   * What happens to the confidence interval (dashed blue lines) and the prediction interval as the sample size increases?
    
-```{r timer for extrapolation think, echo=FALSE}
-countdown::countdown(3)
+   * What happens to the brown line (the model) when the sample size increases?
+   
+   * Add the points to the chart (click on *"Points"* under *"include on chart"*). How many points would you expect to find within the red lines? How many within the blue lines?
+   
+   * Try the Sine relationship (under *Choose type of relationship*). How would you run `lm` to build such a model in `R`?
+   
+   * When showing the Sine relationship, try increasing the error (increase in *define error sigma*). What happens to the relationship? why?
+
+
+```{r countdown regression experimentation}
+countdown::countdown(minutes = 10L, top = "10px")
 ```
 
 ---
 
-# Example - Outliers' Influence
+# Multicolinearity
 
-Another "danger" in linear regression is what happens when the data contains outliers. Linear regression is very sensitive in this sense.
-.tiny[
-```{r example for outliers, fig.dim=c(8,3)}
-# wildlife_impacts <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-07-23/wildlife_impacts.csv")
-# write_csv(wildlife_impacts %>% count(height), "lectures/data/wildlife_impacts_small.csv")
-wildlife_small <- read_csv("data/wildlife_impacts_small.csv", col_types = cols()) %>% 
-  mutate(rounded_height = round(height/1000)) %>% 
-   group_by(rounded_height) %>% 
-   summarize(n = sum(n)) %>% 
-   filter(!is.na(rounded_height))
+aaa
 
-wildlife_err <- wildlife_small
-wildlife_err[19, 2] <- 600000 # instead of 6 we multiplied this observation by 1000
+---
 
-p1 <- ggplot(wildlife_small, aes(x = rounded_height, y = log10(n))) + 
+# Interactions
+
+Using the `palmerpenguins` data:
+
+   * Three types of penguins.
+   * Describe the relationship between bill length and bill depth.
+
+.small[
+```{r interaction example, message=FALSE, warning=FALSE, fig.dim=c(6, 4)}
+library(palmerpenguins)
+ggplot(penguins, aes(x = bill_depth_mm, y = bill_length_mm)) + 
    geom_point() + 
-   stat_smooth(method = "lm") + coord_cartesian(ylim = c(-1, 5)) + theme_bw()
-p2 <- ggplot(wildlife_err, aes(x = rounded_height, y = log10(n))) + 
-   geom_point() + 
-   stat_smooth(method = "lm") + coord_cartesian(ylim = c(-1, 5)) + theme_bw()
-cowplot::plot_grid(p1, p2)
+   stat_smooth(method = "lm")
 ```
 ]
+
 ---
 
-# How are Types of Variables Used in Regression?
+# Interactions
 
-As you have probably noticed, in the bird-planes example, we used a `sky` variable which has three values (factor). The regression model is linear, if so, how are factor variables treated?
+This time, considering the species.
 
-   * Factors are turned into dummy variables (0/1). 
-   
-      * How many dummies are needed for a 3-level factor? why?
-      
-   * Characters are treated the same
-   
-   * Ordinals - depending on definition, might be entered as polynomials, factors, or continuous
-   
-   * Logicals - as a 0/1 variable
+.small[
+```{r with interaction of species, message=FALSE, warning=FALSE, fig.dim=c(6, 4)}
+ggplot(penguins, aes(x = bill_depth_mm, y = bill_length_mm, color = species)) + 
+   geom_point() + 
+   stat_smooth(method = "lm")
+```
+]
+
+The relationship is opposite! How can we solve this?
 
 --
 
-```{r some questions on the meaning of coefficients, echo = FALSE}
-countdown::countdown(3)
+We can either build three models (one for each species like in `ggplot2`) or use interaction in the `formula` argument.
+
+
+---
+
+# The models with and without interaction
+
+Set $l=$length, $d=$depth.
+
+Without interaction:
+
+$$l=\beta_0 + \beta_1 \times d + \epsilon$$
+
+With interaction:
+
+$$l=\beta_0 + \beta_1 \times d +
+\beta_2 \times d \times \operatorname{Chinstrap} + 
+\beta_3 \times d \times \operatorname{Gentoo} +
+\epsilon$$
+
+In action:
+
+.tiny[
+```{r example}
+
+lm(formula = bill_length_mm ~ bill_depth_mm*species, data = penguins) %>% 
+   summary()
+
 ```
-
-Questions (hint: $Y=\beta_0 + \beta_1X_1 + \beta_2X_2 + \ldots + \beta_pX_p + \epsilon$):
-
-   * What is the meaning of the coefficient $\beta$ of a logical variable?
-   
-   * What is the meaning of the coefficient $\beta$ of a factor?
-   
-   * How would you consider a date type variable?
+]
 
 ---
  
@@ -342,7 +391,7 @@ All algorithms are greedy algorithms: look one step ahead, and choose the best c
 
 --
    
-   3. Are there a variabled which contributes to the improvement of the measure (e.g. decrease of the AIC)? 
+   3. Is there a variable that its omission improves our measure? (e.g. decrease of the AIC)? 
    
       a. **Yes**: Remove the variable which its removal contributes the most (to the improvement of the measure), Update the current model accordingly, and go to step 2. 
       
@@ -370,11 +419,11 @@ The AIC uses the likelihood $L$:
 
 $$L = \prod_{i=1}^n{f(\hat{y}_i)}$$
 
-(Higher liklihood value is better, hence lower $-2\log(L)$ is better)
+(Higher likelihood value is better, hence lower $-2\log(L)$ is better)
 
 --
 
-As the number of parameters in the model increases, the model is more prone to overfitting, hence we a penalty of $2p$ (a high $p$, i.e., a lot of parameters is bad for us).
+As the number of parameters in the model increases, the model is more prone to overfitting, hence we apply a penalty of $2p$ (a high $p$, i.e., a lot of parameters is bad for us).
 
 --
 
