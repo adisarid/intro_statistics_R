@@ -80,7 +80,7 @@ R4DS (R for Data Science) is a highly recommended book for learning R, and speci
 Most of the theory I present during the course comes from these two books:
 
    * Walpole R.E., Myers R. H, Myers S. L., and Ye K.: Probability & Statistics for Engineers & Scientists. Prentice Hall, 9th ed., 2011. Available [online](https://fac.ksu.edu.sa/sites/default/files/probability_and_statistics_for_engineers_and_scientisst.pdf)
-   * Runger G. & D. Montgomery: Applied Statistics and Probability for Engineers. Wiley, 7th ed., 2018. An old edition is available [online](http://www.um.edu.ar/math/montgomery.pdf)
+   * Runger G. & D. Montgomery: Applied Statistics and Probability for Engineers. Wiley, 7th ed., 2018.
    
 Additional books:
 
