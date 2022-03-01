@@ -3,7 +3,7 @@ title: "Point Estimation Methods and Intervals"
 subtitle: ""
 author: "Adi Sarid"
 institute: "Tel-Aviv University"
-date: "updated: `r Sys.Date()`"
+date: "Last updated: `r Sys.Date()`"
 output:
   xaringan::moon_reader:
     lib_dir: libs
@@ -12,53 +12,38 @@ output:
       highlightLines: true
       countIncrementalSlides: false
       ratio: "16:9"
-    css: [metropolis, rutgers-fonts]
+    css: xaringan-themer.css
 ---
 
-```{css, echo = FALSE}
-.remark-slide-content {
-  font-size: 28px;
-  padding: 20px 80px 20px 80px;
-}
-.remark-code, .remark-inline-code {
-  background: #f0f0f0;
-}
-.remark-code {
-  font-size: 24px;
-}
-.huge .remark-code { /*Change made here*/
-  font-size: 200% !important;
-}
-.tiny .remark-code { /*Change made here*/
-  font-size: 50% !important;
-}
-
-.small .remark-code {
-   font-size: 75% !important;
-}
-
-.remark-slide-content {
-    font-size: 20px;
-    padding: 1em 4em 1em 4em;
-}
-
-table { display: inline-block; }
-
-th, td {
-   padding: 5px;
-}
-
-small-slide {
-   font-size: 70% !important;
-}
-
-.gray-out {
-   color: #BEBEBE;
-}
-
-```
-
 ```{r setup, include=FALSE}
+
+library(xaringanthemer)
+
+extra_css <- list(
+   ".medium" = list("font-size" = "85%",
+                    "code-font-size" = "85%"),
+  ".small" = list("font-size" = "70%",
+                  "code-font-size" = "70%"),
+  ".extra-small" = list("font-size" = "50%",
+                        "code-font-size" = "50%"),
+  ".full-width" = list(
+    display = "flex",
+    width   = "100%",
+    flex    = "1 1 auto"
+  )
+)
+
+style_mono_accent(
+   header_font_google = google_font("Open Sans"),
+   text_font_google   = google_font("Rubik", "300", "300i"),
+   code_font_google   = google_font("Fira Mono"),
+   extra_css = extra_css,
+   header_h1_font_size = "2.3rem"
+   
+)
+
+theme_xaringan()
+
 options(htmltools.dir.version = FALSE, fig.width = 3, fig.height = 3)
 knitr::opts_chunk$set(fig.dim=c(3, 3), fig.align = "center")
 library(tidyverse)
@@ -95,42 +80,36 @@ Last lesson we talked about:
    
 ---
 
-# What we will discuss today
+# Also discussed sample (מדגם) versus population (אוכלוסיה)
 
-   * Population versus sample
+   * We would like information about a **population**.
    
-   * Point estimates
-   
-   * Bias and variance of point estimates
-   
-   * Estimation using maximum likelihood
-   
-   * Estimation using the moments method
-   
-   * Confidence intervals (incl. examples)
-   
----
+   * Often times it is impossible to get to the whole population, so we use a **sample**.
 
-# Population versus sample
-
-We would like information about a **population**, however:
-
-   * Most of the times it is impossible to get to the whole population (why? can you think of examples where we *can* reach the whole population?)
-
---
-
-   * Instead of using a whole population we use a **sample** of the population. For example:
+   * Parameters (פרמטרים): $\Theta$, $p$, versus Estimators (אמדים): $\hat{\theta}, \hat{p}$.
    
-      * Probability based: random, cluster, stratified.
-      
-      * Non-probability: Snowball / respondent-driven-sample.
-      
---
-
+   * Expectation (תוחלת): $EX$, versus average (ממוצע) $\bar{X}=\sum{x_i}/n$.
+   
+   * Variance (שונות): $\operatorname{Var}(X)$, versus sample variance (שונות מדגמית): $S^2=\frac{\sum{(X_i-\bar{X})^2}}{n-1}$.
+   
    * **The problem** - when we use a sampling process we will never be accurate.
 
    * We use statistics to bridge this gap: understand our errors, understand our uncertainty
-  
+
+---
+
+# What we will discuss today
+   
+   * Methods for point estimates (אמידה נקודתית)
+   
+      * MLE: Maximum Likelihood Estimation (אמד ניראות מירבית)
+      
+      * Moments method (אמידה בשיטת המומנטים)
+   
+   * Bias and variance of point estimates
+   
+   * Confidence intervals (incl. examples)
+   
 ---
 
 # Parameters, estimators, and estimates
@@ -139,237 +118,43 @@ We would like information about a **population**, however:
 
 --
 
-   * What are point estimates, i.e.:
+   * The difference between parameters, estimators, and estimates
    
-      * $\theta$ is a *population parameter* (e.g., $\mu$)
+      * $\theta$ is a *population parameter* (e.g., $\mu$) פרמטר
       
-      * Estimated by the statistic $\hat{\Theta}$, a *point estimator* (e.g., $\bar{X}=\frac{1}{n}\sum{x_i}$)
+      * Estimated by the statistic $\hat{\Theta}$, a *point estimator* (e.g., $\bar{X}=\frac{1}{n}\sum{x_i}$) אמד נקודתי
       
-      * When it is computed (from a sample), it is called a *point estimate* 
-      
----
-
-# An estimator is a **random variable**
-
-   * An estimator is the result of sampling
-
---
-
-   * An estimator is random variable
-
---
-   
-   * For example, $\bar{X}$
-   
-      * We can represent its expectancy and variance: $E[\bar{X}] = \mu, \operatorname{Var}(\bar{X}) = \frac{\sigma^2}{n}$
-      
-      * If $n$ is "large enough" (i.e., $n\geq30$) is also approximately normally distributed (central limit theorem)
-      
---
-
-   * We will use this property **A lot** during this course
+      * When it is computed (from a sample), it is called a *point estimate* אומדן 
       
 ---
 
-# Contents
-
-   * .gray-out[Population versus sample]
+# How can we find a formula for point estimates?
    
-   * .gray-out[Point estimates]
+   * Let's play a game.
    
-   * Bias and variance of point estimates
-   
-   * Estimation using maximum likelihood
-   
-   * Estimation using the moments method
-   
-   * Confidence intervals (incl. examples)
-   
----
+   * If we were to randomly sample from a normal distribution, where would the observations fall?
 
-# Desired properties of point estimators
-   
-   * Unbiased: $E\hat{\Theta} - \theta = 0$
-   
-      * In the case of $\bar{X}$ the bias is indeed 0, i.e.: $E\bar{X}-\mu=0$
+```{r hidden parameters, include=FALSE}
+density_func <- tibble(x = seq(-2, 2, 0.1)) %>% 
+   mutate(dens = dnorm(x = x, mean = 0, sd = 1))
 
---
-
-   * Low variance: $\operatorname{Var}(\hat{\Theta})$ as low as possible
-
---
-   
-I've shown that: 
-
-   * The average $\bar{X}=\sum_{i=1}^n{x_i}$ is unbiased: 
-      * $E[\bar{X}] = \mu$
-      
-   * Its variance is $V(\bar{X})=\frac{\sigma^2}{n}$
-   
-   * In fact, it is the *Minimum Variance Unbiased Estimate* (proof out of scope)
-   
---
-   
-   * Question: let's say we sampled $n$ observation but only use $x_1$ as our estimator. 
-   
-      * What is its bias? 
-      
-      * What is its variance?
-
----
-
-# Another example $S^2$
-      
-   * Sample variance: $S^2=\frac{\sum_{i=1}^n(x_i-\bar{X})^2}{n-1}$ is an **unbiased** estimator of $V(X)=\sigma^2$
-   
-      * $V(X)=E(X-E[X])^2=EX^2-(EX)^2$
-   
-   * Standard deviation: $S$ is a **biased** estimator for $\sigma$
-
----
-
-# Why $S^2$ is an unbiased estimator to $\sigma^2$?
-
-$S^2$ is unbiased:
-
-$$ES^2=\frac{1}{n-1}E{\sum_{i=1}^n(x_i-\bar{X})^2}=\frac{1}{n-1}E{\sum_{i=1}^n(x_i^2+\bar{X}^2-2\bar{X}x_i)}=$$
-
---
-
-$$=\frac{1}{n-1}E\left(\sum_{i=1}^nx_i^2-n\bar{X}^2\right)=\frac{1}{n-1}\left[\sum_{i=1}^n{Ex_i^2-nE(\bar{X}^2)}\right]$$
-
---
-
-Using the fact that $E(x_i^2)=\mu^2+\sigma^2$ and that $E(\bar{X}^2)=\mu^2+\sigma^2/n$ we have:
-
---
-
-$$E(S^2)=\frac{1}{n-1}\left[\sum_{i=1}^n(\mu^2+\sigma^2)-n(\mu^2+\sigma^2/n)\right]=\sigma^2$$
-
-$$\square$$
-
----
-
-# Why is $S$ a biased estimator to $\sigma$?
-
-We need to show that $ES\neq\sigma$. Let 
-
-$$S=\sqrt{\sum_{i=1}^n{\frac{(x_i-\bar{X})^2}{n-1}}}$$
-
---
-
-Consider that $0<\operatorname{Var}(S)=E[S^2]-(E[S])^2$ (this is true for any RV, specifically $S$ in this case)
-
---
-
-Hence
-
-$$(ES)^2<E[S^2] \Leftrightarrow ES<\sqrt{E[S^2]}=\sigma$$ 
-
-$$\square$$
-
-In certain cases, we can directly compute this bias (i.e. what is $ES-\sigma$), for example, if we assume $X\sim N(\mu,\sigma)$, then:
-
-$$\sigma-E(S)\cong\frac{\sigma}{4n}$$ (see [here](https://stats.stackexchange.com/questions/11707/why-is-sample-standard-deviation-a-biased-estimator-of-sigma)).
-
----
-
-# Short quiz - identify the distributions
-
-Before we continue, **identify the distributions using the plot**, and write them down on a piece of paper, in pairs.
-
-Here are your options: Normal, Chi-square, Bernoulli, Exponential, Poisson.
-
-```{r recognize the distribution quiz, echo=FALSE, fig.dim=c(8, 6)}
-
-tibble(x = seq(-25, 25, 1)) %>% 
-  mutate(dist1 = dexp(x, rate = 1/5),
-         dist2 = dnorm(x, mean = 1, sd = 3),
-         dist3 = dpois(x, lambda = 5),
-         dist4 = dchisq(x, df = 5)) %>% 
-  pivot_longer(cols = -x, names_to = "distribution", values_to = "y") %>% 
-   ggplot(aes(x=x, y=y, fill = distribution)) + 
-   geom_col() + 
-   facet_wrap(~distribution) + 
-   coord_cartesian(xlim = c(-10, 25)) + 
-   theme_bw()
+set.seed(0)
+randomized_dots <- tibble(rnd = rnorm(n = 1000, mean = 0.4, sd = 1.1))
 
 ```
 
----
+```{r, eval=TRUE, echo=FALSE, fig.dim=c(5, 3)}
 
-# The Central Limit Theorem
-
-If $\bar{X}$ is the mean of a random sample of size $n$ taken from a population with mean $\mu$ and finite variance $\sigma^2$, then the limiting form of the distribution of 
-
-$$Z = \frac{\bar{X}-\mu}{\sigma/\sqrt{n}}$$
-
-As $n\rightarrow\infty$ is the standard normal distribution $N(0,1)$
-
-For most purpuses, $n\geq30$ is considered "large enough" (as a rule-of-thumb). 
-
-Lets look at an example of exponential distribution: $\operatorname{Exp}(\lambda=1)$. **What are $\mu$ and $\sigma$?**
-
----
-
-# The distribution of $\bar{X}$ with varying $n$
-
-With $\operatorname{Exp}(\lambda=1)$ we have $\mu=\sigma=1/\lambda=1$
-
-Try increasing `sample_size` and see what happens to the chart.
-
---
-
-.tiny[
-```{r example how a sum of exp becomes normal, message=FALSE, warning=FALSE}
-sample_size <- 1
-lambda <- 1
-
-rv_binom <- matrix(rexp(n = sample_size*1000, rate = lambda), nrow = sample_size, ncol = 1000) %>% 
-  as_tibble(.name_repair = "unique") %>% 
-  pivot_longer(cols = everything(), names_to = "var", values_to = "value") %>% 
-  group_by(var) %>% 
-  summarize(mean = mean(value)) %>% 
-  mutate(standardized = (mean - 1/lambda)/((1/lambda)/sqrt(sample_size)))
-
-ggplot(rv_binom, aes(x = standardized)) + 
-  geom_histogram(bins = 100) + 
-  theme_bw()
+ggplot(density_func, aes(x = x, y = dens)) + 
+   geom_line()
 
 ```
-]
 
----
-
-# Contents
-
-   * .gray-out[Population versus sample]
-   
-   * .gray-out[Point estimates]
-   
-   * .gray-out[Bias and variance of point estimates]
-   
-   * Estimation using maximum likelihood
-   
-   * Estimation using the moments method
-   
-   * Confidence intervals (incl. examples)
+   * File `01-Estimation-leading_up_to_MLE.R`.
    
 ---
 
-# Methods of point estimation
-
-So far we discussed some estimators (i.e., $\bar{X}, S^2$), and the desired properties they hold. But how can we find additional estimators (new statistics)?
-
-We will show two methods:
-
-   * Maximum Likelihood Estimation (MLE)
-   
-   * Moment method
-
----
-
-# Maximum Likelihood Estimation (MLE)
+# Maximum Likelihood Estimation (MLE) אמד ניראות מירבית
 
 An important and very common approach to solving estimation problems in statistics. The idea is as follows:
 
@@ -377,7 +162,7 @@ If you want to estimate some population parameter $\theta$, use the most **likel
 
 --
 
-Let $f(x;\theta)$ represent the density function of $X$. Given a sample $x_1,\dots,x_n$ in which $x_i$'s are independent, we can write the liklihood of the sample:
+Let $f(x;\theta)$ represent the density function of $X$. Given a sample $x_1,\dots,x_n$ in which $x_i$'s are independent, we can write the likelihood (ניראות) of the sample:
 
 $$L(\theta)=f(x_1,\ldots,x_n;\theta)=f(x_1;\theta)\times\ldots\times f(x_n;\theta)=\prod_{i=1}^nf(x_i;\theta)$$
 
@@ -391,7 +176,7 @@ $$L(\theta)=f(x_1,\ldots,x_n;\theta)=f(x_1;\theta)\times\ldots\times f(x_n;\thet
 
 ---
 
-# MLE example - Poisson distribution (discrete)
+# MLE example - Poisson distribution (התפלגות פואסון)
 
 The Poisson distribution is used to represent a counting processes. I.e., the number of accumulated events is distributed Poisson.
 
@@ -400,8 +185,8 @@ The Poisson distribution is used to represent a counting processes. I.e., the nu
 $$P(X=x)=\frac{\lambda^xe^{-\lambda}}{x!}$$
 
 --
-.small[
-```{r demonstration poisson, fig.dim=c(7, 3)}
+
+```{r demonstration poisson, fig.dim=c(7, 3), echo=FALSE}
 
 poiss_demonstration <- crossing(x = 0:25, pois_rate = c(0.5, 1, 2, 10)) %>% 
    mutate(dpois = map2_dbl(x, pois_rate, dpois))
@@ -412,35 +197,41 @@ ggplot(poiss_demonstration, aes(x = x, y = dpois, fill = factor(pois_rate))) +
    theme_bw()
 
 ```
-]
 
 ---
 
-# MLE example - Poisson distribution (discrete) - cont.
+# MLE example - Poisson - cont.
 
-Assume we sample the number of arrivals to the hospital during $n$ weekdays: $x_1,\ldots,x_n$. The number of arrivals is distributed with a $\text{Poisson}(\lambda)$ distribution.
+.medium[
+Assume we sample the number of arrivals to the hospital during $n$ weekdays: $x_1,\ldots,x_n$. The number of arrivals is distributed with a $\text{Poisson}(\lambda)$ distribution.]
 
 --
 
-Then, the likelihood is:
+.medium[Then, the likelihood is:
 
 $$L(\lambda) = \prod_{i=1}^n{(\lambda^{x_i}e^{-\lambda})/x_i!}$$
+]
 
 --
 
-Taking logarithm we have:
+.medium[Taking logarithm we have:
 
 $$\log L(\lambda)=\sum_{i=1}^n{\left(x_i\log\lambda-\lambda\log(e)-\log(x_i!)\right)}$$
+]
 
 --
 
+.medium[
 Now we require an extremum, i.e. $d\log L(\lambda)/d\lambda=0$:
 
 $$\sum_{i=1}^n{x_i/\lambda^*}-n=0 \Longrightarrow \lambda^*=\bar{X}$$
+]
 
 --
 
+.medium[
 This is indeed a maximum $\frac{d^2\log{L(\lambda)}}{d\lambda^2}=-\left(\sum_{i=1}^n{\frac{x_i}{\lambda}}\right)<0$
+]
 
 ---
 
@@ -460,63 +251,52 @@ Assume we got $v$ success, $n-v$ failures.
 
 # Maximum Liklihood Estimate - Normal distribution
 
-The previous examples dealt with discrete distributions. What happens in the continuous case?
+.medium[The previous examples dealt with discrete distributions. What happens in the continuous case?]
 
 --
 
+.medium[
 Assume $X_1,\ldots,X_n\sim \mathcal{N}(\mu,\sigma)$ i.i.d distributed. We sample $x_1,\ldots,x_n$ and we are looking for an MLE for $\mu$ and $\sigma^2$:
+]
 
 --
 
-The likelihood:
+.medium[The likelihood:
 
 $$L(\mu)=\prod_{i=1}^n\left(\frac{e^{\frac{-(x_i - \mu)^2}{2 \sigma^2}}}{\sqrt{2\pi}\sigma}\right)=\frac{1}{(2\pi\sigma^2)^{n/2}}\exp{\left[-\frac{1}{2}\sum_{i=1}^n{\left(\frac{x_i-\mu}{\sigma}\right)^2}\right]}$$
+]
 
 --
 
-Taking $\log$ we get:
+.medium[Taking $\log$ we get:
 
 $$\log L(\mu,\sigma^2)=-\frac{n}{2}\log(2\pi)-\frac{n}{2}\log(\sigma^2)-\frac{1}{2}\sum_{i=1}^n\left(\frac{x_i-\mu}{\sigma}\right)^2$$
+]
 
 --
 
+.medium[
 $$\frac{\partial\log L(\mu,\sigma^2)}{\partial \mu}=\sum_{i=1}^n{\frac{x_i-\mu}{\sigma}} \Longrightarrow \mu^*=\bar{X}$$
+]
 
 ---
 
-# Maximum Liklihood Estimate - Normal distribution - cont.
+# Maximum Liklihood Estimate - Normal distribution
 
-Now, derivative by $\sigma$ we obtain:
+.medium[Now, derivative by $\sigma$ we obtain:
 
 $$\frac{\partial\log L(\mu,\sigma^2)}{\partial (\sigma^2)}=-\frac{n}{2}\frac{1}{\sigma^2}+\frac{1}{2}\frac{1}{\sigma^4}\sum_{i=1}^n(x_i-\mu)^2$$
 
 From here we get:
 
 $$(\sigma^*)^2=\frac{1}{n}\sum_{i=1}^n(x_i-\mu)^2$$
+]
 
---
-
-As you have seen, $(\sigma^*)^2$ is a **biased** estimator to the variance (the unbiased estimator $s^2$ had $n-1$ in the denominator).
+<!-- As you have seen, $(\sigma^*)^2$ is a **biased** estimator to the variance (the unbiased estimator $s^2$ had $n-1$ in the denominator). -->
 
 ---
 
-# Contents
-
-   * .gray-out[Population versus sample]
-   
-   * .gray-out[Point estimates]
-   
-   * .gray-out[Bias and variance of point estimates]
-   
-   * .gray-out[Estimation using maximum likelihood]
-   
-   * Estimation using the moments method
-   
-   * Confidence intervals (incl. examples)
-   
----
-
-# Method of Moments Estimation
+# Method of Moments אמידה בשיטת המומנטים
 
 In this method, we use knowledge about the moments of the distribution (i.e. $E[X], E[X^2], E[X^3], \ldots$), express the parameters as functions of these moments, and then use the sample moments to compute our estimator.
 
@@ -550,27 +330,169 @@ Set $\mu^2=\left(\frac{1}{n}\sum_{i=1}^n{x_i}\right)^2$
 
 $$\hat{\sigma}^2 = \frac{1}{n}\sum_{i=1}^n{x_i^2} - \left(\frac{1}{n}\sum_{i=1}^n{x_i}\right)^2=\frac{\sum{x_i^2}-(\sum{x_i})^2/n}{n}=\frac{\sum_{i=1}^n(x_i-\bar{X})^2}{n}$$
 
-Again, this is a biased estimator for $\sigma^2$, usually we will use $s^2$ seen earlier.
+<!-- Again, this is a biased estimator for $\sigma^2$, usually we will use $s^2$ seen earlier. -->
 
 ---
 
-# Contents
+# An estimator is a **random variable** (אמד הוא משתנה מקרי!)
 
-   * .gray-out[Population versus sample]
+   * An estimator is the result of sampling
+
+--
+
+   * An estimator is a random variable
+
+--
    
-   * .gray-out[Point estimates]
+   * For example, $\bar{X}$, is a random variable.
    
-   * .gray-out[Bias and variance of point estimates]
+   * What is $E[\bar{X}]$? what is $\operatorname{Var}(\bar{X})$?
    
-   * .gray-out[Estimation using maximum likelihood]
+--
    
-   * .gray-out[Estimation using the moments method]
+      * $E[\bar{X}] = \mu, \operatorname{Var}(\bar{X}) = \frac{\sigma^2}{n}$
    
-   * Confidence intervals (incl. examples)
+--
+      
+   * If $n$ is "large enough" (i.e., $n\geq30$) is also approximately normally distributed (central limit theorem משפט הגבול המרכזי)
+      
+--
+
+   * We will use this property **A lot** during this course
    
 ---
 
-# Statistical Intervals
+# The Central Limit Theorem
+
+If $\bar{X}$ is the mean of a random sample of size $n$ taken from a population with mean $\mu$ and finite variance $\sigma^2$, then the limiting form of the distribution of 
+
+$$Z = \frac{\bar{X}-\mu}{\sigma/\sqrt{n}}$$
+
+As $n\rightarrow\infty$ is the standard normal distribution $N(0,1)$
+
+For most purpuses, $n\geq30$ is considered "large enough" (as a rule-of-thumb). 
+
+Lets look at an example of exponential distribution: $\operatorname{Exp}(\lambda=1)$. **What are $\mu$ and $\sigma$?**
+
+---
+
+# The distribution of $\bar{X}$ with varying $n$
+
+With $\operatorname{Exp}(\lambda=1)$ we have $\mu=\sigma=1/\lambda=1$
+
+Try increasing `sample_size` in the underlying code and see what happens to the chart.
+
+```{r example how a sum of exp becomes normal, message=FALSE, warning=FALSE, echo=FALSE}
+sample_size <- 1
+lambda <- 1
+
+rv_binom <- matrix(rexp(n = sample_size*1000, rate = lambda), nrow = sample_size, ncol = 1000) %>% 
+  as_tibble(.name_repair = "unique") %>% 
+  pivot_longer(cols = everything(), names_to = "var", values_to = "value") %>% 
+  group_by(var) %>% 
+  summarize(mean = mean(value)) %>% 
+  mutate(standardized = (mean - 1/lambda)/((1/lambda)/sqrt(sample_size)))
+
+ggplot(rv_binom, aes(x = standardized)) + 
+  geom_histogram(bins = 100) + 
+  theme_bw()
+
+```
+
+---
+
+# Desired properties of point estimators
+   
+   * Unbiased: $E\hat{\Theta} - \theta = 0$ אמד חסר הטיה
+   
+      * In the case of $\bar{X}$ the bias is indeed 0, i.e.: $E\bar{X}-\mu=0$
+
+--
+
+   * Low variance: $\operatorname{Var}(\hat{\Theta})$ as low as possible אמד עם שונות נמוכה
+
+--
+   
+I've shown that: 
+
+   * The average $\bar{X}=\sum_{i=1}^n{x_i}$ is unbiased: 
+      * $E[\bar{X}] = \mu$
+      
+   * Its variance is $V(\bar{X})=\frac{\sigma^2}{n}$
+   
+   * In fact, it is the *Minimum Variance Unbiased Estimate* (proof out of scope)
+   
+--
+   
+   * Question: let's say we sampled $n$ observation but only use $x_1$ as our estimator. 
+   
+      * What is its bias? 
+      
+      * What is its variance?
+
+---
+
+# Another example $S^2$ השונות המדגמית (אמד לשונות)
+      
+   * Sample variance: $S^2=\frac{\sum_{i=1}^n(x_i-\bar{X})^2}{n-1}$ is an **unbiased** estimator of $V(X)=\sigma^2$
+   
+      * $V(X)=E(X-E[X])^2=EX^2-(EX)^2$
+   
+   * Standard deviation: $S$ is a **biased** estimator for $\sigma$
+
+---
+
+# Why $S^2$ is an unbiased estimator to $\sigma^2$?
+
+$S^2$ is unbiased:
+
+$$ES^2=\frac{1}{n-1}E{\sum_{i=1}^n(x_i-\bar{X})^2}=\frac{1}{n-1}E{\sum_{i=1}^n(x_i^2+\bar{X}^2-2\bar{X}x_i)}=$$
+
+--
+
+$$=\frac{1}{n-1}E\left(\sum_{i=1}^nx_i^2-n\bar{X}^2\right)=\frac{1}{n-1}\left[\sum_{i=1}^n{Ex_i^2-nE(\bar{X}^2)}\right]$$
+
+--
+
+Using the fact that $E(x_i^2)=\mu^2+\sigma^2$ and that $E(\bar{X}^2)=\mu^2+\sigma^2/n$ we have:
+
+--
+
+$$E(S^2)=\frac{1}{n-1}\left[\sum_{i=1}^n(\mu^2+\sigma^2)-n(\mu^2+\sigma^2/n)\right]=\sigma^2$$
+
+$$\square$$
+
+---
+
+# Why is $S$ a biased estimator to $\sigma$?
+
+   * השונות המדגמית היא אמד חסר הטיה לשונות באוכלוסיה, אבל...
+   
+   * סטיית התקן המדגמית, אינה אמד חסר הטיה לסטיית התקן באוכלוסיה
+
+We need to show that $ES\neq\sigma$. Let 
+
+$$S=\sqrt{\sum_{i=1}^n{\frac{(x_i-\bar{X})^2}{n-1}}}$$
+
+--
+
+Consider that $0<\operatorname{Var}(S)=E[S^2]-(E[S])^2$ (this is true for any RV, specifically $S$ in this case)
+
+--
+
+Hence
+
+$$(ES)^2<E[S^2] \Leftrightarrow ES<\sqrt{E[S^2]}=\sigma$$ 
+
+$$\square$$
+
+In certain cases, we can directly compute this bias (i.e. what is $ES-\sigma$), for example, if we assume $X\sim N(\mu,\sigma)$, then:
+
+$$\sigma-E(S)\cong\frac{\sigma}{4n}$$ (see [here](https://stats.stackexchange.com/questions/11707/why-is-sample-standard-deviation-a-biased-estimator-of-sigma)).
+
+---
+
+# Statistical Intervals רווח בר סמך (אמידה מרווחית)
 
 We discussed point estimates, however
 
@@ -580,7 +502,7 @@ We discussed point estimates, however
 
 --
    
-   * Sometimes we are interested in a *Confidence Interval*
+   * Sometimes we are interested in a **Confidence Interval** רווח בר סמך
    
    * An interval of the form $\hat{\Theta}_l < \theta < \hat{\Theta}_u$ where 
 
@@ -590,11 +512,13 @@ We discussed point estimates, however
 
 --
 
-In a probabalistic notation, we are looking for $\hat{\Theta}_l, \hat{\Theta}_u$ such that:
+In a probabilistic notation, we are looking for $\hat{\Theta}_l, \hat{\Theta}_u$ such that:
 
 $$P(\hat{\Theta}_l < \theta < \hat{\Theta}_u) = 1-\alpha$$
 
 For $\alpha\in(0,1)$. For example, when we set $\alpha=0.05$, we call this a 95% confidence interval for $\theta$.
+
+רווח בר סמך של 95% (שגיאה של 5%)
 
 ---
 
@@ -683,18 +607,24 @@ ggplot(t_dist_example, aes(x, y, color = distribution, linetype = distribution))
 
 ---
 
+# Visualizations
+
+Show in `R`, if time permits.
+
+---
+
 # Summary
 
-   * .gray-out[Population versus sample]
+   * Population versus sample
    
-   * .gray-out[Point estimates]
+   * Point estimates
+
+   * Estimation using maximum likelihood
    
-   * .gray-out[Bias and variance of point estimates]
+   * Estimation using the moments method
    
-   * .gray-out[Estimation using maximum likelihood]
+   * Bias and variance of point estimates
    
-   * .gray-out[Estimation using the moments method]
-   
-   * .gray-out[Confidence intervals (incl. examples)]
+   * Confidence intervals (incl. examples)
    
 Next week we will continue our discussion of confidence intervals and see the implementation in R.
