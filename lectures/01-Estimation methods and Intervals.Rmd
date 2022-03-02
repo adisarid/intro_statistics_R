@@ -492,6 +492,16 @@ $$\sigma-E(S)\cong\frac{\sigma}{4n}$$ (see [here](https://stats.stackexchange.co
 
 ---
 
+# Visualizations + method of submitting `R` home work
+
+   * Talk about visualizations.
+   
+   * Reviewing the `R` home work exercise.
+   
+   * Submission - in Rmd.
+
+---
+
 # Statistical Intervals רווח בר סמך (אמידה מרווחית)
 
 We discussed point estimates, however
@@ -604,12 +614,6 @@ ggplot(t_dist_example, aes(x, y, color = distribution, linetype = distribution))
 
 ```
 ]
-
----
-
-# Visualizations
-
-Show in `R`, if time permits.
 
 ---
 
