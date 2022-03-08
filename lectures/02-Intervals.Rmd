@@ -1,5 +1,5 @@
 ---
-title: "Point Estimates and Confidence Intervals"
+title: "Confidence Intervals"
 subtitle: ""
 author: "Adi Sarid"
 institute: "Tel-Aviv University"
@@ -12,192 +12,238 @@ output:
       highlightLines: true
       countIncrementalSlides: false
       ratio: "16:9"
-    css: [metropolis, rutgers-fonts]
+    css: xaringan-themer.css
 ---
 
-```{css, echo = FALSE}
-.remark-slide-content {
-  font-size: 28px;
-  padding: 20px 80px 20px 80px;
-}
-.remark-code, .remark-inline-code {
-  background: #f0f0f0;
-}
-.remark-code {
-  font-size: 24px;
-}
-.huge .remark-code { /*Change made here*/
-  font-size: 200% !important;
-}
-.tiny .remark-code { /*Change made here*/
-  font-size: 50% !important;
-}
-
-.small .remark-code {
-   font-size: 75% !important;
-}
-
-.remark-slide-content {
-    font-size: 20px;
-    padding: 1em 4em 1em 4em;
-}
-
-table { display: inline-block; }
-
-th, td {
-   padding: 5px;
-}
-
-.small-slide {
-   font-size: 70% !important;
-}
-
-.image-50 img {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 50%;
-}
-
-.right-plot {
-  width: 60%;
-  float: right;
-  padding-left: 1%;
-}
-
-.gray-out {
-   color: #BEBEBE;
-}
-
-```
-
 ```{r setup, include=FALSE}
+
+library(xaringanthemer)
+
+extra_css <- list(
+   ".medium" = list("font-size" = "85%",
+                    "code-font-size" = "85%"),
+  ".small" = list("font-size" = "70%",
+                  "code-font-size" = "70%"),
+  ".extra-small" = list("font-size" = "50%",
+                        "code-font-size" = "50%"),
+  ".full-width" = list(
+    display = "flex",
+    width   = "100%",
+    flex    = "1 1 auto"
+  )
+)
+
+style_mono_accent(
+   header_font_google = google_font("Open Sans"),
+   text_font_google   = google_font("Rubik", "300", "300i"),
+   code_font_google   = google_font("Fira Mono"),
+   extra_css = extra_css,
+   header_h1_font_size = "2.3rem"
+   
+)
+
+theme_xaringan()
+
 options(htmltools.dir.version = FALSE, fig.width = 3, fig.height = 3)
 knitr::opts_chunk$set(fig.dim=c(3, 3), fig.align = "center")
 library(tidyverse)
 ```
 
+
 # Reminder from last week
 
 We discussed
 
-   * Population versus sample
+   * Population versus sample (מדגם לעומת אוכלוסיה)
    
-   * Point estimates $\bar{X}, S^2$
+   * Point estimates $\bar{X}, S^2$ (אמדים נקודתיים)
    
-   * Bias $E\hat{\Theta} - \theta$ and variance of point estimates
+   * Methods for creating point estimates (maximum likelihood and moments - נראות מירבית, ושיטת המומנטים)
    
-   * Estimation using maximum likelihood $L(\theta)$
+   * Bias $E\hat{\theta} - \theta$ and variance of point estimates (הטיה ושונות של אמדים)
 
 --
 
 Today we will discuss:
    
-   * Estimation using the moments method
+   * The bias-variance decomposition (פירוק שונות-הטיה)
    
-   * Confidence intervals (incl. examples)
+   * Visualizations and the grammar of graphics (יצירת תרשימים)
    
-   * `R` Lab about data transformations and wrangling
+   * Confidence intervals (רווחי בר סמך)
 
 ---
 
-# Reminder (2) motivation for point estimates
+# Bias-variance decomposition
 
-   * We want to be able to represent a population parameter via a statistic (estimator)
+A point estimate is a random variable.
+
+We have discussed its bias $E\hat{\theta} - \theta$, and its variance $\operatorname{Var}(\hat{\theta})$.
+
+--
+
+We said that an unbiased estimate and low variance are desired properties, but why is that?
+
+--
+
+Let's discuss the following size, called Mean Squared Error (MSE שגיאה ריבועית ממוצעת), and its relationship to the bias and variance:
+
+$$
+\operatorname{MSE}(\hat{\theta}) = E[(\theta-\hat{\theta})^2] = \operatorname{Var}(\hat{\theta}) + (E\hat{\theta}-\theta)^2
+$$
+
+---
+
+# Visualizations and the grammar of graphics
+
+Why are visualizations important?
+
+   * It is an amazing way to communicate findings
    
-   * This will help us estimate the population parameter's value
+   * Sometimes it's the only way
    
-   * We used the maximum likelihood method for that:
+A classic example in the "Datasarus Dozen dataset"
+.small[
+```{r datasaurus dozen}
+library(datasauRus)
+glimpse(datasaurus_dozen)
+```
+]
+
+---
+
+# The datasarus dozen (mean, sd, and correlation)
+
+What is the relationship between `x` and `y`?
+
+We can group the datasets within datasarus_dozen and compute mean, sd, and correlation.
+
+.small[
+```{r, echo=TRUE, eval=FALSE}
+datasaurus_dozen %>% 
+   group_by(dataset) %>% 
+   summarize(
+      mean_x = mean(x),
+      mean_y    = mean(y),
+      std_dev_x = sd(x),
+      std_dev_y = sd(y),
+      corr_x_y  = cor(x, y)
+   )
+```
+]
+
+---
+
+# The datasarus dozen - IT'S MAGIC! 
+
+Also see: Simpson's paradox.
+
+.small[
+```{r datasaurus dozen plotted, fig.dim=c(7, 7)}
+ggplot(datasaurus_dozen) + geom_point(aes(x, y)) + facet_wrap(~dataset)
+```
+]
+
+---
+
+# The grammar of graphics
+
+Each variable in the data is mapped by an "aesthetic mapping":
+
+   * Axis (x, y); Color; Fill; Alpha (transparency); Size; Shape; etc.
+
+The aesthetics are combined with geometric functions, e.g.: 
+
+   * Points, bars, lines, histograms, densities, etc (there are a lot of them)
+
+These elements are implemented in the `ggplot2` package (which you've experienced in the first lecture)
+
+   * We have a template (and a cheat sheet)
+
+```
+ggplot(data = <DATA>, mapping = aes(<GLOBAL MAPPINGS>)) + 
+   <GEOM_FUNCTION>(mapping = aes(<MAPPINGS>))
+```
+
+---
+
+
+# Example: relationship of penguin flipper and bill length
+
+.small[
+```{r basic relationship}
+library(palmerpenguins)
+ggplot(penguins) + 
+   geom_point(aes(x = flipper_length_mm, y = bill_length_mm))
+```
+]
+
+---
+
+# Example: relationship of penguin flipper and bill length (questions)
+
+```{r basic relationship questions, echo = FALSE, warning=FALSE}
+ggplot(penguins) + 
+   geom_point(aes(x = flipper_length_mm, y = bill_length_mm))
+```
+
+   * What story does this chart tells you?
    
-      * Assume a density function $f(x_i,\theta)$ or distribution function $P(x_i,\theta)$.
-      
-      * Represent the sample liklihood $L(x_1,\ldots,x_n,\theta)$ as a multiplication of the functions.
-      
-      * Use $\frac{d\ln(L(\theta))}{d\theta}$ to find the value of $\theta$ which yields the maximum value
-      
-      * Make sure you express $\theta$ as a function of $x_1,\ldots,x_n$.
+   * Is there a difference between penguin species?
+   
+   * What is the aesthetic mapping?
+   
+   * Why is there a warning message?
 
 ---
 
-# Method of Moments Estimation
+# Species matters
 
-In this method, we use knowledge about the moments of the distribution (i.e. $E[X], E[X^2], E[X^3], \ldots$), express the parameters as functions of these moments, and then use the sample moments to compute our estimator.
+.small[
+```{r basic relationship with species, fig.dim=c(5,3)}
+ggplot(penguins) + 
+   geom_point(aes(x = flipper_length_mm, y = bill_length_mm,
+                  color = species))
+```
+]
 
-Let $f(x)$ be a density function for $X_1,\ldots,X_n$, then:
+--
 
-| Moment | Continuous | Discrete | Sample |
-|--------|------------|----------|--------|
-| $E[X]$ | $\int{xf(x)dx}$ | $\sum_k{kP(X=k)}$ | $(1/n)\sum_{i=1}^{n}{x_i}$ |
-| $E[X^2]$ | $\int{x^2f(x)dx}$ | $\sum_k{k^2P(X=k)}$ | $(1/n)\sum_{i=1}^{n}{x_i^2}$ |
-| $E[X^m]$ | $\int{x^mf(x)dx}$ | $\sum_k{k^mP(X=k)}$ | $(1/n)\sum_{i=1}^{n}{x_i^m}$ |
+   * What did you learn now that you didn't know before?
 
-The sample mean $\bar{X}=(1/n)\sum_{i=1}^n{x_i}$ is the moment estimator of the population mean.
+--
+   
+   * If you wanted to add gender (`sex`) to this comparison, how would you do that?
 
 ---
 
-# Method of Moments - Example - the Normal disribution
+# Gender matters as well
 
-The first moment is $E[X]=\mu$, hence $\hat{\mu}=\bar{X}$ is the moment estimator for the population mean.
-
---
-
-The second moment is $E[X^2] = \mu^2 + \sigma^2$ require:
-
-$$\mu^2 + \sigma^2 = \frac{1}{n}\sum_{i=1}^n{x_i^2}$$
-
---
-
-Set $\mu^2=\left(\frac{1}{n}\sum_{i=1}^n{x_i}\right)^2$
+.small[
+```{r penguins with gender, fig.dim=c(5,3)}
+ggplot(penguins) + 
+    geom_point(aes(x = flipper_length_mm, y = bill_length_mm,
+                   shape = species, color = sex))
+```
+]
 
 --
 
-$$\hat{\sigma}^2 = \frac{1}{n}\sum_{i=1}^n{x_i^2} - \left(\frac{1}{n}\sum_{i=1}^n{x_i}\right)^2=\frac{\sum{x_i^2}-(\sum{x_i})^2/n}{n}=\frac{\sum_{i=1}^n(x_i-\bar{X})^2}{n}$$
+   * What information was added to this chart?
+   
+--
 
-Again, this is a biased estimator for $\sigma^2$, usually we will use $s^2$ seen earlier.
+   * The gender missing values, can you guess what they are?
 
 ---
 
-# Method of Moments - Example - the log-Normal disribution
-
-A random variable $X$ is *log-normally* distributed if $\ln(X)\sim\mathcal{N}(\mu,\sigma^2)$.
-The mean and variance of $X$ are given by:
-
-   * $\mu_X = EX=e^{\mu+\frac{\sigma^2}{2}}$
-   * $\sigma_X^2 = \operatorname{Var}(X)=(e^{\sigma^2} - 1)e^{2\mu + \sigma^2}$
-
-Let $X_i, i=1,\ldots,n$ be a sample taken from a log-normal distribution. Use the method of moments to find estimates for $\mu_X$, $\sigma_X$, $\mu$, and $\sigma$. Make sure that in your final answer you only use expressions such as $x_i$ and $\bar{x}$.
-
----
-
-# Method of Moments - Example - the log-Normal disribution - Answer
-
-$$\hat{\mu}_X = EX=e^{\mu+\frac{\sigma^2}{2}} = \bar{X}, \\ \hat{\sigma}_X^2 =  (e^{\sigma^2} - 1)e^{2\mu + \sigma^2} = \frac{\sum{(X_i-\bar{X})^2}}{n}$$
---
-
-$$\bar{X}^2=e^{2\hat\mu + \hat\sigma^2}$$
-
---
-
-$$\hat{\sigma}_X^2 = (e^{\hat\sigma^2}-1)e^{2\hat\mu + \hat\sigma^2} = (e^{\hat\sigma^2}-1)\bar{X}^2$$
-
---
-
-$$\hat{\sigma} = \sqrt{\ln\left(\frac{\hat{\sigma}_X^2}{\bar{X}^2} + 1\right)}$$
---
-
-$$\hat{\mu} = \ln(\bar{X}) - 0.5\ln\left(\frac{\hat{\sigma}_X^2}{\bar{X}^2} + 1\right)$$
-
-
----
-
-
-# Before we dive into statistical intervals
+# Confidence Intervals (רווחי בר סמך)
 
 ## Two questions:
 
-### What is a good election survey?
+   * What is a good election survey?
    
-### What is a bad election survey?
+   * What is a bad election survey?
 
 --
 
@@ -209,7 +255,7 @@ Today we will see how **some** of the uncertainties can be modeled using confide
 
 ---
 
-# Statistical Intervals (Montgomery chapter 8)
+# Confidence Intervals
 
 We discussed point estimates, however
 
@@ -236,6 +282,21 @@ $$P(\hat{\Theta}_l < \theta < \hat{\Theta}_u) = 1-\alpha$$
 For $\alpha\in(0,1)$. For example, when we set $\alpha=0.05$, we call this a 95% confidence interval for $\theta$.
 
 ---
+
+# Sanity check
+
+**What would be a 100% confidence interval**? 
+
+   * I.e., what would be $\hat{\Theta}_l, \hat{\Theta}_u$ such that:
+
+$$P(\hat{\Theta}_l < \theta < \hat{\Theta}_u) = 1$$
+
+--
+
+Setting $\hat{\Theta}_l=-\infty, \hat{\Theta}_u=\infty$ gives us a 100% confidence interval (i.e., the $\theta$ is a real number).
+
+---
+
 
 # Motivation (example) road trippin' (1/3)
 
@@ -265,15 +326,17 @@ Waze is cool, but... [https://www.waze.com/livemap](https://www.waze.com/livemap
    
    * It's not that accurate either (30min to TLV in the rush hour?)
    
-.image-50[
+<div style="zoom:40%; float: right;">
 ![](images/waze_not_accurate.jpg)
-]
+</div>
 
 ---
 
 # Motivation (example) road trippin' (3/3)
 
-.small-slide[
+To be 95% sure, we need to plan for **80 minutes' drive**.
+
+.small[
 Assume we have Waze's raw data (needs to be **focused on the relevant time**, unbiased sample). We can compute a confidence interval.
 ]
 .small[
@@ -283,29 +346,26 @@ drive_time <- tibble(duration = rexp(100, rate = 1/65))
 # the rate is 1/65 cars per min. It means that it takes 65 minutes to get through
 ```
 ]
-.right-plot[
+
 ```{r plot the exp dist, echo=FALSE}
 ggplot(drive_time, aes(x = duration)) +
    geom_histogram(bins = 15) +
    theme_bw()
 ```
-]
-.small[
+
+
 ```{r t test results for drive duration}
 t.test(drive_time$duration, 
        alternative = "two.sided", 
        mu = mean(drive_time$duration))
 
 ```
-]
-
-To be 95% sure, we need to plan for **80 minutes' drive**.
 
 ---
 
-# Confidence Interval for Normal Distribution with Known Variance
+# Confidence Interval for Normal Distribution with Known Variance (רב"ס להתפלגות נורמלית, שונות ידועה)
 
-We previously mentioned the central limit theorem and that 
+We previously mentioned the central limit theorem (משפט הגבול המרכזי) and that 
 
 $$Z = \frac{\bar{X}-\mu}{\sigma/\sqrt{n}}$$
 
@@ -331,7 +391,7 @@ $$P(\bar{X} - z_{\alpha/2}\frac{\sigma}{\sqrt{n}} < \mu < \bar{X} + z_{\alpha/2}
 
 ---
 
-# Confidence Interval for Normal Distribution with Unknown Variance
+# CI for Normal Distribution with Unknown Variance (רב"ס התפלגות נורמלית, שונות לא ידועה)
 
 In this case, we use our estimator $S$ to compute our statistic and confidence interval.
 
@@ -342,7 +402,7 @@ The statistic $T$ has a student's t-distribution with $n-1$ degrees of freedom. 
 $$P(-t_{\alpha/2,n} < T < t_{\alpha/2,n})=1-\alpha$$
 
 .center[
-```{r example for the t distribution, echo = F, fig.dim=c(7,4)}
+```{r example for the t distribution, echo = F, fig.dim=c(7,3)}
 
 t_dist_example <- tibble(x = -seq(-10, 10, 0.1)) %>% 
    mutate(t01 = dt(x, df = 1),
@@ -384,7 +444,7 @@ mean_duration + t_test_lims*sd_duration/sqrt(100)
 
 ---
 
-# Determining the sample size from a desired confidence range
+# Determining the sample size from a desired confidence range (חישוב גודל מדגם רצוי)
 
 If we want to have a confidence interval with a range not exceeding $\pm r$, we can use:
 
@@ -411,7 +471,7 @@ $$n\geq \left(t_{\alpha/2,\operatorname{n-1}}\frac{S}{r}\right)^2$$
 # What sample do we need in order to have a range $r$ for the drive duration?
 
 We want to have a 95% confidence interval in the drive duration, which is not longer than $\pm4$ minutes, i.e., $2r=8$ minutes.
-.tiny[
+.extra-small[
 ```{r compute sample size for a 10 min duration}
 {{desired_n <- ((qt(p = 0.975, df = 99))*sd_duration/ 4 )^2}}
 desired_n
@@ -426,7 +486,7 @@ t.test(drive_time2$duration,
 
 ---
 
-# One sided versus two sided confidence intervals
+# One sided (רב"ס חד-צדדי) versus two sided (רב"ס דו-צדדי) confidence intervals
 
    * We've discussed two-sided confidence intervals, i.e., $\theta\in[\hat{\Theta}_l,\hat{\Theta}_u]$
 
@@ -448,10 +508,10 @@ t.test(drive_time2$duration,
 
 ---
 
-# One sided versus two sided confidence intervals - illlustration
+# One sided CI (רב"ס חד-צדדי) versus two sided confidence intervals (רב"ס דו-צדדי) - illustration
 
-.tiny[
-```{r illustration of two vs one sided ci, fig.dim=c(10, 4)}
+.extra-small[
+```{r illustration of two vs one sided ci, fig.dim=c(10, 4), echo=FALSE}
 normal_dist <- tibble(z = seq(-5,5,0.01)) %>% 
    mutate(density = dnorm(z),
           cumulative = pnorm(z))
@@ -474,28 +534,11 @@ gridExtra::grid.arrange(two_sided, one_sided_less, nrow = 2)
 
 ---
 
-# One sided versus two sided (in the example)
-
-**Discussion**: 
-
-   * In the example of drive duration what type of confidence interval would you use? why?
-      * Two sided  /  One sided $\mu\leq C_L$  /  One sided $\mu\geq C_U$
-      
-.tiny[
-```{r t test results for drive duration one versus two sided}
-t.test(drive_time$duration, alternative = "two.sided", mu = mean(drive_time$duration))
-t.test(drive_time$duration, alternative = "less", mu = mean(drive_time$duration))
-# t.test(drive_time$duration, alternative = "greater", mu = mean(drive_time$duration))
-```
-]
-
----
-
 # General method to drive a confidence interval
 
 We would like a general recipe that would work to generate confidence intervals for various types of distributions (not just the normal/student's t we've seen so far).
 
-   1. Find a statiatic $g(x_1, x_2, \ldots, x_n;\theta)$
+   1. Find a statistic $g(x_1, x_2, \ldots, x_n;\theta)$
    
    2. The probability distribution of $g(x_1, x_2, \ldots, x_n;\theta)$ should not depend on $\theta$ (like in the $Z$ case)
 
@@ -513,7 +556,7 @@ $$P\left(L(x_1,\ldots,x_n)\leq \theta \leq U(x_1,\ldots,x_n)\right) = 1-\alpha$$
 
 ---
 
-# Confidence intervals on variance and standard deviation of a normal population
+# Confidence intervals on the variance of a normal population (רב"ס לשונות של התפלגות נורמלית)
 
 Let $X_1,\ldots,X_n$ be a random sample from a normal distribution $\mathcal{N}(\mu,\sigma)$, and set $S^2$ the sample variance $S^2=\frac{1}{n-1}\sum(X_i-\bar{X})^2$ then
 
@@ -528,7 +571,7 @@ Then $Y\sim \chi^2_k$.
 
 ---
 
-# The mean and variance of a $\chi^2_k$ distribution
+# The mean and variance of a $\chi^2_k$ distribution (התפלגות חי-בריבוע)
 
 What is the mean and variance of $\chi^2_{k}$?
 
@@ -584,7 +627,7 @@ The $\chi^2$ distribution is very useful in many statistical contexts. One of th
 $$P\left(\frac{(n-1)s^2}{\chi^2_{\alpha/2,n-1}}\leq\sigma^2\leq\frac{(n-1)s^2}{\chi^2_{1-\alpha/2,n-1}}\right) = 1-\alpha$$
 ]
 .small[
-```{r confidence interval using chi square, fig.dim=c(10, 3)}
+```{r confidence interval using chi square, fig.dim=c(10, 3), echo=FALSE}
 df <- 5
 chi_sq %>% filter(k == df) %>% 
    ggplot(aes(x = x, y = density)) + 
@@ -597,7 +640,7 @@ chi_sq %>% filter(k == df) %>%
 
 ---
 
-# Confidence interval for a population proportion
+# Confidence interval for a population proportion (רב"ס לפרופורציה)
 
 A common use of confidence intervals is for polling (survey results). 
 
@@ -615,7 +658,7 @@ In essense we are dealing with a population proportion (the proportion of B's vo
 
 --
 
-Consider the following random variable, using the central limit theorem (*show on whiteboard*) we can show it is normally distributed in the limit.
+Consider the following random variable, using the central limit theorem we can show it is normally distributed in the limit.
 
 $$Z = \frac{X - np}{\sqrt{np(1-p)}} = \frac{\hat{p}-p}{\sqrt{\frac{p(1-p)}{n}}}$$
 
@@ -639,7 +682,7 @@ $$p\leq\hat{p}+z_{1-\alpha}\sqrt{\hat{p}(1-\hat{p})/n} \Longrightarrow p\leq0.4+
 
 ---
 
-# Margin of error versus sample size
+# Margin of error (מרווח טעות) versus sample size (גודל מדגם)
 
 In the previous slide, if we were to produce a two-sided confidence interval, the result would have changed to the following range:
 
@@ -651,9 +694,7 @@ $$\hat{p}\pm \frac{z_{\alpha/2}}{2\sqrt{n}}$$
 
 Setting $\alpha=0.05, n=500$, the term $\pm\frac{1.96}{2\sqrt{500}}\approx\pm4.4\%$, which is what is commonly reported in surveys as an error up to 4.4%.
 
---
-
-Examples [here](https://bechirot22.bechirot.gov.il/election/Decisions/Pages/Surveys.aspx)
+Examples: https://bechirot22.bechirot.gov.il/election/Decisions/Pages/Surveys.aspx.
 
 --
 
@@ -680,6 +721,24 @@ ggplot(moe_n, aes(moe, sample_size)) +
 
 ```
 ]
+
+---
+
+# Recap
+
+   * The bias-variance decomposition (פירוק שונות-הטיה)
+   
+   * Visualizations and the grammar of graphics (יצירת תרשימים)
+   
+   * Confidence intervals (רווחי בר סמך)
+   
+      * Mean לתוחלת
+      
+      * Variance לשונות
+      
+      * Proportion לפרופורציה
+      
+   * Next week - hypothesis tests (מבחני השערות)
 
 ---
 
