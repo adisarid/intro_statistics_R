@@ -298,12 +298,16 @@ table.dataTable.hover tbody tr:hover, table.dataTable.display tbody tr:hover {
   code-font-size: 85%;
 }
 .small {
-  font-size: 70%;
-  code-font-size: 70%;
+  zoom: 70%;
 }
 .extra-small {
   font-size: 50%;
   code-font-size: 50%;
+}
+.tiny {
+  font-size: 50%;
+  code-font-size: 50%;
+  zoom: 50%;
 }
 .full-width {
   display: flex;

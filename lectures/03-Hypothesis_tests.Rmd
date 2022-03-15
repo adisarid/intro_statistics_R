@@ -12,72 +12,43 @@ output:
       highlightLines: true
       countIncrementalSlides: false
       ratio: "16:9"
-    css: [metropolis, rutgers-fonts]
+    css: xaringan-themer.css
 ---
 
-```{css, echo = FALSE}
-.remark-code, .remark-inline-code {
-  background: #f0f0f0;
-}
-.remark-code {
-  font-size: 24px;
-}
-
-.huge { 
-  font-size: 200%;
-}
-.tiny .remark-code {
-  font-size: 50%;
-}
-
-.small .remark-code{
-   font-size: 85% !important;
-}
-
-.small {
-   font-size: 85% !important;
-}
-
-.remark-slide-content {
-    font-size: 20px;
-    padding: 1em 4em 1em 4em;
-}
-
-table { display: inline-block; }
-
-th, td {
-   padding: 5px;
-}
-
-.small-slide {
-   font-size: 70% !important;
-}
-
-.image-50 img {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 50%;
-}
-
-.right-plot {
-   width: 60%;
-   float: right;
-   padding-left: 1%;
-   bottom: 0px;
-   right: 0px;
-   position: absolute;
-}
-
-
-
-```
-
 ```{r setup, include=FALSE}
+
+library(xaringanthemer)
+
+extra_css <- list(
+   ".medium" = list("font-size" = "85%",
+                    "code-font-size" = "85%"),
+  ".small" = list("zoom" = "70%"),
+  ".extra-small" = list("font-size" = "50%",
+                        "code-font-size" = "50%"),
+  ".tiny" = list("font-size" = "50%",
+                 "code-font-size" = "50%",
+                 "zoom" = "50%"),
+  ".full-width" = list(
+    display = "flex",
+    width   = "100%",
+    flex    = "1 1 auto"
+  )
+)
+
+style_mono_accent(
+   header_font_google = google_font("Open Sans"),
+   text_font_google   = google_font("Rubik", "300", "300i"),
+   code_font_google   = google_font("Fira Mono"),
+   extra_css = extra_css,
+   header_h1_font_size = "2.3rem"
+   
+)
+
+theme_xaringan()
+
 options(htmltools.dir.version = FALSE, fig.width = 3, fig.height = 3)
 knitr::opts_chunk$set(fig.dim=c(3, 3), fig.align = "center")
 library(tidyverse)
-library(countdown)
 ```
 
 # Reminder from previous lecture
@@ -86,33 +57,43 @@ Last lesson we talked about:
 
 --
 
-   * The method of moments for point estimators
+   * The bias-variance decomposition of point estimates (פירוק שונות-הטיה)
+   
+   * The grammar of graphics, `ggplot2` (יצירת תרשימים)
 
-   * Confidence intervals, e.g.:
+   * Confidence intervals (רווחי בר סמך), e.g.:
    
 $$P(\bar{X} - z_{\alpha/2}\frac{\sigma}{\sqrt{n}} < \mu < \bar{X} + z_{\alpha/2}\frac{\sigma}{\sqrt{n}}) = 1-\alpha$$
 
 --
 
-   * We've seen confidence intervals for
+   * We've seen confidence intervals (רווח בר סמך) for
    
-      * Normal distribution (for $\mu$ and for $\sigma$)
+      * Normal distribution (for $\mu$)
       
-      * Using Student's T (variance unknown)
-
---
-
-   * Today we will continue with intervals
-   
-      * Binomial case
-
-      * Setting the sample size according to a confidence interval length
-      
-      * Prediction intervals
+      * Using Student's $T$ (unknown variance)
 
 ---
 
-# The confidence interval generation process
+# Today
+
+   * We will continue with intervals for
+   
+      * Binomial (proportion - פרופורציה)
+      
+      * Variance (for $\sigma^2$)
+
+      * Setting the sample size according to a confidence interval length
+      
+      * Prediction Intervals (רווח תחזית)
+
+   * We will also start discussing
+   
+      * Hypothesis tests (מבחני השערות)
+
+---
+
+# The confidence interval generation process תהליך יצירת רב"ס
    
    * We want an interval of the form $\hat{\Theta}_l < \theta < \hat{\Theta}_u$ where 
 
@@ -130,7 +111,7 @@ For $\alpha\in(0,1)$. For example, when we set $\alpha=0.05$, we call this a 95%
 
 ---
 
-# Confidence Interval for Normal Distribution with Known Variance
+# Confidence Interval for expectancy with known Variance רב"ס לתוחלת עם שונות ידועה
 
 We previously mentioned the central limit theorem and that 
 
@@ -158,19 +139,19 @@ $$P(\bar{X} - z_{\alpha/2}\frac{\sigma}{\sqrt{n}} < \mu < \bar{X} + z_{\alpha/2}
 
 ---
 
-# Confidence Interval for Normal Distribution with Unknown Variance
+# Confidence Interval for expectancy with unknown variance רב"ס לתוחלת, שונות לא ידועה
 
 In this case, we use our estimator $S$ to compute our statistic and confidence interval.
 
 $$T = \frac{\bar{X}-\mu}{S/\sqrt{n}}$$
 
-The statistic $T$ has a student's t-distribution with $n-1$ degrees of freedom. I.e.:
+The statistic $T$ has a student's t-distribution with $n-1$ degrees of freedom (סטטיסטי t). I.e.:
 
-$$P(-t_{\alpha/2,n} < T < t_{\alpha/2,n})=1-\alpha$$
+$$P(-t_{\alpha/2,n-1} < T < t_{\alpha/2,n-1})=1-\alpha$$
 
 ---
 
-# Determining the sample size from a desired confidence range
+# Determining the sample size from a desired confidence range קביעת גודל מדגם
 
 If we want to have a confidence interval with a range not exceeding $\pm r$, we can use:
 
@@ -194,7 +175,7 @@ $$n\geq \left(t_{\alpha/2,\operatorname{n-1}}\frac{S}{r}\right)^2$$
 
 ---
 
-# One sided versus two sided confidence intervals
+# One sided versus two sided confidence intervals רב"ס חד-צדדי לעומת דו-צדדי
 
    * We've discussed two-sided confidence intervals, i.e., $\theta\in[\hat{\Theta}_l,\hat{\Theta}_u]$
 
@@ -261,7 +242,7 @@ t.test(drive_time$duration, alternative = "less", mu = mean(drive_time$duration)
 
 ---
 
-# General method to drive a confidence interval
+# General method to drive a confidence interval תהליך ליצירת רב"ס
 
 We would like a general recipe that would work to generate confidence intervals for various types of distributions (not just the normal/student's t we've seen so far).
 
@@ -283,7 +264,9 @@ $$P\left(L(x_1,\ldots,x_n)\leq \theta \leq U(x_1,\ldots,x_n)\right) = 1-\alpha$$
 
 ---
 
-# Confidence intervals on variance and standard deviation of a normal population
+# CI for variance and standard deviation of a normal population 
+
+רב"ס לשונות וסטיית תקן, אוכלוסיה נורמלית
 
 Let $X_1,\ldots,X_n$ be a random sample from a normal distribution $\mathcal{N}(\mu,\sigma)$, and set $S^2$ the sample variance $S^2=\frac{1}{n-1}\sum(X_i-\bar{X})^2$ then
 
@@ -298,7 +281,7 @@ Then $Y\sim \chi^2_k$.
 
 ---
 
-# The mean and variance of a $\chi^2_k$ distribution
+# The mean and variance of a $\chi^2_k$ distribution התפלגות חי-בריבוע
 
 What is the mean and variance of $\chi^2_{k}$?
 
@@ -367,7 +350,7 @@ chi_sq %>% filter(k == df) %>%
 
 ---
 
-# Confidence interval for a population proportion
+# Confidence interval for a population proportion רב"ס לפרופורציה
 
 A common use of confidence intervals is for polling (survey results). 
 
@@ -385,7 +368,7 @@ In essense we are dealing with a population proportion (the proportion of B's vo
 
 --
 
-Consider the following random variable, using the central limit theorem (*show on whiteboard*) we can show it is normally distributed in the limit.
+Consider the following random variable, using the central limit theorem we can show it is normally distributed in the limit.
 
 $$Z = \frac{X - np}{\sqrt{np(1-p)}} = \frac{\hat{p}-p}{\sqrt{\frac{p(1-p)}{n}}}$$
 
@@ -409,7 +392,7 @@ $$p\leq\hat{p}+z_{1-\alpha}\sqrt{\hat{p}(1-\hat{p})/n} \Longrightarrow p\leq0.4+
 
 ---
 
-# Margin of error versus sample size
+# Margin of error versus sample size מרווח טעות וגודל מדגם
 
 In the previous slide, if we were to produce a two-sided confidence interval, the result would have changed to the following range:
 
@@ -421,17 +404,27 @@ $$\hat{p}\pm \frac{z_{\alpha/2}}{2\sqrt{n}}$$
 
 Setting $\alpha=0.05, n=500$, the term $\pm\frac{1.96}{2\sqrt{500}}\approx\pm4.4\%$, which is what is commonly reported in surveys as an error up to 4.4%.
 
---
+---
 
-**Question 1**: Why are there errors in election surveys if the margin of error is up to $\pm4.4\%$?
+# The required sample size as a function of the margin of error
 
---
+We can plot the required sample size $n$ as a function of the margin of error.
+.small[
+```{r sample size as a function of the margin of error, fig.dim=c(10, 3.5)}
 
-**Question 2**: What is the sampling method? (random? layers? "convenience" sampling?)
+moe_n <- tibble(moe = seq(0.015, 0.1, by = 0.005),
+                sample_size = (qnorm(0.975)/(2*moe))^2)
+
+ggplot(moe_n, aes(moe, sample_size)) + 
+   geom_line() + scale_x_continuous(labels = scales::percent) +
+   theme_bw() + xlab("Margin of error") + ylab("Sample size")
+
+```
+]
 
 ---
 
-# Prediction interval (1/3)
+# Prediction interval (1/3) - רווח תחזית
 
 So far we've discussed confidence intervals, however, sometimes we are interested in a *prediction* interval, for a new observation.
 
@@ -495,7 +488,7 @@ $$\bar{X}-t_{\alpha/2,n-1}\times s\sqrt{1+\frac{1}{n}}\leq x_{n+1} \leq \bar{X} 
 
 ---
 
-# Hypothesis testing (Montgomery chapter 9)
+# Hypothesis testing מבחני השערות
 
 A *statistical hypothesis* is a statement about the parameters of one or more populations.
 
@@ -513,7 +506,7 @@ For example:
   
 --
   
-The $H_0$ is called the *null hypothesis* and the $H_1$ is called the *alternative hypothesis*.
+The $H_0$ is called the *null hypothesis* (השערת האפס) and the $H_1$ is called the *alternative hypothesis* (השערה אלטרנטיבית).
 
 --
 
@@ -536,10 +529,6 @@ Scan the following QR code (or visit the link) and answer the survey.
 [http://bit.ly/att_flu_ex](http://bit.ly/att_flu_ex)
 
 ![](images/link_for_survey_example.png)
-
-```{r counter for survey, echo = F}
-countdown(minutes = 5, play_sound = FALSE)
-```
 
 --
 
@@ -639,9 +628,8 @@ We need a clear statistical *criteria* for deciding what is significant and what
 
 --
 
-class: small-slide
-
-```{r binomial distribution and criteria, echo = FALSE, fig.dim=c(4.5,4.5)}
+.tiny[
+```{r binomial distribution and criteria, echo = FALSE, fig.dim=c(4.5, 3)}
 
 binomial_dist <- tibble(x = seq(0, 100, 1)) %>% 
    mutate(binom_dens = dbinom(x, size = 100, prob = 0.2))
@@ -654,10 +642,11 @@ ggplot(binomial_dist, aes(x = x, y = binom_dens)) +
    theme_bw()
 
 ```
+]
 
 ---
 
-# Two types of errors
+# Two types of errors שגיאה מסוג ראשון ושגיאה מסוג שני
 
 In order to set a decision rule, we need to consider two types of errors:
 
@@ -668,7 +657,7 @@ In order to set a decision rule, we need to consider two types of errors:
 --
 
 In medical decision making, this would look like $H_0$: not pregnant
-.image-50[
+.small[
 ![](images/Type_IandType_II_errors.jpg)
 ]
 [(source)](http://www.statisticssolutions.com/to-err-is-human-what-are-type-i-and-ii-errors/])
@@ -677,15 +666,11 @@ In medical decision making, this would look like $H_0$: not pregnant
 
 # Tradeoff between type-I and type-II errors
 
-### Type-I error
+#### Type-I error טעות מסוג ראשון
 
-The type-I error is also called the *significance level*, or $\alpha$-error.
+The type-I error is also called the *significance level* רמת מובהקות, or $\alpha$-error.
 
 $$\alpha = P(\text{Reject } H_0| H_0 \text{ True})$$
-
-```{r countdown for zero type I err, echo=F}
-countdown(minutes = 1, top = 0)
-```
 
 Questions:
 
@@ -703,7 +688,7 @@ Answers:
 
 --
 
-### Type-II error
+#### Type-II error טעות מסוג שני
 
 As the type-I error decreases the decision rule tends to prefer not rejecting $H_0$ which leads to a higher type-II error
 
@@ -711,7 +696,7 @@ $$\beta=P(\text{Fail to reject } H_0| H_1 \text{ True})$$
 
 ---
 
-# General framework for hypothesis testing
+# General framework for hypothesis testing תהליך לבנית מבחני השערות
 
 This is the procedure for hypothesis testing:
 
@@ -891,7 +876,7 @@ plot(p_out)
 
 ---
 
-# One-tailed versus two-tailed hypothesis
+# One-tailed versus two-tailed hypothesis מבחן השערות חד-צדדי לעומת דו-צדדי
 
 So far, in our example, we've used a one-tailed hypothesis:
 
@@ -1050,7 +1035,7 @@ Looks like there's a heavy tail towards higher weights in the sample than the th
 
 ---
 
-# Hypothesis testing - goodness of fit
+# Hypothesis testing - goodness of fit טיב התאמה
 
 Goodness of fit tests are used to test how good is the fit of our empirical distribution to that of a theoretical distribution.
 
