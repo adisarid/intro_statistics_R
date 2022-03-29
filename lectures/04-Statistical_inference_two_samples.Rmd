@@ -1,5 +1,5 @@
 ---
-title: "Statistical inference for Two Samples"
+title: "Goodness of Fit, Statistical inference for Two Samples, and Independence"
 subtitle: ""
 author: "Adi Sarid"
 institute: "Tel-Aviv University"
@@ -12,70 +12,43 @@ output:
       highlightLines: true
       countIncrementalSlides: false
       ratio: "16:9"
-    css: [metropolis, rutgers-fonts]
+    css: xaringan-themer.css
 ---
 
-```{css, echo = FALSE}
-
-.remark-code {
-  font-size: 24px;
-}
-
-.huge { 
-  font-size: 200%;
-}
-.tiny .remark-code {
-  font-size: 50%;
-}
-
-.small .remark-code{
-   font-size: 85% !important;
-}
-
-.small {
-   font-size: 85% !important;
-}
-
-.remark-slide-content {
-    font-size: 20px;
-    padding: 1em 4em 1em 4em;
-}
-
-table { display: inline-block; }
-
-th, td {
-   padding: 5px;
-}
-
-.small-slide {
-   font-size: 70% !important;
-}
-
-.image-50 img {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 50%;
-}
-
-.right-plot {
-   width: 60%;
-   float: right;
-   padding-left: 1%;
-   bottom: 0px;
-   right: 0px;
-   position: absolute;
-}
-
-
-
-```
-
 ```{r setup, include=FALSE}
+
+library(xaringanthemer)
+
+extra_css <- list(
+   ".medium" = list("font-size" = "85%",
+                    "code-font-size" = "85%"),
+  ".small" = list("zoom" = "70%"),
+  ".extra-small" = list("font-size" = "50%",
+                        "code-font-size" = "50%"),
+  ".tiny" = list("font-size" = "50%",
+                 "code-font-size" = "50%",
+                 "zoom" = "50%"),
+  ".full-width" = list(
+    display = "flex",
+    width   = "100%",
+    flex    = "1 1 auto"
+  )
+)
+
+style_mono_accent(
+   header_font_google = google_font("Open Sans"),
+   text_font_google   = google_font("Rubik", "300", "300i"),
+   code_font_google   = google_font("Fira Mono"),
+   extra_css = extra_css,
+   header_h1_font_size = "2.3rem"
+   
+)
+
+theme_xaringan()
+
 options(htmltools.dir.version = FALSE, fig.width = 3, fig.height = 3)
 knitr::opts_chunk$set(fig.dim=c(3, 3), fig.align = "center")
 library(tidyverse)
-library(countdown)
 ```
 
 # Reminder from previous lecture
@@ -95,20 +68,68 @@ library(countdown)
    
    * Goodness of fit
    
-   * Visualizations (`ggplot2`)
+   * Data munging (`select`, `mutate`, `filter`, `group_by`, `summarize`, etc.)
 
 ---
 
 # Today
 
-   * Reminder: Goodness of fit hypothesis tests (comparing to distribution)
+   * Review of survey results and what we plan to do to improve the course
+
+   * Goodness of fit hypothesis tests (comparing two distribution)
    
    * Words of caution about HARKing, multiple comparisons, abusing hypothesis tests
    
    * Two sample hypothesis tests
    
-   * If time permits: RMarkdown documents
+   * Self-exercise
    
+---
+
+# Goodness of fit - motivation (1/2) מבחן טיב התאמה
+
+Sometimes we are interested in the form of the distribution, and not just the parameter.
+
+Why?
+.tiny[
+```{r ipf men vs woman read data, echo=FALSE}
+set.seed(0)
+ipf <- read_csv("data/ipf_lifts.csv", col_types = cols()) %>% 
+   select(sex, best3deadlift_kg) %>% 
+   filter(best3deadlift_kg > 0) %>% 
+   group_by(sex) %>% 
+   sample_n(500)
+```
+]
+```{r ipf distribution, fig.dim=c(5, 5)}
+ggplot(ipf, aes(best3deadlift_kg)) + 
+   geom_density() +
+   ggtitle("Distribution of the deadlift weight of 1000 atheletes")
+
+```
+
+Is this a normal distribution?
+
+---
+
+# Goodness of fit - motivation (2/2)
+
+.small[
+```{r ipf distribution geneder split, fig.dim=c(5,5)}
+ggplot(ipf, aes(best3deadlift_kg, color = sex)) + 
+   geom_density() +
+   ggtitle("Distribution of the deadlift weight of 1000 atheletes", 
+           subtitle = "Separated by gender")
+```
+]
+
+   * A lot of interesting insights come from a population's distribution.
+   
+   * Sometimes a population's distribution is an assumption of a statistical test.
+   
+   * How can we quantify a "fit" to a distribution? How can we statistically test for it?
+
+
 ---
 
 # Hypothesis testing - goodness of fit
@@ -121,7 +142,7 @@ Arrange the empirical distribution in $k$ bins, and let $O_i$ be the observed fr
 
 $$\chi^2_0=\sum_{i=1}^k\frac{(O_i-E_i)^2}{E_i}$$
 
-If the population follows the hypothesized distribution, then the expression is approximately distributed $\chi^2_{k-p-1}$, where $p$ os the number of parameters of the hypothesized distribution estimated by sample statistics.
+If the population follows the hypothesized distribution, then the expression is approximately distributed $\chi^2_{k-p-1}$, where $p$ is the number of parameters of the hypothesized distribution estimated by sample statistics.
 
 The approximation improves as $n$ increases.
 
@@ -148,26 +169,25 @@ We would reject the hypothesis if $\chi_0^2>\chi_{\alpha,k-p-1}^2$.
 
 .tiny[
 ```{r}
-set.seed(0)
-deadlift <- readr::read_csv("data/ipf_lifts.csv", col_types = cols())
 interval_breaks <- c(0, 100, 150, 200, 250, 300, 350, 600)
+sample_size <- 1000
 
-deadlift_gfit <- deadlift %>% 
+deadlift_gfit <- ipf %>% 
    filter(!is.na(best3deadlift_kg) & best3deadlift_kg > 0) %>% 
-   mutate(weight_gr = cut(best3deadlift_kg, breaks = interval_breaks)) %>% 
-   sample_n(500)
+   mutate(weight_gr = cut(best3deadlift_kg, breaks = interval_breaks))
 
 mu <- mean(deadlift_gfit$best3deadlift_kg)
 sigma <- sd(deadlift_gfit$best3deadlift_kg)
 
 deadlift_chi_prep <- deadlift_gfit %>% 
+   ungroup() %>% 
    count(weight_gr, name = "observed") %>% 
    mutate(upper_bound = interval_breaks[-1]) %>% 
    mutate(lower_bound = interval_breaks[1:7]) %>% 
    mutate(expected_prob = pnorm(q = upper_bound, mean = mu, sd = sigma)-
              pnorm(q = lower_bound, mean = mu, sd = sigma)) %>% 
    mutate(expected_prob =  expected_prob/sum(expected_prob)) %>% 
-   mutate(expected = expected_prob*500) %>% 
+   mutate(expected = expected_prob*sample_size) %>% 
    mutate(chi_comp = (observed-expected)^2/expected)
 
 chi2_0 <- sum(deadlift_chi_prep$chi_comp)
@@ -202,6 +222,11 @@ chisq.test(x = deadlift_chi_prep$observed,
 ```
 ]
 
+
+--
+
+**Exercise**: repeat this process just for males (filtered). Do you reject the hypothesis about the normal distribution?
+
 ---
 
 # Words of caution 
@@ -209,9 +234,9 @@ chisq.test(x = deadlift_chi_prep$observed,
 Two common mistakes when analyzing data are:
 
    1. HARKing (Hypothesizing After Results are Known)
-   2. Using multiple comparisons without compensating for them
+   2. Using multiple comparisons without compensating for them מבחנים מרובים
 
-In essense, Since we have a $\alpha$ error rate (e.g. 5%), when we perform 100 hypothesis tests we are bound to get 5% false positives.
+In essence, Since we have a $\alpha$ error rate (e.g. 5%), when we perform 100 hypothesis tests we are bound to get 5% false positives.
 
 --
 
@@ -262,7 +287,7 @@ t.test(random_normal$...78)
 
 # Are men and women different? ♂  ♀
 
-Yes. Of course there are gender differences, but this is a great example to start today's lecture with!
+Yes. Of course there are gender differences, but this is a great example to talk about!
 
 --
 
@@ -288,11 +313,11 @@ Here is a research published in PLOS One, about gender differences relating to *
 
 # What is it to us?
 
-In previous lectures we saw confidence intervals and hypothesis tests relating to a **single parameter** (single sample)
+In previous lectures we saw confidence intervals and hypothesis tests relating to a **single parameter** (single sample) פרמטר יחיד, מדגם יחיד
 
 --
 
-Today we will explore the comparison between **two parameters** (two samples, e.g., male-female, tall-short, before-after).
+Today we will explore the comparison between **two parameters** (two samples, e.g., male-female, tall-short, before-after). שני פרמטרים, שני מדגמים
 
 --
 
@@ -312,18 +337,14 @@ Then, set $\mu_\text{diff} = \mu_\text{f}-\mu_\text{m}$ and
 
 This, more-or-less, brings us back to what we already learned last week.
 
---
-
-Most of today's material is covered in Montgomery, chapter 10.
-
 ---
 
-# Difference in means - variance known
+# Difference in means - variance known - הבדל ממוצעים, שונות ידועה
 
 Assume
 
    * $X_{11},\ldots,X_{1n_1}$ is a random sample from population 1.
-   * $X_{21},\ldots,X_{2n_n}$ is a random sample from population 2.
+   * $X_{21},\ldots,X_{2n_2}$ is a random sample from population 2.
    * The two populations $X_1$ and $X_2$ are independent.
    * Both populations are normally distributed.
    
@@ -376,13 +397,13 @@ where $n=n_1=n_2$ and the total sample size is $2n$.
 --
 
 
-For a one sided alternative hypothesis, the equivalent formulat would be
+For a one sided alternative hypothesis, the equivalent formula would be
 
 $$n=\frac{(z_{\alpha}+z_\beta)^2(\sigma_1^2+\sigma_2^2)}{(\Delta-\Delta_0)^2}$$
 
 ---
 
-# Confidence intervals on a difference in means
+# Confidence intervals on a difference in means רב"ס להפרש בין תוחלות
 
 When we discussed confidence intervals two weeks ago, we left out confidence intervals for the difference between two means, but this is actually almost the same (now that you've seen $Z$ for the difference). I.e.:
 
@@ -406,7 +427,7 @@ $$\mu_1-\mu_2 \geq \bar{x}_1-\bar{x}_2+z_{\alpha}\sqrt{\sigma_1^2/n_1+\sigma_2^2
 
 ---
 
-# Difference in means - variance unknown, equal variances
+# Difference in means - variance unknown, equal variances שונות לא ידוע, שווה בשתי הקבוצות
 
 Let's assume that $\sigma$ is unknown, but that $\sigma_1=\sigma_2=\sigma$.
 
@@ -446,7 +467,7 @@ Alternative hypothesis (rejection criteria):
 
 ---
 
-# Difference in means - variance unknown, unequal variances $(\sigma_1\neq\sigma_2)$
+# Difference in means - variance unknown, unequal variances $(\sigma_1\neq\sigma_2)$ שונות לא ידועה, שאינה שווה בין הקבוצות
 
 In the case that the variances are unequal and unknown, we can use the following statistic which is approximately distributed $t$ with $v$ degrees of freedom:
 
@@ -458,7 +479,7 @@ $$v=\frac{\left(S_1^2/n_1 + S_2^2/n_2\right)^2}{\frac{(S_1^2/n_1)^2}{n_1-1}+\fra
 
 ---
 
-# Paired or unpaired t-test?
+# Paired or unpaired t-test? מבחן מזווג או לא מזווג
 
 Sometimes, data is collected in pairs, for example when an intervention plan is conducted on a group of individuals
 
@@ -510,10 +531,6 @@ Test 4:
    * $H_0:$ The athletes age and gender are statistically independent
    * $H_1:$ The athletes age and gender are not statistically independet
 ]
-
-```{r counter for the hypothesis examples, echo=FALSE}
-countdown::countdown(minutes = 5)
-```
 
 ---
 
@@ -639,10 +656,6 @@ In your answer relate to the following points:
       * Parameter -> Null hypothesis -> Altermative -> Significance -> Statistic -> Rejection criteria
       * Sample, computation -> Decision
 ]
-
-```{r countdown for experiment designing, echo=FALSE}
-countdown::countdown(minutes = 10)
-```
 
 ---
 
