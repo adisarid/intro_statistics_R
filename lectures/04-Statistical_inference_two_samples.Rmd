@@ -487,7 +487,7 @@ Sometimes, data is collected in pairs, for example when an intervention plan is 
 
    * This *paired* situation may ocurr when we have multiple observations of the same group. 
    
-   * We would like to match the observations to avoid differences which may ocurr due to variation between subjects. 
+   * We would like to match the observations to avoid differences which may occur due to variation between subjects. 
 
 --
 
