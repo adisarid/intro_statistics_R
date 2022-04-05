@@ -1,0 +1,163 @@
+---
+title: "Netflix Movies and TV Shows - Exercise"
+author: "Adi Sarid"
+date: "2022-04-05"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Background
+
+The following exercise is based on the Netflix Movies and TV Shows data, extracted from Kaggle ([here](https://www.kaggle.com/datasets/shivamb/netflix-shows)).
+
+The goal of the exercise is to repeat and familiarize yourselves with the topics we were discussing in the past few weeks, but from a practical perspective.
+
+In this exercise you will:
+
+1.  Write your solutions in RMarkdown, combining documentation and code.
+
+2.  You will import and transform data, using different functions from `tidyverse` which we discussed two weeks ago.
+
+3.  You will do some visualizations to support and interpret your analysis.
+
+4.  You will test a number of hypothesis:
+
+    1.  Comparing means.
+
+    2.  Comparing distributions.
+
+Please do the exercise in pairs/groups.
+
+## Reading the data
+
+Read the data, and use `glimpse` to understand it.
+
+```{r reading the data, warning=FALSE, message=FALSE}
+library(tidyverse)
+netflix_raw <- readr::read_csv("https://raw.githubusercontent.com/adisarid/intro_statistics_R/master/labs/data/netflix_titles.csv")
+
+glimpse(netflix_raw)
+```
+
+In the group, discuss the different variables of the data, what type are they? which of them do you think you should transform? why and how?
+
+## Data transformation
+
+Create a new table called `netflix` in which:
+
+-   `type` is a factor.
+
+-   `country` is a factor.
+
+-   `duration` is numeric.
+
+-   Add a new variable called `duration_units` indicating the units of `duration`.
+
+-   Create a set of new logical variables indicating the title type, i.e., is the title:
+
+    -   International Movies
+
+    -   Dramas
+
+    -   Documentaries
+
+    -   Comedies
+
+    -   Action and Adventure
+
+        Hint: you probably want to use `str_detect` for that.
+
+```{r transform and tidy}
+netflix <- netflix_raw %>% 
+  mutate(type = factor(type),
+         country = factor(country),
+         duration = parse_number(duration),
+         duration_units = if_else(type == "Movie", "minutes", "seasons"),
+         international_movie = str_detect(listed_in, "International Movies"),
+         drama = str_detect(listed_in, "Dramas"),
+         comedies = str_detect(listed_in, "Comedies"),
+         documentaries = str_detect(listed_in, "Documentaries"),
+         action_adventure = str_detect(listed_in, "Action & Adventure"))
+```
+
+## TV Shows versus Movies
+
+Use a chart to plot the frequency (number of appearances per each country, per each type movies versus tv shows, for the following countries: "United States", "India", "United Kingdom", "Japan", "South Korea", "Canada", "Spain", "France", "Mexico"). Ignore titles with multiple countries. What position function should you use to compare the proportion of moveis versus tv shows (position_fill versus position_stack?)
+
+```{r country appearances}
+netflix %>% 
+  filter(country %in% c("United States", "India", "United Kingdom", "Japan", "South Korea", "Canada", "Spain", "France", "Mexico")) %>% 
+  count(type, country) %>% 
+  ggplot(aes(x = country, fill = type, y = n)) + 
+  geom_col(position = position_fill()) + 
+  coord_flip()
+```
+
+------------------------------------------------------------------------
+
+What country is with the most TV shows and what country is with the least TV shows?
+
+Can you find a similarity between some countries in the same region (i.e., European versus APAC versus North America?
+
+Conduct a hypothesis test which examines if the proportion of tv shows in South Korea is higher than the proportion of tv shows in Japan. What is the p-value? is it a statistically significant finding (in the $\alpha=0.05$ level?
+
+------------------------------------------------------------------------
+
+```{r hypothesis prop test}
+netflix_apac <- netflix %>% 
+  filter(country %in% c("Japan", "South Korea")) %>% 
+  count(country, type)
+
+netflix_apac
+
+prop.test(x = c(169, 158), n = c(169+76, 158+41))
+```
+
+## Movie duration
+
+Plot the distribution of movie duration, discuss the type of distribution (e.g., is it normally distributed or not?). Find the mean, sd, and a 95% confidence interval for movie duration.
+
+```{r movie duration}
+netflix %>% 
+  filter(type == "Movie") %>% 
+  ggplot(aes(duration)) + 
+  geom_density()
+
+netflix %>% 
+  group_by(type) %>% 
+  summarize(mean(duration, na.rm = T),
+            sd(duration, na.rm = T))
+
+netflix_movies <- netflix %>% 
+  filter(type == "Movie")
+
+t.test(netflix_movies$duration)
+```
+
+----
+
+   1. Compare the two duration distributions of drama and non-drama movies (via a plot). 
+
+   2. Compute the mean and variance of movie duration of dramas versus non-dramas.
+
+   3. Formulate and test the following hypothesis tests:
+      
+      a. Drama movies are longer than non-drama movies. Is this a paired or non-paired test?
+      
+      b. The variance of duration is different between drama and non-drama movies.
+
+```{r drama movie hypothesis}
+netflix_movies %>% 
+  group_by(drama) %>% 
+  summarize(mean(duration, na.rm = T),
+            sd(duration, na.rm = T))
+ggplot(netflix_movies, aes(duration, color = drama)) + 
+  geom_density()
+t.test(formula = duration ~ drama, data = netflix_movies)
+var.test(formula = duration ~ drama, data = netflix_movies, alternative = "two.sided")
+```
+
+
