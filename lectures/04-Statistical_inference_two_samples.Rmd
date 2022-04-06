@@ -419,9 +419,6 @@ Or in the one-sided case:
 
 $$\mu_1-\mu_2 \leq \bar{x}_1-\bar{x}_2+z_{1-\alpha}\sqrt{\sigma_1^2/n_1+\sigma_2^2/n_2}$$ 
 
---
-
-(Or the other side)
    
 $$\mu_1-\mu_2 \geq \bar{x}_1-\bar{x}_2+z_{\alpha}\sqrt{\sigma_1^2/n_1+\sigma_2^2/n_2}$$ 
 
@@ -493,7 +490,7 @@ Sometimes, data is collected in pairs, for example when an intervention plan is 
 
    * We pair the observations and conduct the statistical tests on the difference.
    
-Let $(X_{11}, X_{21}),\ldots,(X_{1n}, X_{2n})$ a set of $n$ paired observations. Define $D_j=X_{ij}-X_{2j}$
+Let $(X_{11}, X_{21}),\ldots,(X_{1n}, X_{2n})$ a set of $n$ paired observations. Define $D_j=X_{1j}-X_{2j}$
 
 --
 
