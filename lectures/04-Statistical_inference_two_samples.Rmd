@@ -802,7 +802,7 @@ pwr::pwr.2p2n.test(h = pwr::ES.h(p1 = 0.2, p2 = 0.3),
 
 ---
 
-# Effect Size
+# Effect Size גודל אפקט
 
 We discussed p-value as the extent to which a statistical finding is significant. However, it is not the sole measure for the strength of a statistical finding.
 
@@ -816,7 +816,7 @@ In this context, see the ASA statement on $p$-Values [here](https://amstat.tandf
 
    * $R^2$ in linear regression
    
-   * $\rho$ Pearson correlation coefficient between two variables
+   * $\rho$ Pearson correlation coefficient between two variables מקדם מתאם
    
    * Cohen's $d$ which relates to the difference between means (which we will now discuss)
    
