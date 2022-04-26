@@ -351,7 +351,7 @@ observed_expected <- tribble(~observed, ~expected,
 
 ---
 
-# Short exercise of independence tests
+# Exercise of independence tests
 
 Available here:
 
