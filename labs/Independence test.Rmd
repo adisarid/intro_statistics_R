@@ -1,12 +1,19 @@
 ---
-title: "Independence of two variables test"
+title: "Independence of two variables test (or: the relationship of volcano type and height)"
 output: learnr::tutorial
 runtime: shiny_prerendered
 ---
 
 ```{r setup, include=FALSE}
 library(learnr)
-library(tidyverse)
+library(readr)
+library(dplyr)
+library(tidyr)
+library(tibble)
+library(magrittr)
+library(ggplot2)
+library(stringr)
+library(forcats)
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
@@ -427,17 +434,17 @@ p_value <- 1 - pchisq(q = ..., df = ...)
 ```
 
 ```{r chi_sqaure_test_manual-hint-1}
-chi_statisic <- sum((new_cont$observed - new_cont$expected)^2/new_cont$expected)
+chi_statisic <- sum((contingency_table$observed - contingency_table$expected)^2/contingency_table$expected)
 p_value <- 1 - pchisq(q = chi_statisic, df = ...)
 ```
 
 ```{r chi_sqaure_test_manual-hint-2}
-chi_statisic <- sum((new_cont$observed - new_cont$expected)^2/new_cont$expected)
+chi_statisic <- sum((contingency_table$observed - contingency_table$expected)^2/contingency_table$expected)
 p_value <- 1 - pchisq(q = chi_statisic, df = (...rows... - 1)*(...columns... - 1))
 ```
 
 ```{r chi_sqaure_test_manual-solution}
-chi_statisic <- sum((new_cont$observed - new_cont$expected)^2/new_cont$expected)
+chi_statisic <- sum((contingency_table$observed - contingency_table$expected)^2/contingency_table$expected)
 p_value <- 1 - pchisq(q = chi_statisic, df = (6 - 1)*(3 - 1))
 
 chi_statisic
@@ -448,14 +455,14 @@ p_value
 
 ### Bonus question
 
-Why using the following code yields a wrong result? (hint: think about `df`).
+Why using the following code yields a wrong result? (notice that the p-value is different)?
 How would you use `chisq.test` differently to fix this error?
 
-```{r chi_sqaure_test, exercise = T}
+```{r chi_sqaure_test, exercise = TRUE}
 chisq.test(x = contingency_table$observed, p = contingency_table$prop)
 ```
 
-```{r chi_squar_test-solution}
+```{r chi_sqaure_test-hint-1}
 cont_for_chi <- contingency_table %>% 
   select(1:3) %>% 
   pivot_wider(id_cols = primary_volcano_type, names_from = elv_gr, values_from = observed) %>%
