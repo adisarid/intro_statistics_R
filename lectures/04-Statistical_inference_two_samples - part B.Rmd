@@ -351,6 +351,14 @@ observed_expected <- tribble(~observed, ~expected,
 
 ---
 
+# Short exercise of independence tests
+
+Available here:
+
+https://sarid.shinyapps.io/Independence_test
+
+---
+
 # Setting the sample sizes when comparing two population proportions
 
 Very similar to what we've shown in the last lecture for one sample, but with a slightly different computation for the standard deviation under $H_1$. For example, in the two sided case we have:
