@@ -57,7 +57,7 @@ library(tidyverse)
    
       * Hypothesis tests (mean, variance, goodness-of-fit)
       
-      * Two sample tests for means (paired, unpaired), and proportions
+      * Two sample tests for means (paired, unpaired)
    
    * We explored the Netflix data (of movies and TV shows)
    
@@ -70,6 +70,8 @@ library(tidyverse)
    * Comparing the variance of two samples (hypothesis test) השוואה בין שונויות
 
    * Checking for independence of two samples (contingency table) מבחן אי-תלות
+   
+   * Two sample proportion test
    
 ---
 
@@ -314,6 +316,39 @@ Alternative hypothesis (rejection criteria):
    
    * $H_1:p_1<p_2 \quad (z_0<z_{\alpha})$
    
+---
+
+# Proportion test using contingency table
+
+There is another approach to proportion tests, combining what we learned about independence tests. E.g., consider the following sample: $n_1=100,n_2=700,v_1=10,v_2=30$ then $p_1=0.1,p_2=0.0428$.
+
+Let's create a 2-by-2 contingency table:
+
+.small[ 
+| Group | Success | Failure | total | prop |
+|-------|---------|---------|-------|------|
+| 1     | 10      | 90      | 100   |12.5% |
+| 2     | 30      | 670     | 700   |87.5% |
+| total | 40      | 760     | 800   | -    |
+| prop  | 5%      | 95%     | -     | -    |
+]
+
+.tiny[
+```{r proprtion test via chisq}
+prop.test(x = c(10, 30), n = c(100, 700), correct = FALSE)
+
+observed_expected <- tribble(~observed, ~expected,
+                             10, 10/40*10/100*800,
+                             30, 30/40*30/700*800,
+                             90, 90/760*90/100*800,
+                             670, 670/760*670/700*800) %>% 
+   mutate(chisq = (observed - expected)^2/expected)
+
+1-pchisq(sum(observed_expected$chisq), df = 1)
+
+```
+]
+
 ---
 
 # Setting the sample sizes when comparing two population proportions
