@@ -1,5 +1,5 @@
 ---
-title: "Statistical inference for Two Samples (part B)"
+title: "Two sample variance tests, Independence"
 subtitle: ""
 author: "Adi Sarid"
 institute: "Tel-Aviv University"
@@ -12,432 +12,86 @@ output:
       highlightLines: true
       countIncrementalSlides: false
       ratio: "16:9"
-    css: [metropolis, rutgers-fonts]
+    css: xaringan-themer.css
 ---
 
-```{css, echo = FALSE}
-
-.remark-code {
-  font-size: 24px;
-}
-
-.huge { 
-  font-size: 200%;
-}
-.tiny .remark-code {
-  font-size: 50%;
-}
-
-.small .remark-code{
-   font-size: 85% !important;
-}
-
-.small {
-   font-size: 85% !important;
-}
-
-.remark-slide-content {
-    font-size: 20px;
-    padding: 1em 4em 1em 4em;
-}
-
-table { display: inline-block; }
-
-th, td {
-   padding: 5px;
-}
-
-.small-slide {
-   font-size: 70% !important;
-}
-
-.image-50 img {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 50%;
-}
-
-.right-plot {
-   width: 60%;
-   float: right;
-   padding-left: 1%;
-   bottom: 0px;
-   right: 0px;
-   position: absolute;
-}
-
-
-
-```
-
 ```{r setup, include=FALSE}
+
+library(xaringanthemer)
+
+extra_css <- list(
+   ".medium" = list("font-size" = "85%",
+                    "code-font-size" = "85%"),
+  ".small" = list("zoom" = "70%"),
+  ".extra-small" = list("font-size" = "50%",
+                        "code-font-size" = "50%"),
+  ".tiny" = list("font-size" = "50%",
+                 "code-font-size" = "50%",
+                 "zoom" = "50%"),
+  ".full-width" = list(
+    display = "flex",
+    width   = "100%",
+    flex    = "1 1 auto"
+  )
+)
+
+style_mono_accent(
+   header_font_google = google_font("Open Sans"),
+   text_font_google   = google_font("Rubik", "300", "300i"),
+   code_font_google   = google_font("Fira Mono"),
+   extra_css = extra_css,
+   header_h1_font_size = "2.3rem"
+   
+)
+
+theme_xaringan()
+
 options(htmltools.dir.version = FALSE, fig.width = 3, fig.height = 3)
 knitr::opts_chunk$set(fig.dim=c(3, 3), fig.align = "center")
 library(tidyverse)
-library(countdown)
 ```
 
-# Reminder from previous lecture
+# Reminder from previous weeks
 
-   * Goodness of fit hypothesis tests (comparing two distribution)
+   * In the past month we discussed 
    
-   * Words of caution about HARKing, multiple comparisons, abusing hypothesis tests
+      * Hypothesis tests (mean, variance, goodness-of-fit)
+      
+      * Two sample tests for means (paired, unpaired), and proportions
    
-   * Started two sample hypothesis tests (means, paired, unpaired)
+   * We explored the Netflix data (of movies and TV shows)
    
+      * E.g., We demonstrated hypothesis tests related to two sample comparison of movie duration
+
 ---
 
 # Today
 
-   * On statistics and speeding tickets
-   
-   * Reminder on two-sample tests of the mean (+thought experiments)
-   
-   * Test for independence
-   
-   * Variance of two samples (F-test)
-   
-   * Comparing two proportions
-   
-   * RMarkdown
+   * Comparing the variance of two samples (hypothesis test) השוואה בין שונויות
+
+   * Checking for independence of two samples (contingency table) מבחן אי-תלות
    
 ---
 
-# On statistics and speeding tickets
+# Variance of two samples (F-test) השוואה בין שונויות
 
-<img src='images/speeding_ticket.png'>
-
----
-
-# On statistics and speeding tickets
-
-   * The speeding cameras A3 are currently in debate (and multiple cases on trial).
-   
---
-   
-   * So far, the police was not able to prove their accuracy, though they continue to issue speeding tickets.
-   
---
-   
-   * Each time the camera measures your speed, the police's computer deducts 5 [km/h]
-   
-      * Why? probably due to error.
-   
---
-   
-   * I decided to go to trial, on the basis of unknown measurement error.
-
----
-
-# On statistics and speeding tickets
-
-What is the probability that I was not driving above 115 km/h, given $\sigma=5$.
-
-```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width=7, fig.height=5, fig.dim=c(7,5)}
-library(glue)
-theme_set(theme_light())
-
-sigma <- 5
-avg <- 122
-
-example_tib <- tibble(x = seq(105, 140, by = 0.1)) %>% 
-  mutate(y = dnorm(x, mean = avg, sd = sigma))
-
-example_tib %>% 
-  ggplot(aes(x, y)) + 
-  geom_line() + 
-  geom_vline(xintercept = c(115, 122)) + 
-  geom_area(data = example_tib %>% 
-              filter(x <= 115), fill = "blue") + 
-  ggtitle(glue("The probability of speed<115 km/h {round(100*pnorm(q = 115, mean = avg, sd = sigma))}%"),
-          subtitle = glue("sd={sigma} km/h, measurement 122 km/h")) + 
-  xlab("Speed [km/h]") + 
-  ylab("Density function")
-```
-
-Actually, $\sigma$ is unknown. For $\sigma=7.5$ the probability is 17.5%, and for $\sigma=10$ the probability is 24%.
+We talked about t-test when the variance is unknown and presented two cases (with equal variance and unequal variance). How would we decide which of the two to use? 
 
 --
 
-The prosecutor agreed to settle on a speed of 115 km/hr (which is without "points" but with a fine).
-Multiple cases continue to investigate the issue.
-
----
-
-# Difference in means - variance known
-
-The following quantity is normally distributed $\mathcal{N}(0,1)$:
-
-$$Z = \frac{\bar{X}_1 - \bar{X}_2 - (\mu_1-\mu_2)}{\sqrt{\frac{\sigma_1^2}{n_1} + \frac{\sigma^2_2}{n_2}}}$$
+We would like to devise **a statistical test** to compare the variances of two samples. One method to compare two numbers is to divide them, i.e., $\sigma_1/\sigma_2$.
 
 --
 
-Null hypothesis: $H_0: \mu_1-\mu_2=\Delta_0$
-
-Alternative Hypotheses (rejection criterion):
-
-   * $H_1: \mu_1-\mu_2\neq\Delta_0$ $\quad(z_0>z_{\alpha/2} \text{ or } z_0<-z_{\alpha/2})$
-   
-   * $H_1: \mu_1-\mu_2>\Delta_0$ $\quad(z_0>z_\alpha)$
-   
-   * $H_1: \mu_1-\mu_2>\Delta_0$ $\quad(z_0<-z_\alpha)$
-
----
-
-# Difference in means - variance unknown, equal variances
-
-Let's assume that $\sigma$ is unknown, but that $\sigma_1=\sigma_2=\sigma$.
-
-We've seen that $S_i^2 = \frac{\sum_j(X_{ij}-\bar{X}_i)^2}{n_i-1}$ is an unbiased estimator for $\sigma_i^2$.
-
-Introducing the pooled estimator of $\sigma^2$, denoted by $S^2_p$:
-
-$$S_p^2=\frac{(n_1-1)S_1^2+(n_2-1)S_2^2}{n_1+n_2-2}$$
-
---
-
-This is a weighted average of $S_1^2$ and $S_2^2$. 
-
---
-
-Each $S_i$ contributes $n_1-1$ degrees of freedom so overall $S_p^2$ has $n_1+n_2-2$ degrees of freedom.
-
-Given normality assumptions (or $n_1$ and $n_2$ large enough), we can use the following statistic as a student's t distribution with $n_1+n_2-2$ degrees of freedom:
-
-$$T = \frac{\bar{X}_1-\bar{X}_2-(\mu_1-\mu_2)}{S_p\sqrt{1/n_1+1/n_2}}$$
-
----
-
-# Difference in means - variance unknown, equal variances (2)
-
-Summarizing the test, we can write:
-
-Null hypothesis: $H_0: \mu_1-\mu_2=\Delta_0$
-
-Test statistic: $T_0=\frac{\bar{X}_1-\bar{X}_2-\Delta_0}{S_p\sqrt{1/n_1+1/n_2}}$
-
-Alternative hypothesis (rejection criteria):
-
-   * $H_1:\mu_1-\mu_2\neq\Delta_0 \quad\quad(t_0>t_{1-\alpha/2,n_1+n_2-2}\text{ or } t_0<t_{\alpha/2,n-1+n_2-2})$
-   * $H_1:\mu_1-\mu_2>\Delta_0 \quad\quad(t_0>t_{1-\alpha,n_1+n_2-2})$
-   * $H_1:\mu_1-\mu_2<\Delta_0 \quad\quad(t_0<t_{\alpha,n_1+n_2-2})$
-
----
-
-# Difference in means - variance unknown, unequal variances $(\sigma_1\neq\sigma_2)$
-
-In the case that the variances are unequal and unknown, we can use the following statistic which is approximately distributed $t$ with $v$ degrees of freedom:
-
-$$T^*_0=\frac{\bar{X}_1-\bar{X}_2-\Delta_0}{\sqrt{S_1^2/n_1+S_2^2/n_2}}$$
-
-Where the degrees of freedom $v$ are equal:
-
-$$v=\frac{\left(S_1^2/n_1 + S_2^2/n_2\right)^2}{\frac{(S_1^2/n_1)^2}{n_1-1}+\frac{(S_2^2/n_2)^2}{n_2-1}}$$
-
----
-
-# Paired or unpaired t-test?
-
-Sometimes, data is collected in pairs, for example when an intervention plan is conducted on a group of individuals
-
-   * We want to compare the effect of the intervention before and after. 
-
-   * This *paired* situation may ocurr when we have multiple observations of the same group. 
-   
-   * We would like to match the observations to avoid differences which may ocurr due to variation between subjects. 
-
---
-
-   * We pair the observations and conduct the statistical tests on the difference.
-   
-Let $(X_{11}, X_{21}),\ldots,(X_{1n}, X_{2n})$ a set of $n$ paired observations. Define $D_j=X_{ij}-X_{2j}$
-
---
-
-$$\mu_D=E(X_1-X_2)=\mu_1-\mu_2$$
-
---
-
-Null hypothesis: $H_0:\mu_D=\Delta_0$
-
-Test statistic: $T_0=\frac{\bar{D}-\Delta_0}{S_D/\sqrt{n}}$
-
-Where $S_D$ is the sample standard deviation of the differences.
-
----
-
-# Example of two sample hypothesis testing - the ipf data set
-
-We go back to the ipf data set (the power lifting competition dataset). 
-
-What test would you use? (means paired / means unpaird / something else) for each of the following). Would you revise the tests?
-.small[
-Test 1:
-   * $H_0:$ men lift higher weights than women
-   * $H_1:$ men and women lift the same weight
-   
-Test 2:
-   * $H_0:$ Deadlift and squat weights are the same
-   * $H_1:$ Deadlift weights are higher than squat weights
-
-Test 3:
-   * $H_0:$ The age of male athletes is normally distributed
-   * $H_1:$ The age of male athletes is not normally distributed
-
-Test 4:
-   * $H_0:$ The athletes age and gender are statistically independent
-   * $H_1:$ The athletes age and gender are not statistically independet
-]
-
-```{r counter for the hypothesis examples, echo=FALSE}
-countdown::countdown(minutes = 5)
-```
-
----
-
-# Demonstrating tests in the ipf data set (test 1)
-
-   * $H_0:$ men and women lift the same weight
-   * $H_1:$ men lift higher weights than women
-
-Unpaired t-test (note that I switched $H_0$ and $H_1$)
-.tiny[
-```{r read ipf and first test}
-#https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-10-08/ipf_lifts.csv
-set.seed(0)
-ipf <- read_csv("data/ipf_lifts.csv", col_types = cols()) %>% 
-   filter(best3squat_kg > 0) %>% 
-   sample_n(1000)
-   
-t.test(formula = best3squat_kg ~ sex, data = ipf, alternative = "less")
-
-# alternative method to call the function
-#t.test(x = ipf$best3squat_kg[ipf$sex == "F"], y = ipf$best3squat_kg[ipf$sex == "M"], alternative = "less")
-```
-]
-
----
-
-# Demonstrating tests in the ipf data set (test 2)
-
-Test 2:
-   * $H_0:$ Deadlift and squat weights are the same
-   * $H_1:$ Deadlift weights are higher than squat weights
-   
-Paired t-test, because each athelete is compared to himself
-
-.tiny[
-```{r ipf paired ttest}
-t.test(x = ipf$best3deadlift_kg, y = ipf$best3squat_kg, paired = TRUE, alternative = "greater")
-```
-]
-
----
-
-# Demonstrating tests in the ipf data set (test 3 and 4)
-
-Test 3 was:
-
-   * $H_0:$ The age of male athletes is normally distributed
-   * $H_1:$ The age of male athletes is not normally distributed
-   
-This is the goodness of fit test that we were discussing in the previous unit.
-
-Test 4 was:
-
-   * $H_0:$ The athletes age and gender are statistically independent
-   * $H_1:$ The athletes age and gender are not statistically independent
-
-The fourth test is actually a test for independence of two variables, which we will discuss now.
-
----
-
-# Test for independence (contingency table)
-
-When we have two variables and we want to examine independence between them, it is like comparing the contingencies (combinations) of the two variables, against the uniform distribution.
-
-| Age | genderM | genderF | total |
-|--------|---------|---------|--------|
-| group1 | g1m | g1f | $n_{g1}$ |
-| group2 | g2m | g2f | $n_{g2}$ |
-| group3 | g3m | g3f | $n_{g3}$ |
-| total | $n_M$ | $n_F$ | $n$ |
-
---
-
-   * The observed is the count within the cell, and the expected is the product of the marginal probabilities, i.e.:
-   
-      * The expected of Males in group2 under the null hypothesis is:  $E_{g2m}=(n_{g2}/n)\times(n_M/n)\times n$
-
-   * This is the case when the variables are independent, i.e., $P(X=x,Y=y)=P(X=x)P(Y=y)$
-
---
-
-This results in a $\chi^2$ test with $(r-1)(c-1)$ degrees of freedom.
-
----
-
-# Independence between variable via contingency table (example)
-.small[
-```{r contingency table independence test via chi square}
-ipf_new <- ipf %>%
-   filter(!is.na(age)) %>% 
-   mutate(age_group = cut(age, breaks = c(0, 25, 35, 45, 55, 100))) %>% 
-   count(age_group, sex) %>% 
-   pivot_wider(id_cols = age_group, names_from = sex, values_from = n) %>% 
-   select(2:3) %>% 
-   as.matrix()
-   
-ipf_compare_res <- chisq.test(ipf_new)
-ipf_compare_res
-```
-]
-
----
-
-# Your turn (class exercise) - do mobile phones impact our health?
-
-In **pairs**, try to devise an experiment plan, that would test whether **mobile phones impact our health**.
-.small[
-In your answer relate to the following points:
-
-   * What do you consider as an "effect"? (i.e., what kind of health measure?)
-
-   * How do you select and/or separate the groups participating in your experiment?
-   
-   * How do you neutralize other factors which might intervene with the experiment? (like selection of participants or other factors)
-   
-   * What would you use as a statistcal measure?
-   
-   * Paired or unpaired?
-   
-   * What sample size?
-   
-   * What would be the hypotheses 8-step procedure of the experiment? reminder:
-      * Parameter -> Null hypothesis -> Altermative -> Significance -> Statistic -> Rejection criteria
-      * Sample, computation -> Decision
-]
-
-```{r countdown for experiment designing, echo=FALSE}
-countdown::countdown(minutes = 10)
-```
-
----
-
-# Variance of two samples (F-test)
-
-We talked about t-test when the variance is unknown and presented two cases (with equal variance and uneqal variance). How would we decide which of the two to use? 
-
---
-
-We would like to use **a statistical test** to compare the variance. One method to compare two numbers is to divide them, i.e., $\sigma_1/\sigma_2$.
-
---
-
-The $F$ distribution is the ratio of two independent chi-square random variables, divided by its number of degrees of freedom, i.e.:
+The $F$ distribution is the ratio of two independent chi-square random variables, divided by its degrees of freedom, i.e.:
    
 $$F=\frac{W/u}{Y/v}$$
+
+--
+
+This test assumes that **both populations are normally distributed**.
+
+--
 
 The probability density function is given by the expression:
 
@@ -490,6 +144,10 @@ Alternative hypothesis (rejection criteria):
 
 .small[
 ```{r exercise variance between genders}
+set.seed(0)
+ipf <- read_csv("data/ipf_lifts.csv", col_types = cols()) %>% 
+   filter(best3squat_kg > 0) %>% 
+   sample_n(1000)
 ipf %>% 
    group_by(sex) %>% 
    summarize_at(vars(contains("best3")), ~{(sd(., na.rm = T))^2})
@@ -501,6 +159,121 @@ It's pretty clear that males have a much higher variance, lets test this in an F
 .small[
 ```{r test variance between genders}
 var.test(formula = best3squat_kg ~ sex, data = ipf, ratio = 1, alternative = "less")
+```
+]
+
+---
+
+# Example for F statistic variance test
+
+Another option:
+
+.small[
+```{r test variance option two}
+male_squat <- ipf$best3squat_kg[ipf$sex == "M"]
+female_squat <- ipf$best3squat_kg[ipf$sex == "F"]
+var.test(x = female_squat, y = male_squat, data = ipf, ratio = 1, alternative = "less")
+```
+]
+
+In this example we had
+
+$$H_0: \sigma_1 = \sigma_2$$
+
+$$H_1: \sigma_1 < \sigma_2$$
+
+We reject the null hypothesis with $F_0=0.335$, and $p$-value $<0.05$.
+
+--
+
+Note that in the distribution tables, the F-statistic is provided for $\alpha=0.95$ so you might need to change the order of the numerator and denominator.
+
+---
+
+# Test for independence מבחן אי-תלות
+
+   * Why are we interested in independence?
+   
+---
+
+# Test for independence (contingency table)
+
+When we have two variables and we want to examine independence between them, it is like comparing the contingencies (combinations) of the two variables, against the uniform distribution.
+
+| Age | genderM | genderF | total |
+|--------|---------|---------|--------|
+| group1 | g1m | g1f | $n_{g1}$ |
+| group2 | g2m | g2f | $n_{g2}$ |
+| group3 | g3m | g3f | $n_{g3}$ |
+| total | $n_M$ | $n_F$ | $n$ |
+
+---
+
+# Test for independence - intuition
+
+   * The probability of being a male/female is 50%/50%.
+   
+   * The probability of being in each age group is 33%
+   
+   * The sample size is $n=492$
+
+Under the null hypothesis of independence, what would this table look like?
+
+.small[ 
+| Age | genderM | genderF | total |
+|--------|---------|---------|--------|
+| group1 | g1m | g1f | $n_{g1}$ |
+| group2 | g2m | g2f | $n_{g2}$ |
+| group3 | g3m | g3f | $n_{g3}$ |
+| total | $n_M$ | $n_F$ | $n$ |   
+]
+
+--
+
+   * Each cell will have a sample of 82 observations (6 cells = 492).
+
+--
+
+   * The groups don't have to be equal according to the null hypothesis.
+   
+   * Let's assume that the sample is split: male/female 70/30, and the age groups 20/20/60. What would the table look like in this case, assuming independence of gender and age?
+
+---
+
+# Test for independence - hypothesis test
+
+   * Now you know what is the Expected value in each cell. 
+   
+   * How do we compute the observed value? (e.g., using `count`)
+
+   * The observed is the count within the cell, and the expected is the product of the marginal probabilities, i.e.:
+   
+      * The expected of Males in group2 under the null hypothesis is:  $E_{g2m}=(n_{g2}/n)\times(n_M/n)\times n$
+
+   * This is the case when the variables are independent, i.e., $P(X=x,Y_y)=P(X=x)P(Y=y)$
+
+--
+
+This results in a $\chi^2$ test with $(r-1)(c-1)$ degrees of freedom.
+
+--
+
+$$\chi^2 = \sum_{i,j}\frac{(O_{i,j}-E_{i,j})^2}{E_{i,j}}$$
+
+---
+
+# Independence between variable via contingency table (example)
+.small[
+```{r contingency table independence test via chi square}
+ipf_new <- ipf %>%
+   filter(!is.na(age)) %>% 
+   mutate(age_group = cut(age, breaks = c(0, 25, 35, 45, 55, 100))) %>% 
+   count(age_group, sex) %>% 
+   pivot_wider(id_cols = age_group, names_from = sex, values_from = n) %>% 
+   select(2:3) %>% 
+   as.matrix()
+ipf_compare_res <- chisq.test(ipf_new)
+ipf_compare_res
 ```
 ]
 
@@ -543,12 +316,67 @@ Alternative hypothesis (rejection criteria):
    
 ---
 
-# RMarkdown
+# Setting the sample sizes when comparing two population proportions
 
-R Markdown is a file format for making dynamic documents with R. 
+Very similar to what we've shown in the last lecture for one sample, but with a slightly different computation for the standard deviation under $H_1$. For example, in the two sided case we have:
 
-An R Markdown document is written in markdown (an easy-to-write plain text format) and contains chunks of embedded R code.
+$$\beta=\Phi\left[\frac{z_{1-\alpha/2}\sqrt{\bar{p}\bar{q}(1/n_1+1/n_2)}-(p_1-p_2)}{\sigma_{\hat{P}_1-\hat{P}_2}}\right]-\Phi\left[\frac{z_{\alpha/2}\sqrt{\bar{p}\bar{q}(1/n_1+1/n_2)}-(p_1-p_2)}{\sigma_{\hat{P}_1-\hat{P}_2}}\right]$$
 
 --
 
-Demonstration.
+With $\bar{p}=\frac{n_1p_1+n_2p_2}{n_1+n_2}, \bar{q}=\frac{n_1(1-p_1)+n_2(1-p_2)}{n_1+n_2}$ and
+
+$$\sigma_{\hat{P}_1-\hat{P}_2}=\sqrt{\frac{p_1(1-p_1)}{n_1} + \frac{p_2(1-p_2)}{n_2}}$$
+
+--
+
+We can obtain the suggested sample (or power) using `pwr::pwr.2p.test` or `pwr::pwr2p2n.test`.
+
+.small[
+```{r demonstration for sample size using pwr}
+pwr::pwr.2p2n.test(h = pwr::ES.h(p1 = 0.2, p2 = 0.3),
+                   n1 = 150, n2 = NULL,
+                   sig.level = 0.05,
+                   power = 0.8,
+                   alternative = "less")
+```
+]
+
+---
+
+# Effect Size גודל אפקט
+
+We discussed p-value as the extent to which a statistical finding is significant. However, it is not the sole measure for the strength of a statistical finding.
+
+--
+
+In this context, see the ASA statement on $p$-Values [here](https://amstat.tandfonline.com/doi/full/10.1080/00031305.2016.1154108)
+
+--
+
+**Effect size** measures the magnitude of a phenomena. Effect size is a generic name for various measures such as:
+
+   * $R^2$ in linear regression
+   
+   * $\rho$ Pearson correlation coefficient between two variables מקדם מתאם
+   
+   * Cohen's $d$ which relates to the difference between means (which we will now discuss)
+   
+   * Many more
+
+---
+
+# Effect Size - Cohen's $d$
+
+The difference between two means divided by standard deviation, i.e.:
+
+$$d=\frac{\bar{X}_1-\bar{X}_2}{S_p}$$
+
+Where $S_p$ is the pooled standard deviation:
+
+$$S_p=\sqrt{\frac{(n_1-1)S_1^2+(n_2-1)S_2^2}{n_1+n_2-2}}$$
+.small[
+```{r example for cohens d}
+effsize::cohen.d(formula = best3squat_kg ~ sex, data = ipf)
+```
+]
