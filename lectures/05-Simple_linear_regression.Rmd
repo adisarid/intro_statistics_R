@@ -1,5 +1,5 @@
 ---
-title: "Simple Linear Regression and Correlation"
+title: "Simple Linear Regression"
 subtitle: ""
 author: "Adi Sarid"
 institute: "Tel-Aviv University"
