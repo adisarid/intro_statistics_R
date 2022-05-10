@@ -12,70 +12,43 @@ output:
       highlightLines: true
       countIncrementalSlides: false
       ratio: "16:9"
-    css: [metropolis, rutgers-fonts]
+    css: xaringan-themer.css
 ---
 
-```{css, echo = FALSE}
-
-.remark-code {
-  font-size: 24px;
-}
-
-.huge { 
-  font-size: 200%;
-}
-.tiny .remark-code {
-  font-size: 50%;
-}
-
-.small .remark-code{
-   font-size: 85% !important;
-}
-
-.small {
-   font-size: 85% !important;
-}
-
-.remark-slide-content {
-    font-size: 20px;
-    padding: 1em 4em 1em 4em;
-}
-
-table { display: inline-block; }
-
-th, td {
-   padding: 5px;
-}
-
-.small-slide {
-   font-size: 70% !important;
-}
-
-.image-50 img {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 50%;
-}
-
-.right-plot {
-   width: 60%;
-   float: right;
-   padding-left: 1%;
-   bottom: 0px;
-   right: 0px;
-   position: absolute;
-}
-
-
-
-```
-
 ```{r setup, include=FALSE}
+
+library(xaringanthemer)
+
+extra_css <- list(
+   ".medium" = list("font-size" = "85%",
+                    "code-font-size" = "85%"),
+  ".small" = list("zoom" = "70%"),
+  ".extra-small" = list("font-size" = "50%",
+                        "code-font-size" = "50%"),
+  ".tiny" = list("font-size" = "50%",
+                 "code-font-size" = "50%",
+                 "zoom" = "50%"),
+  ".full-width" = list(
+    display = "flex",
+    width   = "100%",
+    flex    = "1 1 auto"
+  )
+)
+
+style_mono_accent(
+   header_font_google = google_font("Open Sans"),
+   text_font_google   = google_font("Rubik", "300", "300i"),
+   code_font_google   = google_font("Fira Mono"),
+   extra_css = extra_css,
+   header_h1_font_size = "2.3rem"
+   
+)
+
+theme_xaringan()
+
 options(htmltools.dir.version = FALSE, fig.width = 3, fig.height = 3)
 knitr::opts_chunk$set(fig.dim=c(3, 3), fig.align = "center")
 library(tidyverse)
-library(countdown)
 ```
 
 # Reminder from previous lecture
@@ -84,9 +57,7 @@ We talked about two sample statistics
    
    * Comparing variance using the $F$ test.
    
-   * Goodness of fit for examining variable independence, i.e., using $\chi^2$ test.
-   
-   * Independence test (contingency table), also using $\chi^2$.
+   * Independence test (contingency table), using $\chi^2$.
 
 ---
 
@@ -95,8 +66,6 @@ We talked about two sample statistics
    * The project and some technicalities.
    
    * Some notes about learning `R`.
-   
-   * Assisted `R` Exercise.
    
    * Linear regression.
 
@@ -116,7 +85,7 @@ In the project you need to demonstrate your ability to conduct a statistical ana
    
    * Communicating the results
    
-The project should be submitted in and Rmd format, with code and data, by June 24th.
+The project should be submitted in and Rmd format, with code and data, by June 10th.
 
    * Weekly regular office hours are set Thursdays 9-10.
 
@@ -133,13 +102,11 @@ The project should be submitted in and Rmd format, with code and data, by June 2
    
       * The code from the lectures.
       
-      * Workshop recordings: https://tau.cloud.panopto.eu/Panopto/Pages/Sessions/List.aspx?folderID=63ae0b2d-6a79-4d4d-82d5-ac8f0160961b
-      
       * The R4DS book [https://r4ds.had.co.nz/](https://r4ds.had.co.nz/).
       
       * Additional video sources (see the syllabus, for example here https://www.youtube.com/channel/UCMdihazndR0f9XBoSXWqnYg).
       
-      * Most importantly! google and stackoverflow.
+      * google and stackoverflow.
 
 ---
 
@@ -155,23 +122,23 @@ The project should be submitted in and Rmd format, with code and data, by June 2
       
       * Check independence of two variables
 
+<!-- --- -->
+
+<!-- # Project like exercise in `R` -->
+
+<!-- How to kickstart your project? with an example. -->
+
+<!-- Use the IKEA dataset [Analyze the IKEA data set](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-11-03/readme.md). -->
+
+<!--    * Read the data -->
+
+<!--    * Compare two types of product categories (visualize + test) -->
+
+<!--    * Examine the relationship between volume and price (visualize + model) -->
+
 ---
 
-# Project like exercise in `R`
-
-How to kickstart your project? with an example.
-
-Use the IKEA dataset [Analyze the IKEA data set](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-11-03/readme.md).
-
-   * Read the data
-   
-   * Compare two types of product categories (visualize + test)
-   
-   * Examine the relationship between volume and price (visualize + model)
-
----
-
-# Simple Linear Regression: background
+# Simple Linear Regression רגרסיה לינארית פשוטה
 
 Linear regression is an important modeling technique in statistics. It was developed in the 1800s and is still very common today.
 
@@ -274,7 +241,7 @@ At the base of linear regression, we describe the relationship between an indepe
 
 $$E(Y|X=x)=\mu_{Y|x}=\beta_0+\beta_1x$$
 
-The regression coefficient $\beta_0$ is called the **intercept**, and $\beta_1$ is called the **slope** (why?).
+The regression coefficient $\beta_0$ is called the **intercept חותך**, and $\beta_1$ is called the **slope שפוע** (why?).
 
 --
 
@@ -282,31 +249,35 @@ This relationship is generalized as:
 
 $$Y=\beta_0+\beta_1x + \epsilon$$
 
-Where $\epsilon$ is assumed to be distributed as $\mathcal{N}(0, \sigma_\epsilon)$, we will also assume it is **homoscedastic**.
+Where $\epsilon$ is assumed to be distributed as $\mathcal{N}(0, \sigma_\epsilon)$, we will also assume it is **homoscedastic הומוסכדסטיות**.
 
 --
 
-This model is called a **simple linear regression model**.
+This model is called a **simple linear regression model רגרסיה לינארית פשוטה**.
 
    * Only one independent variable (only a single $x$, aka regressor)
 
 --
+
+.small[
 
 Note that:
 
 $$E(Y|x)=E(\beta_0 + \beta_1x+\epsilon)=\beta_0+\beta_1x+E\epsilon = \beta_0+\beta_1x$$
 
 $$\operatorname{Var}(Y|x)=\operatorname{Var}(\beta_0+\beta_1x)+\operatorname{Var}(\epsilon)=\sigma^2_\epsilon$$
+]
+
 
 ---
 
 # How does the linear regression model "look like"?
 
-The most common method to find the linear relationship is called the least squares estimate. I.e., we are looking for the line which brings to minimum the suqared errors. I.e.: 
+The most common method to find the linear relationship is called the **least squares estimate שיטת הריבועים הפחותים**. I.e., we are looking for the line which brings to minimum the squared errors. I.e.: 
 
    * The $\min\sum_i(\hat{y}_i-y_i)^2$ of the red lines in :
 
-```{r least squares example, echo=FALSE, fig.dim=c(6,5)}
+```{r least squares example, echo=FALSE, fig.dim=c(6,5), message=FALSE, warning=FALSE}
 wildlife_demo <- wildlife_small %>% 
    mutate(lm_pred = exp(predict(lm(formula = log(n) ~ rounded_height, wildlife_small))))
 wildlife_points <- ggplot(wildlife_demo, aes(x = rounded_height, y = n)) + 
@@ -339,24 +310,30 @@ $$\frac{\partial L}{\partial\beta_1}= -2\sum_{i=1}^n\left(y_i-\hat{\beta}_0-\hat
 
 # Finding the coefficients using the least squares method (2)
 
+.small[
 Simplifying the equations we obtain:
 
 $$n\hat{\beta_0}+\hat{\beta}_1\sum_{i=1}^n{x_i}=\sum_{i=1}^n{y_i}$$
 and
 
 $$\hat{\beta}_0\sum_{i=1}^n{x_i}+\hat{\beta}_1\sum_{i=1}^n{x_i^2} = \sum_{i=1}^n{y_ix_i}$$
+]
 
 --
 
+.small[
 The solution to these equations is given by:
 
 $$\hat{\beta}_0=\bar{y}-\hat{\beta}_1\bar{x}$$
 
 $$\hat{\beta}_1=\frac{\sum_i{x_iy_i} - \frac{\sum_i{y_i}\sum_i{x_i}}{n}}{\sum_i{x_i^2}-\frac{(\sum_i{x_i})^2}{n}}$$
+]
 
 --
 
+.small[
 The fitted line is then $\hat{y} = \hat{\beta}_0 + \hat{\beta}_1x$
+]
 
 ---
 
@@ -375,7 +352,7 @@ $$\hat{\beta}_1=\frac{S_{xy}}{S_{xx}}$$
 
 ---
 
-# The residuals
+# The residuals השאריות
 
 Each observation satisfies $y_i=\hat{\beta}_0 + \hat{\beta}_1x_i+e_i, \quad i=1,2,\ldots,n$. We call $e_i$ the $i$th residual.
 
@@ -387,7 +364,7 @@ $$SS_E=\sum_{i=1}^n{e_i^2}=\sum_{i=1}^n{(y_i-\hat{y}_i)^2}$$
 
 --
 
-To estimate $\sigma_\epsilon^2$ we can use $SS_E$:
+To estimate $\sigma_\epsilon^2$ we can use $SS_E$ (proof out of scope):
 
 $$E(SS_E)=(n-2)\sigma_\epsilon^2$$
 
@@ -450,7 +427,7 @@ The estimators $\hat{\beta}_0$ and $\hat{\beta}_1$ are a result of a computation
 
 Specifically, they depend on the observed $y$'s and hence they are random variables themselves. 
 
-Both coefficients are unbiased, i.e., $E[\hat{\beta}_0]=\beta_0$ and $E[\hat{\beta}_1]=\beta_1$. 
+Both coefficients are unbiased, i.e., $E[\hat{\beta}_0]=\beta_0$ and $E[\hat{\beta}_1]=\beta_1$ (proof [here](https://www.youtube.com/watch?v=LrvdZQ6jcZQ)).
 
 
 ---
@@ -600,9 +577,9 @@ The intuition behind the statistic is:
 
    * Hence, the null hypothesis of no model, i.e., $\beta_1=0$, is rejected
 
---
+---
 
-## ANOVA (Analysis of Variance) Table
+### ANOVA (Analysis of Variance) Table
 
 .small[
 | Source of Variation | Sum of Squares | df | Mean Squares | $F_0$ |
@@ -612,7 +589,12 @@ The intuition behind the statistic is:
 | Total | $SS_T$ | $n-1$ |  |  |
 ]
 
-`summary(wildlife_lm)`
+.tiny[
+```{r example for ANOVA}
+summary(aov(wildlife_lm))
+summary(wildlife_lm)
+```
+]
 
 ---
 
@@ -626,7 +608,7 @@ $$\beta_0\in\hat{\beta}_0\pm t_{\alpha/2, n-2}\sqrt{\frac{1}{n} + \frac{\bar{x}^
 
 ---
 
-# Prediction intervals
+# Prediction intervals רווחי תחזית
 
 We would like to use the linear regression model for prediction of new values.
 
@@ -656,10 +638,10 @@ $$Y_0\in \hat{y}_0\pm t_{\alpha/2,n-2}\sqrt{\hat\sigma_\epsilon^2\left[1 + \frac
 
 ---
 
-# Prediction intervals - illustration
+# Prediction intervals - illustration *[(Link to live demo!)](https://sarid.shinyapps.io/intervals_demo/)*
 
 The grey band shows confidence intervals around $Y_0|X=x$ and the outer lines show the prediction intervals
-.small[
+.tiny[
 ```{r exhibiting prediction intervals, fig.dim=c(6, 4)}
 wildlife_predicted <- predict(wildlife_lm,
                               newdata = 
@@ -668,20 +650,20 @@ wildlife_predicted <- predict(wildlife_lm,
    data.frame() %>% 
    mutate(rounded_height = seq(0, 25, by = 0.25))
 ```
-```
-ggplot(wildlife_small, aes(x = rounded_height, y = n)) + 
-   geom_point() + theme_bw() + 
-   xlab("Height [k feet]") + 
-   geom_line(data = wildlife_predicted, 
-             inherit.aes = T, aes(x = rounded_height, y = exp(lwr))) +
-   geom_line(data = wildlife_predicted, 
-             inherit.aes = T, aes(x = rounded_height, y = exp(upr))) +
-   scale_y_log10() +
-   stat_smooth(method = "lm")
-```
+<!-- ``` -->
+<!-- ggplot(wildlife_small, aes(x = rounded_height, y = n)) +  -->
+<!--    geom_point() + theme_bw() +  -->
+<!--    xlab("Height [k feet]") +  -->
+<!--    geom_line(data = wildlife_predicted,  -->
+<!--              inherit.aes = T, aes(x = rounded_height, y = exp(lwr))) + -->
+<!--    geom_line(data = wildlife_predicted,  -->
+<!--              inherit.aes = T, aes(x = rounded_height, y = exp(upr))) + -->
+<!--    scale_y_log10() + -->
+<!--    stat_smooth(method = "lm") -->
+<!-- ``` -->
 ]
 .right-plot[
-```{r the actual plot, echo=FALSE, fig.dim=c(6,6)}
+```{r the actual plot, echo=FALSE, fig.dim=c(4,4), message=FALSE, warning=FALSE}
 ggplot(wildlife_small, aes(x = rounded_height, y = n)) + 
    geom_point() + theme_bw() + 
    xlab("Height [k feet]") + 
@@ -712,7 +694,6 @@ Which of the following violates these assumptions? Can you think of a transforma
 ]
 
 ```{r linear regression fits, echo=FALSE, fig.dim=c(7,4)}
-countdown::countdown(minutes = 5)
 linear_reg_examples <- tibble(x = seq(0,10, by = 0.1),
                               f1 = x + rnorm(NROW(x), mean = 0, 1),
                               f2 = x + rnorm(NROW(x), mean = 0, sd = x/10),
