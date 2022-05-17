@@ -12,70 +12,43 @@ output:
       highlightLines: true
       countIncrementalSlides: false
       ratio: "16:9"
-    css: [metropolis, rutgers-fonts]
+    css: xaringan-themer.css
 ---
 
-```{css, echo = FALSE}
-
-.remark-code {
-  font-size: 24px;
-}
-
-.huge { 
-  font-size: 200%;
-}
-.tiny .remark-code {
-  font-size: 50%;
-}
-
-.small .remark-code{
-   font-size: 85% !important;
-}
-
-.small {
-   font-size: 85% !important;
-}
-
-.remark-slide-content {
-    font-size: 20px;
-    padding: 1em 4em 1em 4em;
-}
-
-table { display: inline-block; }
-
-th, td {
-   padding: 5px;
-}
-
-.small-slide {
-   font-size: 70% !important;
-}
-
-.image-50 img {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 50%;
-}
-
-.right-plot {
-   width: 60%;
-   float: right;
-   padding-left: 1%;
-   bottom: 0px;
-   right: 0px;
-   position: absolute;
-}
-
-
-
-```
-
 ```{r setup, include=FALSE}
+
+library(xaringanthemer)
+
+extra_css <- list(
+   ".medium" = list("font-size" = "85%",
+                    "code-font-size" = "85%"),
+  ".small" = list("zoom" = "70%"),
+  ".extra-small" = list("font-size" = "50%",
+                        "code-font-size" = "50%"),
+  ".tiny" = list("font-size" = "50%",
+                 "code-font-size" = "50%",
+                 "zoom" = "50%"),
+  ".full-width" = list(
+    display = "flex",
+    width   = "100%",
+    flex    = "1 1 auto"
+  )
+)
+
+style_mono_accent(
+   header_font_google = google_font("Open Sans"),
+   text_font_google   = google_font("Rubik", "300", "300i"),
+   code_font_google   = google_font("Fira Mono"),
+   extra_css = extra_css,
+   header_h1_font_size = "2.3rem"
+   
+)
+
+theme_xaringan()
+
 options(htmltools.dir.version = FALSE, fig.width = 3, fig.height = 3)
 knitr::opts_chunk$set(fig.dim=c(3, 3), fig.align = "center")
 library(tidyverse)
-library(countdown)
 ```
 
 # Reminder from previous lecture
@@ -84,7 +57,7 @@ We focused on simple linear regression.
 
    * We saw how simple linear regression can be used to find the relationship between two variables
    
-   * For example, flight height and the number of bird strikes (or `log` or bird strikes)
+   * For example, flight height and the number of bird strikes (or `log` of bird strikes)
    
 --
    
@@ -500,10 +473,6 @@ Various methods exist to handle and avoid this phenomena, such as train/test spl
 
 How would you devise an experiment to demonstrate overfitting?
 
-```{r, echo=FALSE}
-countdown::countdown(minutes = 3)
-```
-
 --
 
 See demonstration [here](https://github.com/adisarid/intro_statistics_R/blob/master/lectures/06-Note_about_overfitting.Rmd).
@@ -727,10 +696,6 @@ What do you think is the problem with trying to provide an extrapolation (fit) a
    * Number of engines = $2$
 
 Can you think of a similar example but from a different domain?
-   
-```{r timer for extrapolation think, echo=FALSE}
-countdown::countdown(3)
-```
 
 ---
 
@@ -778,10 +743,6 @@ As you have probably noticed, in the bird-planes example, we used a `sky` variab
 
 --
 
-
-```{r some questions on the meaning of coefficients, echo = FALSE}
-countdown::countdown(3)
-```
 Questions:
 
    * What is the meaning of the coefficient $\beta$ of a logical variable?
