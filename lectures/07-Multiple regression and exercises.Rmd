@@ -12,70 +12,43 @@ output:
       highlightLines: true
       countIncrementalSlides: false
       ratio: "16:9"
-    css: [metropolis, rutgers-fonts]
+    css: xaringan-themer.css
 ---
 
-```{css, echo = FALSE}
-
-.remark-code {
-  font-size: 24px;
-}
-
-.huge { 
-  font-size: 200%;
-}
-.tiny .remark-code {
-  font-size: 50%;
-}
-
-.small .remark-code{
-   font-size: 85% !important;
-}
-
-.small {
-   font-size: 85% !important;
-}
-
-.remark-slide-content {
-    font-size: 20px;
-    padding: 1em 4em 1em 4em;
-}
-
-table { display: inline-block; }
-
-th, td {
-   padding: 5px;
-}
-
-.small-slide {
-   font-size: 70% !important;
-}
-
-.image-50 img {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 50%;
-}
-
-.right-plot {
-   width: 60%;
-   float: right;
-   padding-left: 1%;
-   bottom: 0px;
-   right: 0px;
-   position: absolute;
-}
-
-
-
-```
-
 ```{r setup, include=FALSE}
+
+library(xaringanthemer)
+
+extra_css <- list(
+   ".medium" = list("font-size" = "85%",
+                    "code-font-size" = "85%"),
+  ".small" = list("zoom" = "70%"),
+  ".extra-small" = list("font-size" = "50%",
+                        "code-font-size" = "50%"),
+  ".tiny" = list("font-size" = "50%",
+                 "code-font-size" = "50%",
+                 "zoom" = "50%"),
+  ".full-width" = list(
+    display = "flex",
+    width   = "100%",
+    flex    = "1 1 auto"
+  )
+)
+
+style_mono_accent(
+   header_font_google = google_font("Open Sans"),
+   text_font_google   = google_font("Rubik", "300", "300i"),
+   code_font_google   = google_font("Fira Mono"),
+   extra_css = extra_css,
+   header_h1_font_size = "2.3rem"
+   
+)
+
+theme_xaringan()
+
 options(htmltools.dir.version = FALSE, fig.width = 3, fig.height = 3)
 knitr::opts_chunk$set(fig.dim=c(3, 3), fig.align = "center")
 library(tidyverse)
-library(countdown)
 ```
 
 # Reminder from Previous Lecture
@@ -232,21 +205,25 @@ $$\hat\mu_{Y|x_0} = x_0^t\hat\beta=\beta_0 + \beta_1x_1+\ldots+\beta_px_p$$
 
 --
 
+.small[
 The estimator is unbiased and its variance is:
 
 $$\operatorname{Var}(\hat\mu_{Y|x_0}) = \sigma^2x_0^t(X^tX)^{-1}x_0$$
-
+]
 --
 
+.small[
 Hence, we can use the following statistic for building confidence and prediction intervals:
 
 $$\frac{\hat\mu_{Y|x_0} - \mu_{Y|x_0}}{\sqrt{\hat\sigma^2x_0^t(X^tX)^{-1}x_0}}$$
+]
 
 --
 
+.small[
 Let's see this in action and discuss it with the following R Shiny app:
 [https://sarid.shinyapps.io/intervals_demo/](https://sarid.shinyapps.io/intervals_demo/)
-
+]
 --
 
 .small[
@@ -267,6 +244,7 @@ $$\hat y_0 + t_{\alpha/2, n-p}\sqrt{\hat\sigma^2(1+x_0^t(X^tX)^{-1}x_0)} \leq Y_
 
 --
 
+.small[
 In groups, use the confidence and prediction intervals simulation, and answer the following questions:
 
    * The *"define error sigma"* controls $\sigma_{\epsilon}$. Try moving it to 0 and start increasing it. Follow the $y$ axis closely while doing so. What happens and why?
@@ -280,11 +258,7 @@ In groups, use the confidence and prediction intervals simulation, and answer th
    * Try the Sine relationship (under *Choose type of relationship*). How would you run `lm` to build such a model in `R`?
    
    * When showing the Sine relationship, try increasing the error (increase in *define error sigma*). What happens to the relationship? why?
-
-
-```{r countdown regression experimentation}
-countdown::countdown(minutes = 10L, top = "10px")
-```
+]
 
 ---
 
@@ -344,7 +318,7 @@ $$l=\beta_0 + \beta_1 \times d +
 
 In action:
 
-.small[
+.tiny[
 ```{r example}
 
 lm(formula = bill_length_mm ~ bill_depth_mm*species, data = penguins) %>% 
@@ -462,15 +436,11 @@ All algorithms are greedy algorithms: look one step ahead, and choose the best c
 
 --
       
-## The forward selection
-
-A similar algorithm, instead of removing, add variables one at a time
+**The forward selection**: A similar algorithm, instead of removing, add variables one at a time
 
 --
 
-## The backward-forward
-
-Combination, at each iteration check both removal and addition.
+**The backward-forward**: Combination, at each iteration check both removal and addition.
 
 ---
 
