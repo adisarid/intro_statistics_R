@@ -179,7 +179,7 @@ As the fit is better, $R^2$ increases.
 
 ---
 
-# Correlation
+# Correlation מתאם
 
 In probability, the correlation coefficient between two variables $X$ and $Y$ is defined as:
 
@@ -257,7 +257,7 @@ ggcorrplot::ggcorrplot(genres_corr, type = "upper", hc.order = T, hc.method = "c
 ]
 ---
 
-# Multiple Linear Regression - Background 
+# Multiple Linear Regression - Background - רגרסיה לינארית מרובה
 
 .small[So far we treated regression with only two variable (one dependent, $Y$ and one independent $X$).]
 
@@ -355,7 +355,7 @@ $$\hat{y} = X\hat{\beta}$$
 
 --
 
-We can also compute the residuals:
+We can also compute the residuals (שאריות):
 
 $$e = y-\hat{y}$$
 
@@ -399,7 +399,7 @@ We reject $H_0$ if the computed value of the statistic $f_0>f_{1-\alpha,k,n-k}$ 
 
 ---
 
-# Hypothesis Tests - ANOVA table
+# Hypothesis Tests - ANOVA table - ניתוח שונות
 
 The process is summarized in an analysis of variance table, as follows:
 
@@ -616,7 +616,7 @@ ci
 
 ---
 
-# Mean Response Confidence Interval
+# Mean Response Confidence Interval - רווח בר סמך לתוחלת Y
 
 The point estimate for a new response at a point $x_0=[1, x_{01}, \dots, x_{0k}]^t$ is:
 
@@ -655,6 +655,7 @@ Let's see this in action, in the following R Shiny app:
 ---
 
 # Example: prediction and mean response confidence intervals
+
 .tiny[
 ```{r prediction and confidence intervals, fig.dim=c(8,3)}
 wildlife_new <- crossing(sky = c("No Cloud", "Some Cloud", "Overcast"),
@@ -699,7 +700,7 @@ Can you think of a similar example but from a different domain?
 
 ---
 
-# Example - Outliers' Influence
+# Example - Outliers' Influence - השפעת ערכי קיצון
 
 Another "danger" in linear regression is what happens when the data contains outliers. Linear regression is very sensitive in this sense.
 .tiny[
@@ -726,11 +727,11 @@ cowplot::plot_grid(p1, p2)
 ]
 ---
 
-# How are Types of Variables Used in Regression?
+# How are Types of Variables Used in Regression? סוגי משתנים
 
 As you have probably noticed, in the bird-planes example, we used a `sky` variable which has three values (factor). The regression model is linear, if so, how are factor variables treated?
 
-   * Factors are turned into dummy variables (0/1). 
+   * Factors are turned into dummy variables (0/1).  פקטורים הופכים למשתני דמה
    
       * How many dummies are needed for a 3-level factor? why?
       

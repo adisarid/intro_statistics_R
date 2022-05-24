@@ -262,7 +262,7 @@ In groups, use the confidence and prediction intervals simulation, and answer th
 
 ---
 
-# Interactions
+# Interactions - אינטראקציות בין משתנים
 
 Using the `palmerpenguins` data:
 
@@ -298,7 +298,6 @@ The relationship is opposite! How can we solve this?
 
 We can either build three models (one for each species like in `ggplot2`) or use interaction in the `formula` argument.
 
-
 ---
 
 # The models with and without interaction
@@ -329,7 +328,7 @@ lm(formula = bill_length_mm ~ bill_depth_mm*species, data = penguins) %>%
 
 ---
 
-# Multicolinearity
+# Multicolinearity - מולטיקולינאריות
 
 When using multiple variables we need to check for correlations between the explanatory variables (the $x$'s), otherwise we might get misleading results.
 
@@ -398,7 +397,7 @@ If $\operatorname{VIF}<5$, we can keep all variables.
 
 ---
  
-# Variable Selection via Stepwise Regression
+# Variable Selection via Stepwise Regression - בחירת משתנים עם רגרסיה בצעדים
 
 In cases we have many independent variables (i.e., $X_i$s) we want to reduce the complexity of the regression model, and focus only on the most important or most influential variables.
 
@@ -616,16 +615,17 @@ Look at the following qqplot of residuals and plot of the residuals as a functio
    
    5. Observing the residuals' plots below, would you say that any of the linear regressions assumptions are violated? which one?
 
-```{r qqplot and residuals, echo=FALSE, fig.dim=c(10, 5)}
+```{r qqplot and residuals, echo=FALSE, fig.dim=c(7, 3.5)}
 chick_residuals <- as_tibble(ChickWeight) %>% 
-   mutate(resid = chick_lm$residuals)
+   mutate(resid = chick_lm$residuals) %>% 
+   mutate(prediction = predict(chick_lm))
 chick_qqplot <- ggplot(chick_residuals, aes(sample = (resid - mean(resid))/sd(resid))) + 
    geom_qq() + 
    theme_bw() + 
    ggtitle("QQ plot of residuals")
-chick_residuals_plot <- ggplot(chick_residuals, aes(x = Time, y = resid)) + 
+chick_residuals_plot <- ggplot(chick_residuals, aes(x = prediction, y = resid)) + 
    geom_jitter() +
-   facet_wrap(~{paste0("Diet=", Diet)}) + 
+   # facet_wrap(~{paste0("Diet=", Diet)}) + 
    theme_bw() + 
    ggtitle("Residuals as a function of time")
 cowplot::plot_grid(chick_qqplot, chick_residuals_plot)
