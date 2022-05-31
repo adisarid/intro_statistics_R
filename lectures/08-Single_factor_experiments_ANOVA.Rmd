@@ -12,125 +12,44 @@ output:
       highlightLines: true
       countIncrementalSlides: false
       ratio: "16:9"
-    css: [metropolis, rutgers-fonts]
+    css: xaringan-themer.css
 ---
 
-```{css, echo = FALSE}
-
-.remark-code {
-  font-size: 24px;
-}
-
-.huge { 
-  font-size: 200%;
-}
-.tiny .remark-code {
-  font-size: 50%;
-}
-
-.small .remark-code{
-   font-size: 85% !important;
-}
-
-.small {
-   font-size: 85% !important;
-}
-
-.remark-slide-content {
-    font-size: 20px;
-    padding: 1em 4em 1em 4em;
-}
-
-table { display: inline-block; }
-
-th, td {
-   padding: 5px;
-}
-
-.small-slide {
-   font-size: 70% !important;
-}
-
-.image-50 img {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 50%;
-}
-
-.right-plot {
-   width: 60%;
-   float: right;
-   padding-left: 1%;
-   bottom: 0px;
-   right: 0px;
-   position: absolute;
-}
-
-
-
-```
-
 ```{r setup, include=FALSE}
+
+library(xaringanthemer)
+
+extra_css <- list(
+   ".medium" = list("font-size" = "85%",
+                    "code-font-size" = "85%"),
+  ".small" = list("zoom" = "70%"),
+  ".extra-small" = list("font-size" = "50%",
+                        "code-font-size" = "50%"),
+  ".tiny" = list("font-size" = "50%",
+                 "code-font-size" = "50%",
+                 "zoom" = "50%"),
+  ".full-width" = list(
+    display = "flex",
+    width   = "100%",
+    flex    = "1 1 auto"
+  )
+)
+
+style_mono_accent(
+   header_font_google = google_font("Open Sans"),
+   text_font_google   = google_font("Rubik", "300", "300i"),
+   code_font_google   = google_font("Fira Mono"),
+   extra_css = extra_css,
+   header_h1_font_size = "2.3rem"
+   
+)
+
+theme_xaringan()
+
 options(htmltools.dir.version = FALSE, fig.width = 3, fig.height = 3)
 knitr::opts_chunk$set(fig.dim=c(3, 3), fig.align = "center")
 library(tidyverse)
-library(countdown)
 ```
-
-# Reminder from Previous Lecture (Multiple Regression Exercise)
-
-.small[
-The `ChickWeight` dataset contains the results of a feeding experiment of 50 chicks' (`Chick`) with their tracked weight (`weight`), over a period of 21 days (`Time`), each chick was subjected to a different type of diet (`Diet`).
-
-In the following model (see bottom of slide), we are using the interaction of `Time*factor(Diet)` as one of the explanatory variables, along with `Time` as another explanatory variable. The dependent variable is the chick's `weight`.
-
-Questions:
-
-   1. The original `Diet` variable is numeric. Why are we using it in the regression model as `factor(Diet)`?
-
-   1. How many levels does the `factor(Diet)` variable has, explain.
-   
-   2. Why do we need the interaction of `Time*factor(Diet)` in the model? (why is `weight ~ Time + factor(Diet)` not enough)
-   
-   3. Which dietary method helps increase the chick's weight the most? Explain how you deduced this from the model's output.
-
-See the next slide for an additional question.
-]
-
-.tiny[
-```{r output exercise}
-chick_lm <- lm(formula = weight ~ Time + Time*factor(Diet), data = ChickWeight)
-summary(chick_lm)
-```
-]
-
----
-
-# Test-like Exercises: Interpretation of a Model's Output - continued
-
-Look at the following qqplot of residuals and plot of the residuals as a function of time. 
-
-   4. Explain what are the underlying assumptions of the linear regression model.
-   
-   5. Observing the residuals' plots below, would you say that any of the linear regressions assumptions are violated? which one?
-
-```{r qqplot and residuals, echo=FALSE, fig.dim=c(10, 5)}
-chick_residuals <- as_tibble(ChickWeight) %>% 
-   mutate(resid = chick_lm$residuals)
-chick_qqplot <- ggplot(chick_residuals, aes(sample = (resid - mean(resid))/sd(resid))) + 
-   geom_qq() + 
-   theme_bw() + 
-   ggtitle("QQ plot of residuals")
-chick_residuals_plot <- ggplot(chick_residuals, aes(x = Time, y = resid)) + 
-   geom_jitter() +
-   facet_wrap(~{paste0("Diet=", Diet)}) + 
-   theme_bw() + 
-   ggtitle("Residuals as a function of time")
-cowplot::plot_grid(chick_qqplot, chick_residuals_plot)
-```
-
----
 
 # Experiment Design - Motivation
 
